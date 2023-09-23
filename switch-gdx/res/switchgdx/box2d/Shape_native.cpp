@@ -1,29 +1,29 @@
-#include "Clearwing.hpp"
-#include "Utils.hpp"
-#include "RuntimeTypes.hpp"
-#include <com/badlogic/gdx/physics/box2d/Shape.hpp>
+#include "Clearwing.h"
+#include "java/nio/Buffer.h"
+#include <com/badlogic/gdx/physics/box2d/Shape.h>
+
 
 #include <Box2D/Box2D.h>
 	 
-jfloat com::badlogic::gdx::physics::box2d::Shape::M_jniGetRadius_R_float(jlong addr) {
+jfloat M_com_badlogic_gdx_physics_box2d_Shape_jniGetRadius_long_R_float(jcontext ctx, jobject self, jlong addr) {
 
 		b2Shape* shape = (b2Shape*)addr;
 		return shape->m_radius;
 }
 
-void com::badlogic::gdx::physics::box2d::Shape::M_jniSetRadius(jlong addr, jfloat radius) {
+void M_com_badlogic_gdx_physics_box2d_Shape_jniSetRadius_long_float(jcontext ctx, jobject self, jlong addr, jfloat radius) {
 
 		b2Shape* shape = (b2Shape*)addr;
 		shape->m_radius = radius;
 }
 
-void com::badlogic::gdx::physics::box2d::Shape::M_jniDispose(jlong addr) {
+void M_com_badlogic_gdx_physics_box2d_Shape_jniDispose_long(jcontext ctx, jobject self, jlong addr) {
 
 		b2Shape* shape = (b2Shape*)addr;
 		delete shape;
 }
 
-jint com::badlogic::gdx::physics::box2d::Shape::SM_jniGetType_R_int(jlong addr) {
+jint SM_com_badlogic_gdx_physics_box2d_Shape_jniGetType_long_R_int(jcontext ctx, jlong addr) {
 
 		b2Shape* shape = (b2Shape*)addr;
 		switch(shape->m_type) {
@@ -35,7 +35,7 @@ jint com::badlogic::gdx::physics::box2d::Shape::SM_jniGetType_R_int(jlong addr) 
 		}
 }
 
-jint com::badlogic::gdx::physics::box2d::Shape::M_jniGetChildCount_R_int(jlong addr) {
+jint M_com_badlogic_gdx_physics_box2d_Shape_jniGetChildCount_long_R_int(jcontext ctx, jobject self, jlong addr) {
 
 		b2Shape* shape = (b2Shape*)addr;
 		return shape->GetChildCount();

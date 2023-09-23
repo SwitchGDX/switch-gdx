@@ -1,10 +1,10 @@
-#include "Clearwing.hpp"
+#include "Clearwing.h"
 
 #ifdef __SWITCH__
 #include <switch.h>
 #endif
 
-std::string vm::getOSLanguage() {
+const char *getOSLanguage() {
 #ifdef __SWITCH__
     u64 languageCode;
     setGetSystemLanguage(&languageCode);
@@ -14,24 +14,25 @@ std::string vm::getOSLanguage() {
 #endif
 }
 
-std::string vm::getSystemProperty(const std::string &key) {
+const char *getSystemProperty(const char *key) {
+    std::string name(key);
 #if defined(__SWITCH__)
-    if (key == "os.name")
+    if (name == "os.name")
         return "horizon";
-    if (key == "os.arch")
+    if (name == "os.arch")
         return "aarch64";
 #elif defined(__WINRT__)
-    if (key == "os.name")
+    if (name == "os.name")
         return "uwp";
-    if (key == "os.arch")
+    if (name == "os.arch")
         return "x86_64";
 #else
-    if (key == "os.name")
+    if (name == "os.name")
         return "unknown";
-    if (key == "os.arch")
+    if (name == "os.arch")
         return "x86_64";
 #endif
-    if (key == "line.separator")
+    if (name == "line.separator")
         return "\n";
     return "";
 }

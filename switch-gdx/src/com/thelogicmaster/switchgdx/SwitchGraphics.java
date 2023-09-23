@@ -3,10 +3,7 @@ package com.thelogicmaster.switchgdx;
 import com.badlogic.gdx.AbstractGraphics;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Cursor;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.GL30;
-import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.glutils.GLVersion;
 
 public class SwitchGraphics extends AbstractGraphics {
@@ -57,12 +54,32 @@ public class SwitchGraphics extends AbstractGraphics {
 	}
 
 	@Override
+	public boolean isGL31Available() {
+		return false;
+	}
+
+	@Override
+	public boolean isGL32Available() {
+		return false;
+	}
+
+	@Override
 	public GL20 getGL20 () {
 		return Gdx.gl20;
 	}
 
 	@Override
 	public GL30 getGL30 () {
+		return null;
+	}
+
+	@Override
+	public GL31 getGL31() {
+		return null;
+	}
+
+	@Override
+	public GL32 getGL32() {
 		return null;
 	}
 
@@ -74,6 +91,16 @@ public class SwitchGraphics extends AbstractGraphics {
 
 	@Override
 	public void setGL30 (GL30 gl30) {
+
+	}
+
+	@Override
+	public void setGL31(GL31 gl31) {
+
+	}
+
+	@Override
+	public void setGL32(GL32 gl32) {
 
 	}
 

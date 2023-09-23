@@ -1,35 +1,34 @@
-#include "Clearwing.hpp"
-#include "Utils.hpp"
-#include "RuntimeTypes.hpp"
+#include "Clearwing.h"
 
-#include <java/nio/ByteBuffer.hpp>
-#include <java/nio/CharBuffer.hpp>
-#include <java/nio/ShortBuffer.hpp>
-#include <java/nio/FloatBuffer.hpp>
-#include <java/nio/DoubleBuffer.hpp>
-#include <java/nio/IntBuffer.hpp>
-#include <java/nio/LongBuffer.hpp>
-#include <java/io/IOException.hpp>
+#include <java/lang/String.h>
+#include <java/nio/ByteBuffer.h>
+#include <java/nio/CharBuffer.h>
+#include <java/nio/ShortBuffer.h>
+#include <java/nio/FloatBuffer.h>
+#include <java/nio/DoubleBuffer.h>
+#include <java/nio/IntBuffer.h>
+#include <java/nio/LongBuffer.h>
+#include <java/io/IOException.h>
 
-#include <com/thelogicmaster/switchgdx/SwitchApplication.hpp>
-#include <com/thelogicmaster/switchgdx/SwitchAudio.hpp>
-#include <com/thelogicmaster/switchgdx/SwitchMusic.hpp>
-#include <com/thelogicmaster/switchgdx/SwitchGraphics.hpp>
-#include <com/thelogicmaster/switchgdx/SwitchGL.hpp>
-#include <com/thelogicmaster/switchgdx/SwitchInput.hpp>
-#include <com/thelogicmaster/switchgdx/SwitchControllerManager.hpp>
-#include <com/thelogicmaster/switchgdx/SwitchSound.hpp>
-#include <com/thelogicmaster/switchgdx/SwitchNet.hpp>
-#include <com/thelogicmaster/switchgdx/SwitchFiles.hpp>
-#include <com/thelogicmaster/switchgdx/SwitchHttpResponse.hpp>
-#include <com/thelogicmaster/switchgdx/SwitchSocket.hpp>
-#include <com/thelogicmaster/switchgdx/SwitchServerSocket.hpp>
-#include <com/badlogic/gdx/utils/GdxRuntimeException.hpp>
-#include <com/badlogic/gdx/Input_TextInputListener.hpp>
-#include <com/badlogic/gdx/utils/BufferUtils.hpp>
-#include <com/badlogic/gdx/math/Matrix4.hpp>
-#include <com/badlogic/gdx/graphics/g2d/Gdx2DPixmap.hpp>
-#include <com/badlogic/gdx/graphics/glutils/ETC1.hpp>
+#include <com/thelogicmaster/switchgdx/SwitchApplication.h>
+#include <com/thelogicmaster/switchgdx/SwitchAudio.h>
+#include <com/thelogicmaster/switchgdx/SwitchMusic.h>
+#include <com/thelogicmaster/switchgdx/SwitchGraphics.h>
+#include <com/thelogicmaster/switchgdx/SwitchGL.h>
+#include <com/thelogicmaster/switchgdx/SwitchInput.h>
+#include <com/thelogicmaster/switchgdx/SwitchControllerManager.h>
+#include <com/thelogicmaster/switchgdx/SwitchSound.h>
+#include <com/thelogicmaster/switchgdx/SwitchNet.h>
+#include <com/thelogicmaster/switchgdx/SwitchFiles.h>
+#include <com/thelogicmaster/switchgdx/SwitchHttpResponse.h>
+#include <com/thelogicmaster/switchgdx/SwitchSocket.h>
+#include <com/thelogicmaster/switchgdx/SwitchServerSocket.h>
+#include <com/badlogic/gdx/utils/GdxRuntimeException.h>
+#include <com/badlogic/gdx/Input_TextInputListener.h>
+#include <com/badlogic/gdx/utils/BufferUtils.h>
+#include <com/badlogic/gdx/math/Matrix4.h>
+#include <com/badlogic/gdx/graphics/g2d/Gdx2DPixmap.h>
+#include <com/badlogic/gdx/graphics/glutils/ETC1.h>
 
 #include <fcntl.h>
 #include <csignal>
@@ -45,9 +44,6 @@
 #include <SDL.h>
 #include "switchgdx/SDL_mixer.h"
 #include <SDL_gamecontroller.h>
-
-using namespace com::badlogic::gdx;
-using namespace com::thelogicmaster::switchgdx;
 
 #if !defined(__WIN32__) && !defined(__WINRT__)
 # include <sys/socket.h>
@@ -131,14 +127,16 @@ extern "C" void userAppExit() {
 #endif
 
 void onMusicFinished() {
-    SwitchAudio::SM_onMusicFinished();
+    // Todo: TLS context storage or store event in a queue until the next update loop
+//    SM_com_thelogicmaster_switchgdx_SwitchAudio_onMusicFinished(ctx);
 }
 
 void onSoundFinished(int channel) {
-    SwitchAudio::SM_onSoundFinished(channel);
+    // Todo: TLS context storage or store event in a queue until the next update loop
+//    SM_com_thelogicmaster_switchgdx_SwitchAudio_onSoundFinished_int(ctx, channel);
 }
 
-void SwitchApplication::SM_init(jbool vsync) {
+void SM_com_thelogicmaster_switchgdx_SwitchApplication_init_boolean(jcontext ctx, jbool vsync) {
     for (int i = 0; i < 16; i++)
         touches[i * 3] = -1;
 
@@ -162,9 +160,7 @@ void SwitchApplication::SM_init(jbool vsync) {
 
     Result result = romfsInit();
     if (R_FAILED(result))
-        printf("Failed to initilize RomFS: %08X\n", result);
-
-    // Todo: Error handling/logging
+        Todo: Error handling/logging
     display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
     eglInitialize(display, NULL, NULL);
     eglBindAPI(EGL_OPENGL_API);
@@ -227,7 +223,7 @@ void SwitchApplication::SM_init(jbool vsync) {
     curl_global_init(CURL_GLOBAL_ALL);
 }
 
-void SwitchApplication::SM_dispose() {
+void SM_com_thelogicmaster_switchgdx_SwitchApplication_dispose(jcontext ctx) {
 #if defined(__WIN32__) || defined(__WINRT__)
     WSACleanup();
 #endif
@@ -429,7 +425,7 @@ static void remapPadAxes(float *axes, u32 style) {
 }
 #endif
 
-jbool SwitchApplication::SM_update_R_boolean() {
+jbool SM_com_thelogicmaster_switchgdx_SwitchApplication_update_R_boolean(jcontext ctx) {
 #ifdef __SWITCH__
     padUpdate(&combinedPad);
     u64 kDown = padGetButtonsDown(&combinedPad);
@@ -516,22 +512,22 @@ jbool SwitchApplication::SM_update_R_boolean() {
 #endif
 }
 
-jstring SwitchFiles::M_getLocalStoragePath_R_java_lang_String() {
+jobject M_com_thelogicmaster_switchgdx_SwitchFiles_getLocalStoragePath_R_java_lang_String(jcontext ctx, jobject self) {
 #ifdef __WINRT__
     auto path = getLocalPathUWP();
-    return vm::createString(path.c_str());
+    return (jobject) stringFromNative(ctx, path.c_str());
 #else
-    return vm::createString("data");
+    return (jobject) stringFromNative(ctx, "data");
 #endif
 }
 
-jbool SwitchNet::M_openURI_R_boolean(const jstring &urlObj) {
+jbool M_com_thelogicmaster_switchgdx_SwitchNet_openURI_java_lang_String_R_boolean(jcontext ctx, jobject self, jobject urlObj) {
 #ifdef __SWITCH__
     WebCommonConfig config;
     WebCommonReply reply;
     return !webPageCreate(&config, vm::getNativeString(urlObj)) and !webConfigSetWhitelist(&config, "^http*") and !webConfigShow(&config, &reply);
 #else
-    std::string url(vm::getNativeString(urlObj));
+    std::string url(stringToNative(ctx, (jstring) urlObj));
 # if defined(__WIN32__) || defined(__WINRT__)
     system(("start " + url).c_str());
 # elif __APPLE__
@@ -549,28 +545,29 @@ static size_t curlWriteCallback(void *contents, size_t size, size_t nmemb, void 
     return size * nmemb;
 }
 
-jstring SwitchNet::SM_sendRequest_Array1_byte_Array1_java_lang_String_R_java_lang_String(const jstring &urlObj, const jarray &contentArray, const jarray &headersArray, const jstring &methodObj, jlong timeout, const shared_ptr<SwitchHttpResponse> &httpResponse) {
+jobject SM_com_thelogicmaster_switchgdx_SwitchNet_sendRequest_java_lang_String_Array1_byte_Array1_java_lang_String_java_lang_String_long_com_thelogicmaster_switchgdx_SwitchHttpResponse_R_java_lang_String
+        (jcontext ctx, jobject urlObj, jobject contentArray, jobject headersArray, jobject methodObj, jlong timeout, jobject httpResponse) {
     char errorBuffer[CURL_ERROR_SIZE]{};
     CURL *curl = curl_easy_init();
     if (!curl)
         return nullptr;
 
     std::string responseData;
-    curl_easy_setopt(curl, CURLOPT_URL, vm::getNativeString(urlObj));
+    curl_easy_setopt(curl, CURLOPT_URL, stringToNative(ctx, (jstring) urlObj));
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, curlWriteCallback);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &responseData);
     curl_easy_setopt(curl, CURLOPT_USERAGENT, "switchgdx-agent/1.0");
     curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, errorBuffer);
 
     curl_slist *headers = nullptr;
-    for (int i = 0; i < headersArray->length; i++)
-        headers = curl_slist_append(headers, vm::getNativeString(object_cast<String>(((jobject *)headersArray->data)[i])));
+    for (int i = 0; i < ((jstring) headersArray)->F_count; i++)
+        headers = curl_slist_append(headers, stringToNative(ctx, ((jstring *)((jarray) headersArray)->data)[i]));
     curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
 
-    auto method = std::string(vm::getNativeString(methodObj));
+    auto method = std::string(stringToNative(ctx, (jstring) methodObj));
     if (method == "POST" or method == "PUT" or method == "PATCH") {
-        curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, contentArray->length);
-        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, contentArray->data);
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, ((jarray) contentArray)->length);
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, ((jarray) contentArray)->data);
     } else if (method == "HEAD")
         curl_easy_setopt(curl, CURLOPT_NOBODY, 1L);
     else if (method == "GET")
@@ -586,48 +583,47 @@ jstring SwitchNet::SM_sendRequest_Array1_byte_Array1_java_lang_String_R_java_lan
     curl_easy_cleanup(curl);
 
     if (res != CURLE_OK)
-        return vm::createString(strlen(errorBuffer) ? errorBuffer : curl_easy_strerror(res));
+        return (jobject) stringFromNative(ctx, strlen(errorBuffer) ? errorBuffer : curl_easy_strerror(res));
 
-    httpResponse->F_status = (jint)status;
+    ((com_thelogicmaster_switchgdx_SwitchHttpResponse *) httpResponse)->F_status = (jint)status;
 
-    auto response = vm::newArray(vm::classByte, (int)responseData.length());
+    auto response = createArray(ctx, &class_byte, (int)responseData.length());
     memcpy(response->data, responseData.c_str(), responseData.length());
-    httpResponse->F_result = response;
+    ((com_thelogicmaster_switchgdx_SwitchHttpResponse *) httpResponse)->F_result = (jref) response;
 
     return nullptr;
 }
 
-void throwNativeSocketException(bool inErrno = false) {
-    auto exception = make_shared<java::io::IOException>();
-    jstring error;
+void throwNativeSocketException(jcontext ctx, bool inErrno = false) {
+    std::string error;
     if (errno == ETIMEDOUT)
-        error = vm::createString("Timed out");
+        error = "Timed out";
     else {
 #if defined(__WIN32__)
         if (!inErrno)
             errno = WSAGetLastError();
         char buffer[256];
         FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS | FORMAT_MESSAGE_MAX_WIDTH_MASK, nullptr, errno, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), buffer, sizeof(buffer), nullptr);
-        error = vm::createString(buffer);
+        error = buffer;
 #elif defined(__WINRT__)
-        error = vm::createString("Socket error");
+        error = "Socket error";
 #else
-        error = vm::createString(strerror(errno));
+        error = strerror(errno);
 #endif
     }
-    exception->init(error);
-    vm::throwEx(exception);
+    throwIOException(ctx, error.c_str());
 }
 
-void SwitchSocket::M_dispose() {
-    if (F_fd) {
+void M_com_thelogicmaster_switchgdx_SwitchSocket_dispose(jcontext ctx, jobject self) {
+    auto &fd = ((com_thelogicmaster_switchgdx_SwitchSocket *) self)->F_fd;
+    if (fd) {
 #if defined(__WIN32__) || defined(__WINRT__)
-        shutdown(F_fd, SD_SEND);
-        closesocket(F_fd);
+        shutdown(fd, SD_SEND);
+        closesocket(fd);
 #else
-        close(F_fd);
+        close(fd);
 #endif
-        F_fd = 0;
+        fd = 0;
     }
 }
 
@@ -646,7 +642,7 @@ void setSocketTimeout(int fd, int timeout) {
 #endif
 }
 
-jint SwitchSocket::SM_create_R_int(const jstring &hostObj, jint port, jint connectTimeout, jint timeout) {
+jint SM_com_thelogicmaster_switchgdx_SwitchSocket_create_java_lang_String_int_int_int_R_int(jcontext ctx, jobject hostObj, jint port, jint connectTimeout, jint timeout) {
 //    std::string host(hostObj ? vm::getNativeString(hostObj) : "");
 //    const char *hostname = nullptr;
 //    if (hostObj)
@@ -770,7 +766,7 @@ jint SwitchSocket::SM_create_R_int(const jstring &hostObj, jint port, jint conne
     return 0;
 }
 
-jint SwitchSocket::M_read_R_int() {
+jint M_com_thelogicmaster_switchgdx_SwitchSocket_read_R_int(jcontext ctx, jobject self) {
 //    signed char buffer;
 //    if (!F_fd)
 //        vm::throwNew<java::io::IOException>();
@@ -784,7 +780,7 @@ jint SwitchSocket::M_read_R_int() {
     return 0;
 }
 
-void SwitchSocket::M_write(jint value) {
+void M_com_thelogicmaster_switchgdx_SwitchSocket_write_int(jcontext ctx, jobject self, jint value) {
 //    auto buffer = (signed char) value;
 //    if (!F_fd)
 //        vm::throwNew<java::io::IOException>();
@@ -796,7 +792,7 @@ void SwitchSocket::M_write(jint value) {
 //    }
 }
 
-jstring SwitchSocket::M_getRemoteAddress_R_java_lang_String() {
+jobject M_com_thelogicmaster_switchgdx_SwitchSocket_getRemoteAddress_R_java_lang_String(jcontext ctx, jobject self) {
 //    if (!F_fd)
 //        vm::throwNew<java::io::IOException>();
 //    sockaddr_storage address{};
@@ -811,7 +807,7 @@ jstring SwitchSocket::M_getRemoteAddress_R_java_lang_String() {
     return nullptr;
 }
 
-void SwitchServerSocket::M_dispose() {
+void M_com_thelogicmaster_switchgdx_SwitchServerSocket_dispose(jcontext ctx, jobject self) {
 //    if (F_fd) {
 //#if defined(__WIN32__) || defined(__WINRT__)
 //        shutdown(F_fd, SD_SEND);
@@ -823,7 +819,7 @@ void SwitchServerSocket::M_dispose() {
 //    }
 }
 
-jint SwitchServerSocket::SM_create_R_int(jint port, jbool reuseAddress) {
+jint SM_com_thelogicmaster_switchgdx_SwitchServerSocket_create_int_boolean_R_int(jcontext ctx,jint port, jbool reuseAddress) {
 //    sockaddr_in address{};
 //    address.sin_family = AF_INET;
 //    address.sin_port = htons(port);
@@ -870,7 +866,7 @@ jint SwitchServerSocket::SM_create_R_int(jint port, jbool reuseAddress) {
     return 0;
 }
 
-jint SwitchServerSocket::M_accept_R_int(jint timeout) {
+jint M_com_thelogicmaster_switchgdx_SwitchServerSocket_accept_int_R_int(jcontext ctx, jobject self, jint timeout) {
 //    if (!F_fd)
 //        vm::throwNew<java::io::IOException>();
 //
@@ -912,90 +908,90 @@ jint SwitchServerSocket::M_accept_R_int(jint timeout) {
     return 0;
 }
 
-void SwitchMusic::M_create(const jstring &file) {
-    auto music = Mix_LoadMUS(vm::getNativeString(file));
+void M_com_thelogicmaster_switchgdx_SwitchMusic_create_java_lang_String(jcontext ctx, jobject self, jobject file) {
+    auto music = Mix_LoadMUS(stringToNative(ctx, (jstring) file));
     if (!music)
-        vm::throwExceptionCause<com::badlogic::gdx::utils::GdxRuntimeException>(Mix_GetError());
-    F_handle = (jlong)music;
+        constructAndThrowMsg<&class_com_badlogic_gdx_utils_GdxRuntimeException, init_java_lang_RuntimeException_java_lang_String>(ctx, Mix_GetError());
+    ((com_thelogicmaster_switchgdx_SwitchMusic *) self)->F_handle = (jlong)music;
 }
 
-void SwitchMusic::M_start(jbool looping) {
-    Mix_PlayMusic((Mix_Music*)F_handle, looping ? -1 : 0);
+void M_com_thelogicmaster_switchgdx_SwitchMusic_start_boolean(jcontext ctx, jobject self, jbool looping) {
+    Mix_PlayMusic((Mix_Music*)((com_thelogicmaster_switchgdx_SwitchMusic *) self)->F_handle, looping ? -1 : 0);
 }
 
-void SwitchMusic::SM_resume() {
+void SM_com_thelogicmaster_switchgdx_SwitchMusic_resume(jcontext ctx) {
     Mix_ResumeMusic();
 }
 
-void SwitchMusic::SM_pause0() {
+void SM_com_thelogicmaster_switchgdx_SwitchMusic_pause0(jcontext ctx) {
     Mix_PauseMusic();
 }
 
-void SwitchMusic::SM_stop0() {
+void SM_com_thelogicmaster_switchgdx_SwitchMusic_stop0(jcontext ctx) {
     Mix_HaltMusic();
 }
 
-void SwitchMusic::SM_setVolume0(jfloat volume) {
+void SM_com_thelogicmaster_switchgdx_SwitchMusic_setVolume0_float(jcontext ctx, jfloat volume) {
     Mix_VolumeMusic((int)(volume * MIX_MAX_VOLUME));
 }
 
-void SwitchMusic::SM_setPosition0(jfloat position) {
+void SM_com_thelogicmaster_switchgdx_SwitchMusic_setPosition0_float(jcontext ctx, jfloat position) {
     Mix_RewindMusic();
     Mix_SetMusicPosition(position);
 }
 
-void SwitchMusic::M_dispose0() {
-    auto& handle = F_handle;
+void M_com_thelogicmaster_switchgdx_SwitchMusic_dispose0(jcontext ctx, jobject self) {
+    auto& handle = ((com_thelogicmaster_switchgdx_SwitchMusic *) self)->F_handle;
     if (!handle)
         return;
     Mix_FreeMusic((Mix_Music *)handle);
     handle = 0;
 }
 
-void SwitchSound::M_create(const jstring &file) {
-    auto sound = Mix_LoadWAV(vm::getNativeString(file));
+void M_com_thelogicmaster_switchgdx_SwitchSound_create_java_lang_String(jcontext ctx, jobject self, jobject file) {
+    auto sound = Mix_LoadWAV(stringToNative(ctx, (jstring) file));
     if (!sound)
-        vm::throwExceptionCause<com::badlogic::gdx::utils::GdxRuntimeException>(Mix_GetError());
-    F_handle = (jlong)sound;
+        constructAndThrowMsg<&class_com_badlogic_gdx_utils_GdxRuntimeException, init_java_lang_RuntimeException_java_lang_String>(ctx, Mix_GetError());
+    ((com_thelogicmaster_switchgdx_SwitchSound *) self)->F_handle = (jlong)sound;
 }
 
-void SwitchSound::M_dispose0() {
-    auto &handle = F_handle;
+void M_com_thelogicmaster_switchgdx_SwitchSound_dispose0(jcontext ctx, jobject self) {
+    auto &handle = ((com_thelogicmaster_switchgdx_SwitchSound *) self)->F_handle;
     if (!handle)
         return;
     Mix_FreeChunk((Mix_Chunk *)handle);
     handle = 0;
 }
 
-jint SwitchSound::M_play0_R_int(jbool looping) {
-    return Mix_PlayChannel(-1, (Mix_Chunk*)F_handle, looping ? -1 : 0);
+jint M_com_thelogicmaster_switchgdx_SwitchSound_play0_boolean_R_int(jcontext ctx, jobject self, jbool looping) {
+    return Mix_PlayChannel(-1, (Mix_Chunk*)((com_thelogicmaster_switchgdx_SwitchSound *) self)->F_handle, looping ? -1 : 0);
 }
 
-void SwitchSound::M_setLooping0(jint channel, jbool looping) {
-    Mix_PlayChannel(channel, (Mix_Chunk*)F_handle, looping ? -1 : 0);
+void M_com_thelogicmaster_switchgdx_SwitchSound_setLooping0_int_boolean(jcontext ctx, jobject self, jint channel, jbool looping) {
+    Mix_PlayChannel(channel, (Mix_Chunk*)((com_thelogicmaster_switchgdx_SwitchSound *) self)->F_handle, looping ? -1 : 0);
 }
 
-void SwitchSound::SM_stop0(jint channel) {
+void SM_com_thelogicmaster_switchgdx_SwitchSound_stop0_int(jcontext ctx, jint channel) {
     Mix_HaltChannel(channel);
 }
 
-void SwitchSound::SM_pause0(jint channel) {
+void SM_com_thelogicmaster_switchgdx_SwitchSound_pause0_int(jcontext ctx, jint channel) {
     Mix_Pause(channel);
 }
 
-void SwitchSound::SM_resume0(jint channel) {
+void SM_com_thelogicmaster_switchgdx_SwitchSound_resume0_int(jcontext ctx, jint channel) {
     Mix_Resume(channel);
 }
 
-void SwitchSound::SM_setPitch0(jint channel, jfloat pitch) {
+void SM_com_thelogicmaster_switchgdx_SwitchSound_setPitch0_int_float(jcontext ctx, jint channel, jfloat pitch) {
     // Todo: Custom pitch changing effect based on: https://gist.github.com/hydren/ea794e65e95c7713c00c88f74b71f8b1
 }
 
-void SwitchSound::SM_setVolume0(jint channel, jfloat volume) {
+void SM_com_thelogicmaster_switchgdx_SwitchSound_setVolume0_int_float(jcontext ctx, jint channel, jfloat volume) {
     Mix_Volume(channel, (int)(volume * MIX_MAX_VOLUME));
 }
 
-void SwitchSound::SM_setPan0(jint channel, jfloat pan) {
+void SM_com_thelogicmaster_switchgdx_SwitchSound_setPan0_int_float(jcontext ctx, jint channel, jfloat pan) {
     uint8_t left, right;
     if (pan <= 0) {
         left = 255;
@@ -1007,223 +1003,215 @@ void SwitchSound::SM_setPan0(jint channel, jfloat pan) {
     Mix_SetPanning(channel, left, right);
 }
 
-// Todo: Move to Utils.hpp
-template <typename T>
-static void *getBufferAddress(const shared_ptr<T> &buffer) {
+void *getBufferAddress(jcontext ctx, java_nio_Buffer *buffer) {
     if (!buffer)
         return nullptr;
     int typeSize = 1;
-    if (vm::instanceof<java::nio::ByteBuffer>(buffer))
+    if (isInstance(ctx, (jobject) buffer, &class_java_nio_ByteBuffer))
         typeSize = sizeof(jbyte);
-    else if (vm::instanceof<java::nio::FloatBuffer>(buffer))
+    else if (isInstance(ctx, (jobject) buffer, &class_java_nio_FloatBuffer))
         typeSize = sizeof(jfloat);
-    else if (vm::instanceof<java::nio::IntBuffer>(buffer))
+    else if (isInstance(ctx, (jobject) buffer, &class_java_nio_IntBuffer))
         typeSize = sizeof(jint);
-    else if (vm::instanceof<java::nio::ShortBuffer>(buffer))
+    else if (isInstance(ctx, (jobject) buffer, &class_java_nio_ShortBuffer))
         typeSize = sizeof(jshort);
-    else if (vm::instanceof<java::nio::CharBuffer>(buffer))
+    else if (isInstance(ctx, (jobject) buffer, &class_java_nio_CharBuffer))
         typeSize = sizeof(jchar);
-    else if (vm::instanceof<java::nio::LongBuffer>(buffer))
+    else if (isInstance(ctx, (jobject) buffer, &class_java_nio_LongBuffer))
         typeSize = sizeof(jlong);
-    else if (vm::instanceof<java::nio::DoubleBuffer>(buffer))
+    else if (isInstance(ctx, (jobject) buffer, &class_java_nio_DoubleBuffer))
         typeSize = sizeof(jdouble);
     return (char*)buffer->F_address + typeSize * buffer->F_position;
 }
 
-template<>
-void *getBufferAddress(const shared_ptr<ByteBuffer> &buffer) {
-    return (char*)buffer->F_address + sizeof(jbyte) * buffer->F_position;
+void *getBufferAddress(java_nio_ByteBuffer *buffer) {
+    return (char*)buffer->parent.F_address + sizeof(jbyte) * buffer->parent.F_position;
 }
 
-template<>
-void *getBufferAddress(const shared_ptr<ShortBuffer> &buffer) {
-    return (char*)buffer->F_address + sizeof(jshort) * buffer->F_position;
+void *getBufferAddress(java_nio_ShortBuffer *buffer) {
+    return (char*)buffer->parent.F_address + sizeof(jshort) * buffer->parent.F_position;
 }
 
-template<>
-void *getBufferAddress(const shared_ptr<CharBuffer> &buffer) {
-    return (char*)buffer->F_address + sizeof(jchar) * buffer->F_position;
+void *getBufferAddress(java_nio_CharBuffer *buffer) {
+    return (char*)buffer->parent.F_address + sizeof(jchar) * buffer->parent.F_position;
 }
 
-template<>
-void *getBufferAddress(const shared_ptr<IntBuffer> &buffer) {
-    return (char*)buffer->F_address + sizeof(jint) * buffer->F_position;
+void *getBufferAddress(java_nio_IntBuffer *buffer) {
+    return (char*)buffer->parent.F_address + sizeof(jint) * buffer->parent.F_position;
 }
 
-template<>
-void *getBufferAddress(const shared_ptr<LongBuffer> &buffer) {
-    return (char*)buffer->F_address + sizeof(jlong) * buffer->F_position;
+void *getBufferAddress(java_nio_LongBuffer *buffer) {
+    return (char*)buffer->parent.F_address + sizeof(jlong) * buffer->parent.F_position;
 }
 
-template<>
-void *getBufferAddress(const shared_ptr<FloatBuffer> &buffer) {
-    return (char*)buffer->F_address + sizeof(jfloat) * buffer->F_position;
+void *getBufferAddress(java_nio_FloatBuffer *buffer) {
+    return (char*)buffer->parent.F_address + sizeof(jfloat) * buffer->parent.F_position;
 }
 
-template<>
-void *getBufferAddress(const shared_ptr<DoubleBuffer> &buffer) {
-    return (char*)buffer->F_address + sizeof(jdouble) * buffer->F_position;
+void *getBufferAddress(java_nio_DoubleBuffer *buffer) {
+    return (char*)buffer->parent.F_address + sizeof(jdouble) * buffer->parent.F_position;
 }
 
-void com::badlogic::gdx::utils::BufferUtils::SM_freeMemory(const shared_ptr<ByteBuffer> &buffer) {
-    auto memory = (char *) buffer->F_address;
+void SM_com_badlogic_gdx_utils_BufferUtils_freeMemory_java_nio_ByteBuffer(jcontext ctx, jobject buffer) {
+    auto memory = (char *) ((java_nio_Buffer *) buffer)->F_address;
     if (memory) {
         delete[] memory;
-        buffer->F_address = 0;
+        ((java_nio_Buffer *) buffer)->F_address = 0;
     }
 }
 
-shared_ptr<ByteBuffer> com::badlogic::gdx::utils::BufferUtils::SM_newDisposableByteBuffer_R_java_nio_ByteBuffer(jint param1) {
-    return java::nio::ByteBuffer::SM_allocateDirect_R_java_nio_ByteBuffer(param1);
+jobject SM_com_badlogic_gdx_utils_BufferUtils_newDisposableByteBuffer_int_R_java_nio_ByteBuffer(jcontext ctx, jint size) {
+    return SM_java_nio_ByteBuffer_allocateDirect_int_R_java_nio_ByteBuffer(ctx, size);
 }
 
-jlong com::badlogic::gdx::utils::BufferUtils::SM_getBufferAddress_R_long(const shared_ptr<Buffer> &buffer) {
-    return buffer->F_address;
+jlong SM_com_badlogic_gdx_utils_BufferUtils_getBufferAddress_java_nio_Buffer_R_long(jcontext ctx, jobject buffer) {
+    return ((java_nio_Buffer *) buffer)->F_address;
 }
 
-void com::badlogic::gdx::utils::BufferUtils::SM_clear(const shared_ptr<ByteBuffer> &buffer, jint numBytes) {
-    memset((void *) buffer->F_address, 0, numBytes);
+void SM_com_badlogic_gdx_utils_BufferUtils_clear_java_nio_ByteBuffer_int(jcontext ctx, jobject buffer, jint numBytes) {
+    memset((void *) ((java_nio_Buffer *) buffer)->F_address, 0, numBytes);
 }
 
-void com::badlogic::gdx::utils::BufferUtils::SM_copyJni_Array1_float(const jarray &src, const shared_ptr<Buffer> &dst, jint numFloats, jint offset) {
-    memcpy((float *) dst->F_address, (float *) src->data + offset, numFloats << 2);
+void SM_com_badlogic_gdx_utils_BufferUtils_copyJni_Array1_float_java_nio_Buffer_int_int(jcontext ctx, jobject src, jobject dst, jint numFloats, jint offset) {
+    memcpy((float *) ((java_nio_Buffer *) dst)->F_address, (float *) ((jarray) src)->data + offset, numFloats << 2);
 }
 
-void com::badlogic::gdx::utils::BufferUtils::SM_copyJni_Array1_byte(const jarray &src, jint srcOffset, const shared_ptr<Buffer> &dst, jint dstOffset, jint numBytes) {
-    memcpy((char *) dst->F_address + dstOffset, (jbyte *) src->data + srcOffset, numBytes);
+void SM_com_badlogic_gdx_utils_BufferUtils_copyJni_Array1_byte_int_java_nio_Buffer_int_int(jcontext ctx, jobject src, jint srcOffset, jobject dst, jint dstOffset, jint numBytes) {
+    memcpy((char *) ((java_nio_Buffer *) dst)->F_address + dstOffset, (jbyte *) ((jarray) src)->data + srcOffset, numBytes);
 }
 
-void com::badlogic::gdx::utils::BufferUtils::SM_copyJni_Array1_char(const jarray &src, jint srcOffset, const shared_ptr<Buffer> &dst, jint dstOffset, jint numBytes) {
-    memcpy((char *) dst->F_address + dstOffset, (jchar *) src->data + srcOffset, numBytes);
+void SM_com_badlogic_gdx_utils_BufferUtils_copyJni_Array1_char_int_java_nio_Buffer_int_int(jcontext ctx, jobject src, jint srcOffset, jobject dst, jint dstOffset, jint numBytes) {
+    memcpy((char *) ((java_nio_Buffer *) dst)->F_address + dstOffset, (jchar *) ((jarray) src)->data + srcOffset, numBytes);
 }
 
-void com::badlogic::gdx::utils::BufferUtils::SM_copyJni_Array1_short(const jarray &src, jint srcOffset, const shared_ptr<Buffer> &dst, jint dstOffset, jint numBytes) {
-    memcpy((char *) dst->F_address + dstOffset, (jshort *) src->data + srcOffset, numBytes);
+void SM_com_badlogic_gdx_utils_BufferUtils_copyJni_Array1_short_int_java_nio_Buffer_int_int(jcontext ctx, jobject src, jint srcOffset, jobject dst, jint dstOffset, jint numBytes) {
+    memcpy((char *) ((java_nio_Buffer *) dst)->F_address + dstOffset, (jshort *) ((jarray) src)->data + srcOffset, numBytes);
 }
 
-void com::badlogic::gdx::utils::BufferUtils::SM_copyJni_Array1_int(const jarray &src, jint srcOffset, const shared_ptr<Buffer> &dst, jint dstOffset, jint numBytes) {
-    memcpy((char *) dst->F_address + dstOffset, (jint *) src->data + srcOffset, numBytes);
+void SM_com_badlogic_gdx_utils_BufferUtils_copyJni_Array1_int_int_java_nio_Buffer_int_int(jcontext ctx, jobject src, jint srcOffset, jobject dst, jint dstOffset, jint numBytes) {
+    memcpy((char *) ((java_nio_Buffer *) dst)->F_address + dstOffset, (jint *) ((jarray) src)->data + srcOffset, numBytes);
 }
 
-void com::badlogic::gdx::utils::BufferUtils::SM_copyJni_Array1_long(const jarray &src, jint srcOffset, const shared_ptr<Buffer> &dst, jint dstOffset, jint numBytes) {
-    memcpy((char *) dst->F_address + dstOffset, (jlong *) src->data + srcOffset, numBytes);
+void SM_com_badlogic_gdx_utils_BufferUtils_copyJni_Array1_long_int_java_nio_Buffer_int_int(jcontext ctx, jobject src, jint srcOffset, jobject dst, jint dstOffset, jint numBytes) {
+    memcpy((char *) ((java_nio_Buffer *) dst)->F_address + dstOffset, (jlong *) ((jarray) src)->data + srcOffset, numBytes);
 }
 
-void com::badlogic::gdx::utils::BufferUtils::SM_copyJni_Array1_float(const jarray &src, jint srcOffset, const shared_ptr<Buffer> &dst, jint dstOffset, jint numBytes) {
-    memcpy((char *) dst->F_address + dstOffset, (jfloat *) src->data + srcOffset, numBytes);
+void SM_com_badlogic_gdx_utils_BufferUtils_copyJni_Array1_float_int_java_nio_Buffer_int_int(jcontext ctx, jobject src, jint srcOffset, jobject dst, jint dstOffset, jint numBytes) {
+    memcpy((char *) ((java_nio_Buffer *) dst)->F_address + dstOffset, (jfloat *) ((jarray) src)->data + srcOffset, numBytes);
 }
 
-void com::badlogic::gdx::utils::BufferUtils::SM_copyJni_Array1_double(const jarray &src, jint srcOffset, const shared_ptr<Buffer> &dst, jint dstOffset, jint numBytes) {
-    memcpy((char *) dst->F_address + dstOffset, (jdouble *) src->data + srcOffset, numBytes);
+void SM_com_badlogic_gdx_utils_BufferUtils_copyJni_Array1_double_int_java_nio_Buffer_int_int(jcontext ctx, jobject src, jint srcOffset, jobject dst, jint dstOffset, jint numBytes) {
+    memcpy((char *) ((java_nio_Buffer *) dst)->F_address + dstOffset, (jdouble *) ((jarray) src)->data + srcOffset, numBytes);
 }
 
-void com::badlogic::gdx::utils::BufferUtils::SM_copyJni(const shared_ptr<Buffer> &src, jint srcOffset, const shared_ptr<Buffer> &dst, jint dstOffset, jint numBytes) {
-    memcpy((char *) dst->F_address + dstOffset, (char *) src->F_address + srcOffset, numBytes);
+void SM_com_badlogic_gdx_utils_BufferUtils_copyJni_java_nio_Buffer_int_java_nio_Buffer_int_int(jcontext ctx, jobject src, jint srcOffset, jobject dst, jint dstOffset, jint numBytes) {
+    memcpy((char *) ((java_nio_Buffer *) dst)->F_address + dstOffset, (char *) ((java_nio_Buffer *) src)->F_address + srcOffset, numBytes);
 }
 
-void com::badlogic::gdx::utils::BufferUtils::SM_transformV4M4Jni_Array1_float(const shared_ptr<Buffer> &data, jint strideInBytes, jint count, const jarray &matrix, jint offsetInBytes) {
-    transform<4, 4>((float *) data->F_address, strideInBytes / 4, count, (float *) matrix->data, offsetInBytes / 4);
+void SM_com_badlogic_gdx_utils_BufferUtils_transformV4M4Jni_java_nio_Buffer_int_int_Array1_float_int(jcontext ctx, jobject data, jint strideInBytes, jint count, jobject matrix, jint offsetInBytes) {
+    transform<4, 4>((float *) ((java_nio_Buffer *) data)->F_address, strideInBytes / 4, count, (float *) ((jarray) matrix)->data, offsetInBytes / 4);
 }
 
-void com::badlogic::gdx::utils::BufferUtils::SM_transformV4M4Jni_Array1_float_Array1_float(const jarray &data, jint strideInBytes, jint count, const jarray &matrix, jint offsetInBytes) {
-    transform<4, 4>((float *) data->data, strideInBytes / 4, count, (float *) matrix->data, offsetInBytes / 4);
+void SM_com_badlogic_gdx_utils_BufferUtils_transformV4M4Jni_Array1_float_int_int_Array1_float_int(jcontext ctx, jobject data, jint strideInBytes, jint count, jobject matrix, jint offsetInBytes) {
+    transform<4, 4>((float *) ((jarray) data)->data, strideInBytes / 4, count, (float *) ((jarray) matrix)->data, offsetInBytes / 4);
 }
 
-void com::badlogic::gdx::utils::BufferUtils::SM_transformV3M4Jni_Array1_float(const shared_ptr<Buffer> &data, jint strideInBytes, jint count, const jarray &matrix, jint offsetInBytes) {
-    transform<3, 4>((float *) data->F_address, strideInBytes / 4, count, (float *) matrix->data, offsetInBytes / 4);
+void SM_com_badlogic_gdx_utils_BufferUtils_transformV3M4Jni_java_nio_Buffer_int_int_Array1_float_int(jcontext ctx, jobject data, jint strideInBytes, jint count, jobject matrix, jint offsetInBytes) {
+    transform<3, 4>((float *) ((java_nio_Buffer *) data)->F_address, strideInBytes / 4, count, (float *) ((jarray) matrix)->data, offsetInBytes / 4);
 }
 
-void com::badlogic::gdx::utils::BufferUtils::SM_transformV3M4Jni_Array1_float_Array1_float(const jarray &data, jint strideInBytes, jint count, const jarray &matrix, jint offsetInBytes) {
-    transform<3, 4>((float *) data->data, strideInBytes / 4, count, (float *) matrix->data, offsetInBytes / 4);
+void SM_com_badlogic_gdx_utils_BufferUtils_transformV3M4Jni_Array1_float_int_int_Array1_float_int(jcontext ctx, jobject data, jint strideInBytes, jint count, jobject matrix, jint offsetInBytes) {
+    transform<3, 4>((float *) ((jarray) data)->data, strideInBytes / 4, count, (float *) ((jarray) matrix)->data, offsetInBytes / 4);
 }
 
-void com::badlogic::gdx::utils::BufferUtils::SM_transformV2M4Jni_Array1_float(const shared_ptr<Buffer> &data, jint strideInBytes, jint count, const jarray &matrix, jint offsetInBytes) {
-    transform<2, 4>((float *) data->F_address, strideInBytes / 4, count, (float *) matrix->data, offsetInBytes / 4);
+void SM_com_badlogic_gdx_utils_BufferUtils_transformV2M4Jni_java_nio_Buffer_int_int_Array1_float_int(jcontext ctx, jobject data, jint strideInBytes, jint count, jobject matrix, jint offsetInBytes) {
+    transform<2, 4>((float *) ((java_nio_Buffer *) data)->F_address, strideInBytes / 4, count, (float *) ((jarray) matrix)->data, offsetInBytes / 4);
 }
 
-void com::badlogic::gdx::utils::BufferUtils::SM_transformV2M4Jni_Array1_float_Array1_float(const jarray &data, jint strideInBytes, jint count, const jarray &matrix, jint offsetInBytes) {
-    transform<2, 4>((float *) data->data, strideInBytes / 4, count, (float *) matrix->data, offsetInBytes / 4);
+void SM_com_badlogic_gdx_utils_BufferUtils_transformV2M4Jni_Array1_float_int_int_Array1_float_int(jcontext ctx, jobject data, jint strideInBytes, jint count, jobject matrix, jint offsetInBytes) {
+    transform<2, 4>((float *) ((jarray) data)->data, strideInBytes / 4, count, (float *) ((jarray) matrix)->data, offsetInBytes / 4);
 }
 
-void com::badlogic::gdx::utils::BufferUtils::SM_transformV3M3Jni_Array1_float(const shared_ptr<Buffer> &data, jint strideInBytes, jint count, const jarray &matrix, jint offsetInBytes) {
-    transform<3, 3>((float *) data->F_address, strideInBytes / 4, count, (float *) matrix->data, offsetInBytes / 4);
+void SM_com_badlogic_gdx_utils_BufferUtils_transformV3M3Jni_java_nio_Buffer_int_int_Array1_float_int(jcontext ctx, jobject data, jint strideInBytes, jint count, jobject matrix, jint offsetInBytes) {
+    transform<3, 3>((float *) ((java_nio_Buffer *) data)->F_address, strideInBytes / 4, count, (float *) ((jarray) matrix)->data, offsetInBytes / 4);
 }
 
-void com::badlogic::gdx::utils::BufferUtils::SM_transformV3M3Jni_Array1_float_Array1_float(const jarray &data, jint strideInBytes, jint count, const jarray &matrix, jint offsetInBytes) {
-    transform<3, 3>((float *) data->data, strideInBytes / 4, count, (float *) matrix->data, offsetInBytes / 4);
+void SM_com_badlogic_gdx_utils_BufferUtils_transformV3M3Jni_Array1_float_int_int_Array1_float_int(jcontext ctx, jobject data, jint strideInBytes, jint count, jobject matrix, jint offsetInBytes) {
+    transform<3, 3>((float *) ((jarray) data)->data, strideInBytes / 4, count, (float *) ((jarray) matrix)->data, offsetInBytes / 4);
 }
 
-void com::badlogic::gdx::utils::BufferUtils::SM_transformV2M3Jni_Array1_float(const shared_ptr<Buffer> &data, jint strideInBytes, jint count, const jarray &matrix, jint offsetInBytes) {
-    transform<2, 3>((float *) data->F_address, strideInBytes / 4, count, (float *) matrix->data, offsetInBytes / 4);
+void SM_com_badlogic_gdx_utils_BufferUtils_transformV2M3Jni_java_nio_Buffer_int_int_Array1_float_int(jcontext ctx, jobject data, jint strideInBytes, jint count, jobject matrix, jint offsetInBytes) {
+    transform<2, 3>((float *) ((java_nio_Buffer *) data)->F_address, strideInBytes / 4, count, (float *) ((jarray) matrix)->data, offsetInBytes / 4);
 }
 
-void com::badlogic::gdx::utils::BufferUtils::SM_transformV2M3Jni_Array1_float_Array1_float(const jarray &data, jint strideInBytes, jint count, const jarray &matrix, jint offsetInBytes) {
-    transform<2, 3>((float *) data->data, strideInBytes / 4, count, (float *) matrix->data, offsetInBytes / 4);
+void SM_com_badlogic_gdx_utils_BufferUtils_transformV2M3Jni_Array1_float_int_int_Array1_float_int(jcontext ctx, jobject data, jint strideInBytes, jint count, jobject matrix, jint offsetInBytes) {
+    transform<2, 3>((float *) ((jarray) data)->data, strideInBytes / 4, count, (float *) ((jarray) matrix)->data, offsetInBytes / 4);
 }
 
-jlong com::badlogic::gdx::utils::BufferUtils::SM_find_R_long(const shared_ptr<Buffer> &vertex, jint vertexOffsetInBytes, jint strideInBytes, const shared_ptr<Buffer> &vertices, jint verticesOffsetInBytes, jint numVertices) {
-    return find(&((float *) vertex->F_address)[vertexOffsetInBytes / 4], strideInBytes / 4, &((float *) vertices->F_address)[verticesOffsetInBytes / 4], numVertices);
+jlong SM_com_badlogic_gdx_utils_BufferUtils_find_java_nio_Buffer_int_int_java_nio_Buffer_int_int_R_long(jcontext ctx, jobject vertex, jint vertexOffsetInBytes, jint strideInBytes, jobject vertices, jint verticesOffsetInBytes, jint numVertices) {
+    return find(&((float *) ((java_nio_Buffer *) vertex)->F_address)[vertexOffsetInBytes / 4], strideInBytes / 4, &((float *) ((java_nio_Buffer *) vertices)->F_address)[verticesOffsetInBytes / 4], numVertices);
 }
 
-jlong com::badlogic::gdx::utils::BufferUtils::SM_find_Array1_float_R_long(const jarray &vertex, jint vertexOffsetInBytes, jint strideInBytes, const shared_ptr<Buffer> &vertices, jint verticesOffsetInBytes, jint numVertices) {
-    return find(&((float *) vertex->data)[vertexOffsetInBytes / 4], strideInBytes / 4, &((float *) vertices->F_address)[verticesOffsetInBytes / 4], numVertices);
+jlong SM_com_badlogic_gdx_utils_BufferUtils_find_Array1_float_int_int_java_nio_Buffer_int_int_R_long(jcontext ctx, jobject vertex, jint vertexOffsetInBytes, jint strideInBytes, jobject vertices, jint verticesOffsetInBytes, jint numVertices) {
+    return find(&((float *) ((jarray) vertex)->data)[vertexOffsetInBytes / 4], strideInBytes / 4, &((float *) ((java_nio_Buffer *) vertices)->F_address)[verticesOffsetInBytes / 4], numVertices);
 }
 
-jlong com::badlogic::gdx::utils::BufferUtils::SM_find_Array1_float_R_long(const shared_ptr<Buffer> &vertex, jint vertexOffsetInBytes, jint strideInBytes, const jarray &vertices, jint verticesOffsetInBytes, jint numVertices) {
-    return find(&((float *) vertex->F_address)[vertexOffsetInBytes / 4], strideInBytes / 4, &((float *) vertices->data)[verticesOffsetInBytes / 4], numVertices);
+jlong SM_com_badlogic_gdx_utils_BufferUtils_find_java_nio_Buffer_int_int_Array1_float_int_int_R_long(jcontext ctx, jobject vertex, jint vertexOffsetInBytes, jint strideInBytes, jobject vertices, jint verticesOffsetInBytes, jint numVertices) {
+    return find(&((float *) ((java_nio_Buffer *) vertex)->F_address)[vertexOffsetInBytes / 4], strideInBytes / 4, &((float *) ((jarray) vertices)->data)[verticesOffsetInBytes / 4], numVertices);
 }
 
-jlong com::badlogic::gdx::utils::BufferUtils::SM_find_Array1_float_Array1_float_R_long(const jarray &vertex, jint vertexOffsetInBytes, jint strideInBytes, const jarray &vertices, jint verticesOffsetInBytes, jint numVertices) {
-    return find(&((float *) vertex->data)[vertexOffsetInBytes / 4], strideInBytes / 4, &((float *) vertices->data)[verticesOffsetInBytes / 4], numVertices);
+jlong SM_com_badlogic_gdx_utils_BufferUtils_find_Array1_float_int_int_Array1_float_int_int_R_long(jcontext ctx, jobject vertex, jint vertexOffsetInBytes, jint strideInBytes, jobject vertices, jint verticesOffsetInBytes, jint numVertices) {
+    return find(&((float *) ((jarray) vertex)->data)[vertexOffsetInBytes / 4], strideInBytes / 4, &((float *) ((jarray) vertices)->data)[verticesOffsetInBytes / 4], numVertices);
 }
 
-jlong com::badlogic::gdx::utils::BufferUtils::SM_find_R_long(const shared_ptr<Buffer> &vertex, jint vertexOffsetInBytes, jint strideInBytes, const shared_ptr<Buffer> &vertices, jint verticesOffsetInBytes, jint numVertices, jfloat epsilon) {
-    return find(&((float *) vertex->F_address)[vertexOffsetInBytes / 4], strideInBytes / 4, &((float *) vertices->F_address)[verticesOffsetInBytes / 4], numVertices, epsilon);
+jlong SM_com_badlogic_gdx_utils_BufferUtils_find_java_nio_Buffer_int_int_java_nio_Buffer_int_int_float_R_long(jcontext ctx, jobject vertex, jint vertexOffsetInBytes, jint strideInBytes, jobject vertices, jint verticesOffsetInBytes, jint numVertices, jfloat epsilon) {
+    return find(&((float *) ((java_nio_Buffer *) vertex)->F_address)[vertexOffsetInBytes / 4], strideInBytes / 4, &((float *) ((java_nio_Buffer *) vertices)->F_address)[verticesOffsetInBytes / 4], numVertices, epsilon);
 }
 
-jlong com::badlogic::gdx::utils::BufferUtils::SM_find_Array1_float_R_long(const jarray &vertex, jint vertexOffsetInBytes, jint strideInBytes, const shared_ptr<Buffer> &vertices, jint verticesOffsetInBytes, jint numVertices, jfloat epsilon) {
-    return find(&((float *) vertex->data)[vertexOffsetInBytes / 4], strideInBytes / 4, &((float *) vertices->F_address)[verticesOffsetInBytes / 4], numVertices, epsilon);
+jlong SM_com_badlogic_gdx_utils_BufferUtils_find_Array1_float_int_int_java_nio_Buffer_int_int_float_R_long(jcontext ctx, jobject vertex, jint vertexOffsetInBytes, jint strideInBytes, jobject vertices, jint verticesOffsetInBytes, jint numVertices, jfloat epsilon) {
+    return find(&((float *) ((jarray) vertex)->data)[vertexOffsetInBytes / 4], strideInBytes / 4, &((float *) ((java_nio_Buffer *) vertices)->F_address)[verticesOffsetInBytes / 4], numVertices, epsilon);
 }
 
-jlong com::badlogic::gdx::utils::BufferUtils::SM_find_Array1_float_R_long(const shared_ptr<Buffer> &vertex, jint vertexOffsetInBytes, jint strideInBytes, const jarray &vertices, jint verticesOffsetInBytes, jint numVertices, jfloat epsilon) {
-    return find(&((float *) vertex->F_address)[vertexOffsetInBytes / 4], strideInBytes / 4, &((float *) vertices->data)[verticesOffsetInBytes / 4], numVertices, epsilon);
+jlong SM_com_badlogic_gdx_utils_BufferUtils_find_java_nio_Buffer_int_int_Array1_float_int_int_float_R_long(jcontext ctx, jobject vertex, jint vertexOffsetInBytes, jint strideInBytes, jobject vertices, jint verticesOffsetInBytes, jint numVertices, jfloat epsilon) {
+    return find(&((float *) ((java_nio_Buffer *) vertex)->F_address)[vertexOffsetInBytes / 4], strideInBytes / 4, &((float *) ((jarray) vertices)->data)[verticesOffsetInBytes / 4], numVertices, epsilon);
 }
 
-jlong com::badlogic::gdx::utils::BufferUtils::SM_find_Array1_float_Array1_float_R_long(const jarray &vertex, jint vertexOffsetInBytes, jint strideInBytes, const jarray &vertices, jint verticesOffsetInBytes, jint numVertices, jfloat epsilon) {
-    return find(&((float *) vertex->data)[vertexOffsetInBytes / 4], strideInBytes / 4, &((float *) vertices->data)[verticesOffsetInBytes / 4], numVertices, epsilon);
+jlong SM_com_badlogic_gdx_utils_BufferUtils_find_Array1_float_int_int_Array1_float_int_int_float_R_long(jcontext ctx, jobject vertex, jint vertexOffsetInBytes, jint strideInBytes, jobject vertices, jint verticesOffsetInBytes, jint numVertices, jfloat epsilon) {
+    return find(&((float *) ((jarray) vertex)->data)[vertexOffsetInBytes / 4], strideInBytes / 4, &((float *) ((jarray) vertices)->data)[verticesOffsetInBytes / 4], numVertices, epsilon);
 }
 
-void com::badlogic::gdx::math::Matrix4::SM_mulVec_Array1_float_Array1_float(const jarray &mat, const jarray &vecs, jint offset, jint numVecs, jint stride) {
-    auto vecPtr = (float *) vecs->data + offset;
+void SM_com_badlogic_gdx_math_Matrix4_mulVec_Array1_float_Array1_float_int_int_int(jcontext ctx, jobject mat, jobject vecs, jint offset, jint numVecs, jint stride) {
+    auto vecPtr = (float *) ((jarray) vecs)->data + offset;
     for (int i = 0; i < numVecs; i++) {
-        matrix4_mulVec((float *) mat->data, vecPtr);
+        matrix4_mulVec((float *) ((jarray) mat)->data, vecPtr);
         vecPtr += stride;
     }
 }
 
-void com::badlogic::gdx::math::Matrix4::SM_prj_Array1_float_Array1_float(const jarray &mat, const jarray &vecs, jint offset, jint numVecs, jint stride) {
-    auto vecPtr = (float *) vecs->data + offset;
+void SM_com_badlogic_gdx_math_Matrix4_prj_Array1_float_Array1_float_int_int_int(jcontext ctx, jobject mat, jobject vecs, jint offset, jint numVecs, jint stride) {
+    auto vecPtr = (float *) ((jarray) vecs)->data + offset;
     for (int i = 0; i < numVecs; i++) {
-        matrix4_proj((float *) mat->data, vecPtr);
+        matrix4_proj((float *) ((jarray) mat)->data, vecPtr);
         vecPtr += stride;
     }
 }
 
-void com::badlogic::gdx::math::Matrix4::SM_rot_Array1_float_Array1_float(const jarray &mat, const jarray &vecs, jint offset, jint numVecs, jint stride) {
-    auto vecPtr = (float *) vecs->data + offset;
+void SM_com_badlogic_gdx_math_Matrix4_rot_Array1_float_Array1_float_int_int_int(jcontext ctx, jobject mat, jobject vecs, jint offset, jint numVecs, jint stride) {
+    auto vecPtr = (float *) ((jarray) vecs)->data + offset;
     for (int i = 0; i < numVecs; i++) {
-        matrix4_rot((float *) mat->data, vecPtr);
+        matrix4_rot((float *) ((jarray) mat)->data, vecPtr);
         vecPtr += stride;
     }
 }
 
-shared_ptr<ByteBuffer> com::badlogic::gdx::graphics::g2d::Gdx2DPixmap::SM_load_Array1_long_Array1_byte_R_java_nio_ByteBuffer(const jarray &nativeData, const jarray &buffer, jint offset, jint len) {
-    auto pixmap = gdx2d_load((unsigned char *) buffer->data + offset, len);
+jobject SM_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_load_Array1_long_Array1_byte_int_int_R_java_nio_ByteBuffer(jcontext ctx, jobject nativeData, jobject buffer, jint offset, jint len) {
+    auto pixmap = gdx2d_load((unsigned char *) ((jarray) buffer)->data + offset, len);
     if (!pixmap)
         return nullptr;
-    auto pixelBuffer = make_shared<java::nio::ByteBuffer>();
-    pixelBuffer->init((jlong) pixmap->pixels, (jint) (pixmap->width * pixmap->height * gdx2d_bytes_per_pixel(pixmap->format)), false);
-    auto nativeDataPtr = (jlong *) nativeData->data;
+    auto pixelBuffer = gcAllocNative(ctx, &class_java_nio_ByteBuffer);
+    init_java_nio_ByteBuffer_long_int_boolean(ctx, pixelBuffer, (jlong) pixmap->pixels, (jint) (pixmap->width * pixmap->height * gdx2d_bytes_per_pixel(pixmap->format)), false);
+    pixelBuffer->gcMark = GC_MARK_START;
+    auto nativeDataPtr = (jlong *) ((jarray) nativeData)->data;
     nativeDataPtr[0] = (jlong) pixmap;
     nativeDataPtr[1] = pixmap->width;
     nativeDataPtr[2] = pixmap->height;
@@ -1231,13 +1219,14 @@ shared_ptr<ByteBuffer> com::badlogic::gdx::graphics::g2d::Gdx2DPixmap::SM_load_A
     return pixelBuffer;
 }
 
-shared_ptr<ByteBuffer> com::badlogic::gdx::graphics::g2d::Gdx2DPixmap::SM_loadByteBuffer_Array1_long_R_java_nio_ByteBuffer(const jarray &nativeData, const shared_ptr<ByteBuffer> &buffer, jint offset, jint len) {
-    auto pixmap = gdx2d_load((unsigned char *) buffer->F_address + offset, len);
+jobject SM_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_loadByteBuffer_Array1_long_java_nio_ByteBuffer_int_int_R_java_nio_ByteBuffer(jcontext ctx, jobject nativeData, jobject buffer, jint offset, jint len) {
+    auto pixmap = gdx2d_load((unsigned char *) ((java_nio_Buffer *) buffer)->F_address + offset, len);
     if (!pixmap)
         return nullptr;
-    auto pixelBuffer = make_shared<java::nio::ByteBuffer>();
-    pixelBuffer->init((jlong) pixmap->pixels, (jint) (pixmap->width * pixmap->height * gdx2d_bytes_per_pixel(pixmap->format)), false);
-    auto nativeDataPtr = (jlong *) nativeData->data;
+    auto pixelBuffer = gcAllocNative(ctx, &class_java_nio_ByteBuffer);
+    init_java_nio_ByteBuffer_long_int_boolean(ctx, pixelBuffer, (jlong) pixmap->pixels, (jint) (pixmap->width * pixmap->height * gdx2d_bytes_per_pixel(pixmap->format)), false);
+    pixelBuffer->gcMark = GC_MARK_START;
+    auto nativeDataPtr = (jlong *) ((jarray) nativeData)->data;
     nativeDataPtr[0] = (jlong) pixmap;
     nativeDataPtr[1] = pixmap->width;
     nativeDataPtr[2] = pixmap->height;
@@ -1245,13 +1234,14 @@ shared_ptr<ByteBuffer> com::badlogic::gdx::graphics::g2d::Gdx2DPixmap::SM_loadBy
     return pixelBuffer;
 }
 
-shared_ptr<ByteBuffer> com::badlogic::gdx::graphics::g2d::Gdx2DPixmap::SM_newPixmap_Array1_long_R_java_nio_ByteBuffer(const jarray &nativeData, jint width, jint height, jint format) {
+jobject SM_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_newPixmap_Array1_long_int_int_int_R_java_nio_ByteBuffer(jcontext ctx, jobject nativeData, jint width, jint height, jint format) {
     auto pixmap = gdx2d_new(width, height, format);
     if (!pixmap)
         return nullptr;
-    auto pixelBuffer = make_shared<java::nio::ByteBuffer>();
-    pixelBuffer->init((jlong) pixmap->pixels, (jint) (pixmap->width * pixmap->height * gdx2d_bytes_per_pixel(pixmap->format)), false);
-    auto nativeDataPtr = (jlong *) nativeData->data;
+    auto pixelBuffer = gcAllocNative(ctx, &class_java_nio_ByteBuffer);
+    init_java_nio_ByteBuffer_long_int_boolean(ctx, pixelBuffer, (jlong) pixmap->pixels, (jint) (pixmap->width * pixmap->height * gdx2d_bytes_per_pixel(pixmap->format)), false);
+    pixelBuffer->gcMark = GC_MARK_START;
+    auto nativeDataPtr = (jlong *) ((jarray) nativeData)->data;
     nativeDataPtr[0] = (jlong) pixmap;
     nativeDataPtr[1] = pixmap->width;
     nativeDataPtr[2] = pixmap->height;
@@ -1259,106 +1249,108 @@ shared_ptr<ByteBuffer> com::badlogic::gdx::graphics::g2d::Gdx2DPixmap::SM_newPix
     return pixelBuffer;
 }
 
-void com::badlogic::gdx::graphics::g2d::Gdx2DPixmap::SM_free(jlong pixmap) {
+void SM_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_free_long(jcontext ctx, jlong pixmap) {
     gdx2d_free((gdx2d_pixmap *) pixmap);
 }
 
-void com::badlogic::gdx::graphics::g2d::Gdx2DPixmap::SM_clear(jlong pixmap, jint color) {
+void SM_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_clear_long_int(jcontext ctx, jlong pixmap, jint color) {
     gdx2d_clear((gdx2d_pixmap *) pixmap, color);
 }
 
-void com::badlogic::gdx::graphics::g2d::Gdx2DPixmap::SM_setPixel(jlong pixmap, jint x, jint y, jint color) {
+void SM_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_setPixel_long_int_int_int(jcontext ctx, jlong pixmap, jint x, jint y, jint color) {
     gdx2d_set_pixel((gdx2d_pixmap *) pixmap, x, y, color);
 }
 
-jint com::badlogic::gdx::graphics::g2d::Gdx2DPixmap::SM_getPixel_R_int(jlong pixmap, jint x, jint y) {
+jint SM_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_getPixel_long_int_int_R_int(jcontext ctx, jlong pixmap, jint x, jint y) {
     return (jint) gdx2d_get_pixel((gdx2d_pixmap *) pixmap, x, y);
 }
 
-void com::badlogic::gdx::graphics::g2d::Gdx2DPixmap::SM_drawLine(jlong pixmap, jint x, jint y, jint x2, jint y2, jint color) {
+void SM_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_drawLine_long_int_int_int_int_int(jcontext ctx, jlong pixmap, jint x, jint y, jint x2, jint y2, jint color) {
     gdx2d_draw_line((gdx2d_pixmap *) pixmap, x, y, x2, y2, color);
 }
 
-void com::badlogic::gdx::graphics::g2d::Gdx2DPixmap::SM_drawRect(jlong pixmap, jint x, jint y, jint width, jint height, jint color) {
+void SM_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_drawRect_long_int_int_int_int_int(jcontext ctx, jlong pixmap, jint x, jint y, jint width, jint height, jint color) {
     gdx2d_draw_rect((gdx2d_pixmap *) pixmap, x, y, width, height, color);
 }
 
-void com::badlogic::gdx::graphics::g2d::Gdx2DPixmap::SM_drawCircle(jlong pixmap, jint x, jint y, jint radius, jint color) {
+void SM_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_drawCircle_long_int_int_int_int(jcontext ctx, jlong pixmap, jint x, jint y, jint radius, jint color) {
     gdx2d_draw_circle((gdx2d_pixmap *) pixmap, x, y, radius, color);
 }
 
-void com::badlogic::gdx::graphics::g2d::Gdx2DPixmap::SM_fillRect(jlong pixmap, jint x, jint y, jint width, jint height, jint color) {
+void SM_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_fillRect_long_int_int_int_int_int(jcontext ctx, jlong pixmap, jint x, jint y, jint width, jint height, jint color) {
     gdx2d_fill_rect((gdx2d_pixmap *) pixmap, x, y, width, height, color);
 }
 
-void com::badlogic::gdx::graphics::g2d::Gdx2DPixmap::SM_fillCircle(jlong pixmap, jint x, jint y, jint radius, jint color) {
+void SM_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_fillCircle_long_int_int_int_int(jcontext ctx, jlong pixmap, jint x, jint y, jint radius, jint color) {
     gdx2d_fill_circle((gdx2d_pixmap *) pixmap, x, y, radius, color);
 }
 
-void com::badlogic::gdx::graphics::g2d::Gdx2DPixmap::SM_fillTriangle(jlong pixmap, jint x1, jint y1, jint x2, jint y2, jint x3, jint y3, jint color) {
+void SM_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_fillTriangle_long_int_int_int_int_int_int_int(jcontext ctx, jlong pixmap, jint x1, jint y1, jint x2, jint y2, jint x3, jint y3, jint color) {
     gdx2d_fill_triangle((gdx2d_pixmap *) pixmap, x1, y1, x2, y2, x3, y3, color);
 }
 
-void com::badlogic::gdx::graphics::g2d::Gdx2DPixmap::SM_drawPixmap(jlong src, jlong dst, jint srcX, jint srcY, jint srcWidth, jint srcHeight, jint dstX, jint dstY, jint dstWidth, jint dstHeight) {
+void SM_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_drawPixmap_long_long_int_int_int_int_int_int_int_int(jcontext ctx, jlong src, jlong dst, jint srcX, jint srcY, jint srcWidth, jint srcHeight, jint dstX, jint dstY, jint dstWidth, jint dstHeight) {
     gdx2d_draw_pixmap((gdx2d_pixmap *) src, (gdx2d_pixmap *) dst, srcX, srcY, srcWidth, srcHeight, dstX, dstY, dstWidth, dstHeight);
 }
 
-void com::badlogic::gdx::graphics::g2d::Gdx2DPixmap::SM_setBlend(jlong src, jint blend) {
+void SM_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_setBlend_long_int(jcontext ctx, jlong src, jint blend) {
     gdx2d_set_blend((gdx2d_pixmap *) src, blend);
 }
 
-void com::badlogic::gdx::graphics::g2d::Gdx2DPixmap::SM_setScale(jlong src, jint scale) {
+void SM_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_setScale_long_int(jcontext ctx, jlong src, jint scale) {
     gdx2d_set_scale((gdx2d_pixmap *) src, scale);
 }
 
-jstring com::badlogic::gdx::graphics::g2d::Gdx2DPixmap::SM_getFailureReason_R_java_lang_String() {
-    return vm::createString(gdx2d_get_failure_reason());
+jobject SM_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_getFailureReason_R_java_lang_String(jcontext ctx) {
+    return (jobject) stringFromNative(ctx, gdx2d_get_failure_reason());
 }
 
-jint com::badlogic::gdx::graphics::glutils::ETC1::SM_getCompressedDataSize_R_int(jint width, jint height) {
+jint SM_com_badlogic_gdx_graphics_glutils_ETC1_getCompressedDataSize_int_int_R_int(jcontext ctx, jint width, jint height) {
     return (jint) etc1_get_encoded_data_size(width, height);
 }
 
-void com::badlogic::gdx::graphics::glutils::ETC1::SM_formatHeader(const shared_ptr<ByteBuffer> &header, jint offset, jint width, jint height) {
-    etc1_pkm_format_header((etc1_byte *) header->F_address + offset, width, height);
+void SM_com_badlogic_gdx_graphics_glutils_ETC1_formatHeader_java_nio_ByteBuffer_int_int_int(jcontext ctx, jobject header, jint offset, jint width, jint height) {
+    etc1_pkm_format_header((etc1_byte *) ((java_nio_Buffer *) header)->F_address + offset, width, height);
 }
 
-jint com::badlogic::gdx::graphics::glutils::ETC1::SM_getWidthPKM_R_int(const shared_ptr<ByteBuffer> &header, jint offset) {
-    return (jint) etc1_pkm_get_width((etc1_byte *) header->F_address + offset);
+jint SM_com_badlogic_gdx_graphics_glutils_ETC1_getWidthPKM_java_nio_ByteBuffer_int_R_int(jcontext ctx, jobject header, jint offset) {
+    return (jint) etc1_pkm_get_width((etc1_byte *) ((java_nio_Buffer *) header)->F_address + offset);
 }
 
-jint com::badlogic::gdx::graphics::glutils::ETC1::SM_getHeightPKM_R_int(const shared_ptr<ByteBuffer> &header, jint offset) {
-    return (jint) etc1_pkm_get_height((etc1_byte *) header->F_address + offset);
+jint SM_com_badlogic_gdx_graphics_glutils_ETC1_getHeightPKM_java_nio_ByteBuffer_int_R_int(jcontext ctx, jobject header, jint offset) {
+    return (jint) etc1_pkm_get_height((etc1_byte *) ((java_nio_Buffer *) header)->F_address + offset);
 }
 
-jbool com::badlogic::gdx::graphics::glutils::ETC1::SM_isValidPKM_R_boolean(const shared_ptr<ByteBuffer> &header, jint offset) {
-    return etc1_pkm_is_valid((etc1_byte *) header->F_address + offset);
+jbool SM_com_badlogic_gdx_graphics_glutils_ETC1_isValidPKM_java_nio_ByteBuffer_int_R_boolean(jcontext ctx, jobject header, jint offset) {
+    return etc1_pkm_is_valid((etc1_byte *) ((java_nio_Buffer *) header)->F_address + offset);
 }
 
-void com::badlogic::gdx::graphics::glutils::ETC1::SM_decodeImage(const shared_ptr<ByteBuffer> &compressedData, jint offset, const shared_ptr<ByteBuffer> &decodedData, jint offsetDec, jint width, jint height, jint pixelSize) {
-    etc1_decode_image((etc1_byte *) compressedData->F_address + offset, (etc1_byte *) decodedData->F_address + offsetDec, width, height, pixelSize, width * pixelSize);
+void SM_com_badlogic_gdx_graphics_glutils_ETC1_decodeImage_java_nio_ByteBuffer_int_java_nio_ByteBuffer_int_int_int_int(jcontext ctx, jobject compressedData, jint offset, jobject decodedData, jint offsetDec, jint width, jint height, jint pixelSize) {
+    etc1_decode_image((etc1_byte *) ((java_nio_Buffer *) compressedData)->F_address + offset, (etc1_byte *) ((java_nio_Buffer *) decodedData)->F_address + offsetDec, width, height, pixelSize, width * pixelSize);
 }
 
-shared_ptr<ByteBuffer> com::badlogic::gdx::graphics::glutils::ETC1::SM_encodeImage_R_java_nio_ByteBuffer(const shared_ptr<ByteBuffer> &imageData, jint offset, jint width, jint height, jint pixelSize) {
+jobject SM_com_badlogic_gdx_graphics_glutils_ETC1_encodeImage_java_nio_ByteBuffer_int_int_int_int_R_java_nio_ByteBuffer(jcontext ctx, jobject imageData, jint offset, jint width, jint height, jint pixelSize) {
     auto compressedSize = etc1_get_encoded_data_size(width, height);
     auto compressedData = (etc1_byte *) malloc(compressedSize);
-    etc1_encode_image((etc1_byte *) imageData->F_address + offset, width, height, pixelSize, width * pixelSize, compressedData);
-    auto pixelBuffer = make_shared<java::nio::ByteBuffer>();
-    pixelBuffer->init((jlong) compressedData, (jint) compressedSize);
+    etc1_encode_image((etc1_byte *) ((java_nio_Buffer *) imageData)->F_address + offset, width, height, pixelSize, width * pixelSize, compressedData);
+    auto pixelBuffer = gcAllocNative(ctx, &class_java_nio_ByteBuffer);
+    init_java_nio_ByteBuffer_long_int(ctx, pixelBuffer, (jlong) compressedData, (jint) compressedSize);
+    pixelBuffer->gcMark = GC_MARK_START;
     return pixelBuffer;
 }
 
-shared_ptr<ByteBuffer> com::badlogic::gdx::graphics::glutils::ETC1::SM_encodeImagePKM_R_java_nio_ByteBuffer(const shared_ptr<ByteBuffer> &imageData, jint offset, jint width, jint height, jint pixelSize) {
+jobject SM_com_badlogic_gdx_graphics_glutils_ETC1_encodeImagePKM_java_nio_ByteBuffer_int_int_int_int_R_java_nio_ByteBuffer(jcontext ctx, jobject imageData, jint offset, jint width, jint height, jint pixelSize) {
     auto compressedSize = etc1_get_encoded_data_size(width, height);
     auto compressed = (etc1_byte *) malloc(compressedSize + ETC_PKM_HEADER_SIZE);
     etc1_pkm_format_header(compressed, width, height);
-    etc1_encode_image((etc1_byte *) imageData->F_address + offset, width, height, pixelSize, width * pixelSize, compressed + ETC_PKM_HEADER_SIZE);
-    auto pixelBuffer = make_shared<java::nio::ByteBuffer>();
-    pixelBuffer->init((jlong) compressed, (jint) compressedSize);
+    etc1_encode_image((etc1_byte *) ((java_nio_Buffer *) imageData)->F_address + offset, width, height, pixelSize, width * pixelSize, compressed + ETC_PKM_HEADER_SIZE);
+    auto pixelBuffer = gcAllocNative(ctx, &class_java_nio_ByteBuffer);
+    init_java_nio_ByteBuffer_long_int(ctx, pixelBuffer, (jlong) compressed, (jint) compressedSize);
+    pixelBuffer->gcMark = GC_MARK_START;
     return pixelBuffer;
 }
 
-jint SwitchGraphics::M_getWidth_R_int() {
+jint M_com_thelogicmaster_switchgdx_SwitchGraphics_getWidth_R_int(jcontext ctx, jobject self) {
     int width;
 #ifdef __SWITCH__
 //    eglQuerySurface(display, surface, EGL_WIDTH, &width);
@@ -1369,7 +1361,7 @@ jint SwitchGraphics::M_getWidth_R_int() {
     return width;
 }
 
-jint SwitchGraphics::M_getHeight_R_int() {
+jint M_com_thelogicmaster_switchgdx_SwitchGraphics_getHeight_R_int(jcontext ctx, jobject self) {
     int height;
 #ifdef __SWITCH__
 //    eglQuerySurface(display, surface, EGL_HEIGHT, &height);
@@ -1380,7 +1372,7 @@ jint SwitchGraphics::M_getHeight_R_int() {
     return height;
 }
 
-jint SwitchControllerManager::SM_getButtons_R_int(jint controller) {
+jint SM_com_thelogicmaster_switchgdx_SwitchControllerManager_getButtons_int_R_int(jcontext ctx, jint controller) {
 #ifdef __SWITCH__
     auto &pad = controller == -1 ? combinedPad : pads[controller];
     return remapPadButtons(padGetButtons(&pad), padGetStyleSet(&pad));
@@ -1389,8 +1381,8 @@ jint SwitchControllerManager::SM_getButtons_R_int(jint controller) {
 #endif
 }
 
-void SwitchControllerManager::SM_getAxes_Array1_float(jint controller, const jarray &axes) {
-    auto array = (float *) axes->data;
+void SM_com_thelogicmaster_switchgdx_SwitchControllerManager_getAxes_int_Array1_float(jcontext ctx, jint controller, jobject axes) {
+    auto array = (float *) ((jarray) axes)->data;
 #ifdef __SWITCH__
     const auto &pad = controller == -1 ? combinedPad : pads[controller];
     auto stickLeft = padGetStickPos(&pad, 0);
@@ -1408,7 +1400,7 @@ void SwitchControllerManager::SM_getAxes_Array1_float(jint controller, const jar
 #endif
 }
 
-jbool SwitchControllerManager::SM_isConnected_R_boolean(jint controller) {
+jbool SM_com_thelogicmaster_switchgdx_SwitchControllerManager_isConnected_int_R_boolean(jcontext ctx, jint controller) {
 #ifdef __SWITCH__
     return pads[controller].active_handheld or pads[controller].active_id_mask;
 #else
@@ -1416,7 +1408,7 @@ jbool SwitchControllerManager::SM_isConnected_R_boolean(jint controller) {
 #endif
 }
 
-void SwitchControllerManager::SM_remapControllers(jint min, jint max, jbool dualJoy, jbool singleMode) {
+void SM_com_thelogicmaster_switchgdx_SwitchControllerManager_remapControllers_int_int_boolean_boolean(jcontext ctx, jint min, jint max, jbool dualJoy, jbool singleMode) {
 #ifdef __SWITCH__
     HidLaControllerSupportArg arg;
     hidLaCreateControllerSupportArg(&arg);
@@ -1428,11 +1420,12 @@ void SwitchControllerManager::SM_remapControllers(jint min, jint max, jbool dual
 #endif
 }
 
-void SwitchInput::SM_getTouchData_Array1_int(const jarray &touchData) {
-    memcpy((void *) touchData->data, touches, sizeof(touches));
+void SM_com_thelogicmaster_switchgdx_SwitchInput_getTouchData_Array1_int(jcontext ctx, jobject touchData) {
+    memcpy((void *) ((jarray) touchData)->data, touches, sizeof(touches));
 }
 
-void SwitchInput::M_getTextInput(const shared_ptr<Input$TextInputListener> &listener, const jstring &title, const jstring &text, const jstring &hint, const shared_ptr<Input$OnscreenKeyboardType> &type) {
+void M_com_thelogicmaster_switchgdx_SwitchInput_getTextInput_com_badlogic_gdx_Input$TextInputListener_java_lang_String_java_lang_String_java_lang_String_com_badlogic_gdx_Input$OnscreenKeyboardType
+        (jcontext ctx, jobject self, jobject listener, jobject title, jobject text, jobject hint, jobject type) {
 #ifdef __SWITCH__
     Result rc;
     SwkbdConfig kbd;
@@ -1453,677 +1446,682 @@ void SwitchInput::M_getTextInput(const shared_ptr<Input$TextInputListener> &list
 #elif defined(__WINRT__)
     goto failed;
 #else
-    auto input = tinyfd_inputBox(vm::getNativeString(title), vm::getNativeString(text), "");
+    auto input = tinyfd_inputBox(stringToNative(ctx, (jstring) title), stringToNative(ctx, (jstring) text), "");
     if (!input)
         goto failed;
-    listener->M_input(vm::createString(input));
-    return;
+    {
+        auto textObj = (jobject) stringFromNative(ctx, input);
+        textObj->gcMark = GC_MARK_NATIVE; // Todo: Should really just use a stack frame for parameters being passed around, this is error prone and leaky
+        invokeInterface<func_com_badlogic_gdx_Input$TextInputListener_input_java_lang_String, &class_com_badlogic_gdx_Input$TextInputListener, INDEX_com_badlogic_gdx_Input$TextInputListener_input_java_lang_String>(ctx, listener, textObj);
+        textObj->gcMark = GC_MARK_START;
+        return;
+    }
 #endif
     failed:
-    listener->M_canceled();
+    invokeInterface<func_com_badlogic_gdx_Input$TextInputListener_canceled, &class_com_badlogic_gdx_Input$TextInputListener, INDEX_com_badlogic_gdx_Input$TextInputListener_canceled>(ctx, listener);
 }
 
-void SwitchGL::M_glActiveTexture(jint texture) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glActiveTexture_int(jcontext ctx, jobject self, jint texture) {
     glActiveTexture(texture);
 }
 
-void SwitchGL::M_glBindTexture(jint target, jint texture) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glBindTexture_int_int(jcontext ctx, jobject self, jint target, jint texture) {
     glBindTexture(target, texture);
 }
 
-void SwitchGL::M_glBlendFunc(jint sfactor, jint dfactor) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glBlendFunc_int_int(jcontext ctx, jobject self, jint sfactor, jint dfactor) {
     glBlendFunc(sfactor, dfactor);
 }
 
-void SwitchGL::M_glClear(jint mask) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glClear_int(jcontext ctx, jobject self, jint mask) {
     glClear(mask);
 }
 
-void SwitchGL::M_glClearColor(jfloat red, jfloat green, jfloat blue, jfloat alpha) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glClearColor_float_float_float_float(jcontext ctx, jobject self, jfloat red, jfloat green, jfloat blue, jfloat alpha) {
     glClearColor(red, green, blue, alpha);
 }
 
-void SwitchGL::M_glClearDepthf(jfloat depth) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glClearDepthf_float(jcontext ctx, jobject self, jfloat depth) {
     glClearDepthf(depth);
 }
 
-void SwitchGL::M_glClearStencil(jint s) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glClearStencil_int(jcontext ctx, jobject self, jint s) {
     glClearStencil(s);
 }
 
-void SwitchGL::M_glColorMask(jbool red, jbool green, jbool blue, jbool alpha) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glColorMask_boolean_boolean_boolean_boolean(jcontext ctx, jobject self, jbool red, jbool green, jbool blue, jbool alpha) {
     glColorMask(red, green, blue, alpha);
 }
 
-void SwitchGL::M_glCompressedTexImage2D(jint target, jint level, jint internalformat, jint width, jint height, jint border, jint imageSize, const shared_ptr<Buffer> &data) {
-    glCompressedTexImage2D(target, level, internalformat, width, height, border, imageSize, (void *) getBufferAddress(data));
+void M_com_thelogicmaster_switchgdx_SwitchGL_glCompressedTexImage2D_int_int_int_int_int_int_int_java_nio_Buffer(jcontext ctx, jobject self, jint target, jint level, jint internalformat, jint width, jint height, jint border, jint imageSize, jobject data) {
+    glCompressedTexImage2D(target, level, internalformat, width, height, border, imageSize, (void *) getBufferAddress(ctx, (java_nio_Buffer *) data));
 }
 
-void SwitchGL::M_glCompressedTexSubImage2D(jint target, jint level, jint xoffset, jint yoffset, jint width, jint height, jint format, jint imageSize, const shared_ptr<Buffer> &data) {
-    glCompressedTexSubImage2D(target, level, xoffset, yoffset, width, height, format, imageSize, (void *) getBufferAddress(data));
+void M_com_thelogicmaster_switchgdx_SwitchGL_glCompressedTexSubImage2D_int_int_int_int_int_int_int_int_java_nio_Buffer(jcontext ctx, jobject self, jint target, jint level, jint xoffset, jint yoffset, jint width, jint height, jint format, jint imageSize, jobject data) {
+    glCompressedTexSubImage2D(target, level, xoffset, yoffset, width, height, format, imageSize, (void *) getBufferAddress(ctx, (java_nio_Buffer *) data));
 }
 
-void SwitchGL::M_glCopyTexImage2D(jint target, jint level, jint internalformat, jint x, jint y, jint width, jint height, jint border) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glCopyTexImage2D_int_int_int_int_int_int_int_int(jcontext ctx, jobject self, jint target, jint level, jint internalformat, jint x, jint y, jint width, jint height, jint border) {
     glCopyTexImage2D(target, level, internalformat, x, y, width, height, border);
 }
 
-void SwitchGL::M_glCopyTexSubImage2D(jint target, jint level, jint xoffset, jint yoffset, jint x, jint y, jint width, jint height) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glCopyTexSubImage2D_int_int_int_int_int_int_int_int(jcontext ctx, jobject self, jint target, jint level, jint xoffset, jint yoffset, jint x, jint y, jint width, jint height) {
     glCopyTexSubImage2D(target, level, xoffset, yoffset, x, y, width, height);
 }
 
-void SwitchGL::M_glCullFace(jint mode) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glCullFace_int(jcontext ctx, jobject self, jint mode) {
     glCullFace(mode);
 }
 
-void SwitchGL::M_glDeleteTextures(jint n, const shared_ptr<IntBuffer> &textures) {
-    glDeleteTextures(n, (GLuint *) getBufferAddress(textures));
+void M_com_thelogicmaster_switchgdx_SwitchGL_glDeleteTextures_int_java_nio_IntBuffer(jcontext ctx, jobject self, jint n, jobject textures) {
+    glDeleteTextures(n, (GLuint *) getBufferAddress((java_nio_IntBuffer *) textures));
 }
 
-void SwitchGL::M_glDeleteTexture(jint texture) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glDeleteTexture_int(jcontext ctx, jobject self, jint texture) {
     glDeleteTextures(1, (GLuint *) &texture);
 }
 
-void SwitchGL::M_glDepthFunc(jint func) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glDepthFunc_int(jcontext ctx, jobject self, jint func) {
     glDepthFunc(func);
 }
 
-void SwitchGL::M_glDepthMask(jbool flag) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glDepthMask_boolean(jcontext ctx, jobject self, jbool flag) {
     glDepthMask(flag);
 }
 
-void SwitchGL::M_glDepthRangef(jfloat zNear, jfloat zFar) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glDepthRangef_float_float(jcontext ctx, jobject self, jfloat zNear, jfloat zFar) {
     glDepthRangef(zNear, zFar);
 }
 
-void SwitchGL::M_glDisable(jint cap) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glDisable_int(jcontext ctx, jobject self, jint cap) {
     glDisable(cap);
 }
 
-void SwitchGL::M_glDrawArrays(jint mode, jint first, jint count) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glDrawArrays_int_int_int(jcontext ctx, jobject self, jint mode, jint first, jint count) {
     glDrawArrays(mode, first, count);
 }
 
-void SwitchGL::M_glDrawElements(jint mode, jint count, jint type, const shared_ptr<Buffer> &indices) {
-    glDrawElements(mode, count, type, (void *) getBufferAddress(indices));
+void M_com_thelogicmaster_switchgdx_SwitchGL_glDrawElements_int_int_int_java_nio_Buffer(jcontext ctx, jobject self, jint mode, jint count, jint type, jobject indices) {
+    glDrawElements(mode, count, type, (void *) getBufferAddress(ctx, (java_nio_Buffer *) indices));
 }
 
-void SwitchGL::M_glEnable(jint cap) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glEnable_int(jcontext ctx, jobject self, jint cap) {
     glEnable(cap);
 }
 
-void SwitchGL::M_glFinish() {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glFinish(jcontext ctx, jobject self) {
     glFinish();
 }
 
-void SwitchGL::M_glFlush() {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glFlush(jcontext ctx, jobject self) {
     glFlush();
 }
 
-void SwitchGL::M_glFrontFace(jint mode) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glFrontFace_int(jcontext ctx, jobject self, jint mode) {
     glFrontFace(mode);
 }
 
-void SwitchGL::M_glGenTextures(jint n, const shared_ptr<IntBuffer> &textures) {
-    glGenTextures(n, (GLuint *) getBufferAddress(textures));
+void M_com_thelogicmaster_switchgdx_SwitchGL_glGenTextures_int_java_nio_IntBuffer(jcontext ctx, jobject self, jint n, jobject textures) {
+    glGenTextures(n, (GLuint *) getBufferAddress((java_nio_IntBuffer *) textures));
 }
 
-jint SwitchGL::M_glGenTexture_R_int() {
+jint M_com_thelogicmaster_switchgdx_SwitchGL_glGenTexture_R_int(jcontext ctx, jobject self) {
     GLuint texture;
     glGenTextures(1, &texture);
     return (jint) texture;
 }
 
-jint SwitchGL::M_glGetError_R_int() {
+jint M_com_thelogicmaster_switchgdx_SwitchGL_glGetError_R_int(jcontext ctx, jobject self) {
     return (jint) glGetError();
 }
 
-void SwitchGL::M_glGetIntegerv(jint pname, const shared_ptr<IntBuffer> &params) {
-    glGetIntegerv(pname, (GLint *) getBufferAddress(params));
+void M_com_thelogicmaster_switchgdx_SwitchGL_glGetIntegerv_int_java_nio_IntBuffer(jcontext ctx, jobject self, jint pname, jobject params) {
+    glGetIntegerv(pname, (GLint *) getBufferAddress((java_nio_IntBuffer *) params));
 }
 
-jstring SwitchGL::M_glGetString_R_java_lang_String(jint name) {
-    return vm::createString((char *) glGetString(name));
+jobject M_com_thelogicmaster_switchgdx_SwitchGL_glGetString_int_R_java_lang_String(jcontext ctx, jobject self, jint name) {
+    return (jobject) stringFromNative(ctx, (char *) glGetString(name));
 }
 
-void SwitchGL::M_glHint(jint target, jint mode) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glHint_int_int(jcontext ctx, jobject self, jint target, jint mode) {
     glHint(target, mode);
 }
 
-void SwitchGL::M_glLineWidth(jfloat width) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glLineWidth_float(jcontext ctx, jobject self, jfloat width) {
     glLineWidth(width);
 }
 
-void SwitchGL::M_glPixelStorei(jint pname, jint param) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glPixelStorei_int_int(jcontext ctx, jobject self, jint pname, jint param) {
     glPixelStorei(pname, param);
 }
 
-void SwitchGL::M_glPolygonOffset(jfloat factor, jfloat units) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glPolygonOffset_float_float(jcontext ctx, jobject self, jfloat factor, jfloat units) {
     glPolygonOffset(factor, units);
 }
 
-void SwitchGL::M_glReadPixels(jint x, jint y, jint width, jint height, jint format, jint type, const shared_ptr<Buffer> &pixels) {
-    glReadPixels(x, y, width, height, format, type, (void *) getBufferAddress(pixels));
+void M_com_thelogicmaster_switchgdx_SwitchGL_glReadPixels_int_int_int_int_int_int_java_nio_Buffer(jcontext ctx, jobject self, jint x, jint y, jint width, jint height, jint format, jint type, jobject pixels) {
+    glReadPixels(x, y, width, height, format, type, (void *) getBufferAddress(ctx, (java_nio_Buffer *) pixels));
 }
 
-void SwitchGL::M_glScissor(jint x, jint y, jint width, jint height) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glScissor_int_int_int_int(jcontext ctx, jobject self, jint x, jint y, jint width, jint height) {
     glScissor(x, y, width, height);
 }
 
-void SwitchGL::M_glStencilFunc(jint func, jint ref, jint mask) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glStencilFunc_int_int_int(jcontext ctx, jobject self, jint func, jint ref, jint mask) {
     glStencilFunc(func, ref, mask);
 }
 
-void SwitchGL::M_glStencilMask(jint mask) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glStencilMask_int(jcontext ctx, jobject self, jint mask) {
     glStencilMask(mask);
 }
 
-void SwitchGL::M_glStencilOp(jint fail, jint zfail, jint zpass) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glStencilOp_int_int_int(jcontext ctx, jobject self, jint fail, jint zfail, jint zpass) {
     glStencilOp(fail, zfail, zpass);
 }
 
-void SwitchGL::M_glTexImage2D(jint target, jint level, jint internalformat, jint width, jint height, jint border, jint format, jint type, const shared_ptr<Buffer> &pixels) {
-    glTexImage2D(target, level, internalformat, width, height, border, format, type, (void *) getBufferAddress(pixels));
+void M_com_thelogicmaster_switchgdx_SwitchGL_glTexImage2D_int_int_int_int_int_int_int_int_java_nio_Buffer(jcontext ctx, jobject self, jint target, jint level, jint internalformat, jint width, jint height, jint border, jint format, jint type, jobject pixels) {
+    glTexImage2D(target, level, internalformat, width, height, border, format, type, (void *) getBufferAddress(ctx, (java_nio_Buffer *) pixels));
 }
 
-void SwitchGL::M_glTexParameterf(jint target, jint pname, jfloat param) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glTexParameterf_int_int_float(jcontext ctx, jobject self, jint target, jint pname, jfloat param) {
     glTexParameterf(target, pname, param);
 }
 
-void SwitchGL::M_glTexSubImage2D(jint target, jint level, jint xoffset, jint yoffset, jint width, jint height, jint format, jint type, const shared_ptr<Buffer> &pixels) {
-    glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, type, (void *) getBufferAddress(pixels));
+void M_com_thelogicmaster_switchgdx_SwitchGL_glTexSubImage2D_int_int_int_int_int_int_int_int_java_nio_Buffer(jcontext ctx, jobject self, jint target, jint level, jint xoffset, jint yoffset, jint width, jint height, jint format, jint type, jobject pixels) {
+    glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, type, (void *) getBufferAddress(ctx, (java_nio_Buffer *) pixels));
 }
 
-void SwitchGL::M_glViewport(jint x, jint y, jint width, jint height) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glViewport_int_int_int_int(jcontext ctx, jobject self, jint x, jint y, jint width, jint height) {
     glViewport(x, y, width, height);
 }
 
-void SwitchGL::M_glAttachShader(jint program, jint shader) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glAttachShader_int_int(jcontext ctx, jobject self, jint program, jint shader) {
     glAttachShader(program, shader);
 }
 
-void SwitchGL::M_glBindAttribLocation(jint program, jint index, const jstring &name) {
-    glBindAttribLocation(program, index, vm::getNativeString(name));
+void M_com_thelogicmaster_switchgdx_SwitchGL_glBindAttribLocation_int_int_java_lang_String(jcontext ctx, jobject self, jint program, jint index, jobject name) {
+    glBindAttribLocation(program, index, stringToNative(ctx, (jstring) name));
 }
 
-void SwitchGL::M_glBindBuffer(jint target, jint buffer) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glBindBuffer_int_int(jcontext ctx, jobject self, jint target, jint buffer) {
     glBindBuffer(target, buffer);
 }
 
-void SwitchGL::M_glBindFramebuffer(jint target, jint framebuffer) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glBindFramebuffer_int_int(jcontext ctx, jobject self, jint target, jint framebuffer) {
     glBindFramebuffer(target, framebuffer);
 }
 
-void SwitchGL::M_glBindRenderbuffer(jint target, jint renderbuffer) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glBindRenderbuffer_int_int(jcontext ctx, jobject self, jint target, jint renderbuffer) {
     glBindRenderbuffer(target, renderbuffer);
 }
 
-void SwitchGL::M_glBlendColor(jfloat red, jfloat green, jfloat blue, jfloat alpha) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glBlendColor_float_float_float_float(jcontext ctx, jobject self, jfloat red, jfloat green, jfloat blue, jfloat alpha) {
     glBlendColor(red, green, blue, alpha);
 }
 
-void SwitchGL::M_glBlendEquation(jint mode) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glBlendEquation_int(jcontext ctx, jobject self, jint mode) {
     glBlendEquation(mode);
 }
 
-void SwitchGL::M_glBlendEquationSeparate(jint modeRGB, jint modeAlpha) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glBlendEquationSeparate_int_int(jcontext ctx, jobject self, jint modeRGB, jint modeAlpha) {
     glBlendEquationSeparate(modeRGB, modeAlpha);
 }
 
-void SwitchGL::M_glBlendFuncSeparate(jint srcRGB, jint dstRGB, jint srcAlpha, jint dstAlpha) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glBlendFuncSeparate_int_int_int_int(jcontext ctx, jobject self, jint srcRGB, jint dstRGB, jint srcAlpha, jint dstAlpha) {
     glBlendFuncSeparate(srcRGB, dstRGB, srcAlpha, dstAlpha);
 }
 
-void SwitchGL::M_glBufferData(jint target, jint size, const shared_ptr<Buffer> &buffer, jint usage) {
-    glBufferData(target, size, (void *) getBufferAddress(buffer), usage);
+void M_com_thelogicmaster_switchgdx_SwitchGL_glBufferData_int_int_java_nio_Buffer_int(jcontext ctx, jobject self, jint target, jint size, jobject buffer, jint usage) {
+    glBufferData(target, size, (void *) getBufferAddress(ctx, (java_nio_Buffer *) buffer), usage);
 }
 
-void SwitchGL::M_glBufferSubData(jint target, jint offset, jint size, const shared_ptr<Buffer> &data) {
-    glBufferSubData(target, offset, size, (void *) getBufferAddress(data));
+void M_com_thelogicmaster_switchgdx_SwitchGL_glBufferSubData_int_int_int_java_nio_Buffer(jcontext ctx, jobject self, jint target, jint offset, jint size, jobject data) {
+    glBufferSubData(target, offset, size, (void *) getBufferAddress(ctx, (java_nio_Buffer *) data));
 }
 
-jint SwitchGL::M_glCheckFramebufferStatus_R_int(jint target) {
+jint M_com_thelogicmaster_switchgdx_SwitchGL_glCheckFramebufferStatus_int_R_int(jcontext ctx, jobject self, jint target) {
     return (jint) glCheckFramebufferStatus(target);
 }
 
-void SwitchGL::M_glCompileShader(jint shader) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glCompileShader_int(jcontext ctx, jobject self, jint shader) {
     glCompileShader(shader);
 }
 
-jint SwitchGL::M_glCreateProgram_R_int() {
+jint M_com_thelogicmaster_switchgdx_SwitchGL_glCreateProgram_R_int(jcontext ctx, jobject self) {
     return (int) glCreateProgram();
 }
 
-jint SwitchGL::M_glCreateShader_R_int(jint type) {
+jint M_com_thelogicmaster_switchgdx_SwitchGL_glCreateShader_int_R_int(jcontext ctx, jobject self, jint type) {
     return (int) glCreateShader(type);
 }
 
-void SwitchGL::M_glDeleteBuffer(jint buffer) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glDeleteBuffer_int(jcontext ctx, jobject self, jint buffer) {
     glDeleteBuffers(1, (GLuint *) &buffer);
 }
 
-void SwitchGL::M_glDeleteBuffers(jint n, const shared_ptr<IntBuffer> &buffers) {
-    glDeleteBuffers(n, (GLuint *) getBufferAddress(buffers));
+void M_com_thelogicmaster_switchgdx_SwitchGL_glDeleteBuffers_int_java_nio_IntBuffer(jcontext ctx, jobject self, jint n, jobject buffers) {
+    glDeleteBuffers(n, (GLuint *) getBufferAddress((java_nio_IntBuffer *) buffers));
 }
 
-void SwitchGL::M_glDeleteFramebuffer(jint framebuffer) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glDeleteFramebuffer_int(jcontext ctx, jobject self, jint framebuffer) {
     glDeleteFramebuffers(1, (GLuint *) &framebuffer);
 }
 
-void SwitchGL::M_glDeleteFramebuffers(jint n, const shared_ptr<IntBuffer> &framebuffers) {
-    glDeleteFramebuffers(n, (GLuint *) getBufferAddress(framebuffers));
+void M_com_thelogicmaster_switchgdx_SwitchGL_glDeleteFramebuffers_int_java_nio_IntBuffer(jcontext ctx, jobject self, jint n, jobject framebuffers) {
+    glDeleteFramebuffers(n, (GLuint *) getBufferAddress((java_nio_IntBuffer *) framebuffers));
 }
 
-void SwitchGL::M_glDeleteProgram(jint program) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glDeleteProgram_int(jcontext ctx, jobject self, jint program) {
     glDeleteProgram(program);
 }
 
-void SwitchGL::M_glDeleteRenderbuffer(jint renderbuffer) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glDeleteRenderbuffer_int(jcontext ctx, jobject self, jint renderbuffer) {
     glDeleteRenderbuffers(1, (GLuint *) &renderbuffer);
 }
 
-void SwitchGL::M_glDeleteRenderbuffers(jint n, const shared_ptr<IntBuffer> &renderbuffers) {
-    glDeleteRenderbuffers(n, (GLuint *) getBufferAddress(renderbuffers));
+void M_com_thelogicmaster_switchgdx_SwitchGL_glDeleteRenderbuffers_int_java_nio_IntBuffer(jcontext ctx, jobject self, jint n, jobject renderbuffers) {
+    glDeleteRenderbuffers(n, (GLuint *) getBufferAddress((java_nio_IntBuffer *) renderbuffers));
 }
 
-void SwitchGL::M_glDeleteShader(jint shader) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glDeleteShader_int(jcontext ctx, jobject self, jint shader) {
     glDeleteShader(shader);
 }
 
-void SwitchGL::M_glDetachShader(jint program, jint shader) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glDetachShader_int_int(jcontext ctx, jobject self, jint program, jint shader) {
     glDetachShader(program, shader);
 }
 
-void SwitchGL::M_glDisableVertexAttribArray(jint index) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glDisableVertexAttribArray_int(jcontext ctx, jobject self, jint index) {
     glDisableVertexAttribArray(index);
 }
 
-void SwitchGL::M_glDrawElements(jint mode, jint count, jint type, jint indices) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glDrawElements_int_int_int_int(jcontext ctx, jobject self, jint mode, jint count, jint type, jint indices) {
     glDrawElements(mode, count, type, (void *) (jlong) indices);
 }
 
-void SwitchGL::M_glEnableVertexAttribArray(jint index) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glEnableVertexAttribArray_int(jcontext ctx, jobject self, jint index) {
     glEnableVertexAttribArray(index);
 }
 
-void SwitchGL::M_glFramebufferRenderbuffer(jint target, jint attachment, jint renderbuffertarget, jint renderbuffer) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glFramebufferRenderbuffer_int_int_int_int(jcontext ctx, jobject self, jint target, jint attachment, jint renderbuffertarget, jint renderbuffer) {
     glFramebufferRenderbuffer(target, attachment, renderbuffertarget, renderbuffer);
 }
 
-void SwitchGL::M_glFramebufferTexture2D(jint target, jint attachment, jint textarget, jint texture, jint level) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glFramebufferTexture2D_int_int_int_int_int(jcontext ctx, jobject self, jint target, jint attachment, jint textarget, jint texture, jint level) {
     glFramebufferTexture2D(target, attachment, textarget, texture, level);
 }
 
-jint SwitchGL::M_glGenBuffer_R_int() {
+jint M_com_thelogicmaster_switchgdx_SwitchGL_glGenBuffer_R_int(jcontext ctx, jobject self) {
     GLuint buffer;
     glGenBuffers(1, &buffer);
     return (jint) buffer;
 }
 
-void SwitchGL::M_glGenBuffers(jint n, const shared_ptr<IntBuffer> &buffers) {
-    glGenBuffers(n, (GLuint *) getBufferAddress(buffers));
+void M_com_thelogicmaster_switchgdx_SwitchGL_glGenBuffers_int_java_nio_IntBuffer(jcontext ctx, jobject self, jint n, jobject buffers) {
+    glGenBuffers(n, (GLuint *) getBufferAddress((java_nio_IntBuffer *) buffers));
 }
 
-void SwitchGL::M_glGenerateMipmap(jint target) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glGenerateMipmap_int(jcontext ctx, jobject self, jint target) {
     glGenerateMipmap(target);
 }
 
-jint SwitchGL::M_glGenFramebuffer_R_int() {
+jint M_com_thelogicmaster_switchgdx_SwitchGL_glGenFramebuffer_R_int(jcontext ctx, jobject self) {
     GLuint buffer;
     glGenFramebuffers(1, &buffer);
     return (jint) buffer;
 }
 
-void SwitchGL::M_glGenFramebuffers(jint n, const shared_ptr<IntBuffer> &framebuffers) {
-    glGenFramebuffers(n, (GLuint *) getBufferAddress(framebuffers));
+void M_com_thelogicmaster_switchgdx_SwitchGL_glGenFramebuffers_int_java_nio_IntBuffer(jcontext ctx, jobject self, jint n, jobject framebuffers) {
+    glGenFramebuffers(n, (GLuint *) getBufferAddress((java_nio_IntBuffer *) framebuffers));
 }
 
-jint SwitchGL::M_glGenRenderbuffer_R_int() {
+jint M_com_thelogicmaster_switchgdx_SwitchGL_glGenRenderbuffer_R_int(jcontext ctx, jobject self) {
     GLuint buffer;
     glGenRenderbuffers(1, &buffer);
     return (jint) buffer;
 }
 
-void SwitchGL::M_glGenRenderbuffers(jint n, const shared_ptr<IntBuffer> &renderbuffers) {
-    glGenRenderbuffers(n, (GLuint *) getBufferAddress(renderbuffers));
+void M_com_thelogicmaster_switchgdx_SwitchGL_glGenRenderbuffers_int_java_nio_IntBuffer(jcontext ctx, jobject self, jint n, jobject renderbuffers) {
+    glGenRenderbuffers(n, (GLuint *) getBufferAddress((java_nio_IntBuffer *) renderbuffers));
 }
 
-jstring SwitchGL::M_glGetActiveAttrib_R_java_lang_String(jint program, jint index, const shared_ptr<IntBuffer> &size, const shared_ptr<IntBuffer> &type) {
+jobject M_com_thelogicmaster_switchgdx_SwitchGL_glGetActiveAttrib_int_int_java_nio_IntBuffer_java_nio_IntBuffer_R_java_lang_String(jcontext ctx, jobject self, jint program, jint index, jobject size, jobject type) {
     char buffer[64];
-    glGetActiveAttrib(program, index, 63, nullptr, (GLint *) getBufferAddress(size), (GLenum *) getBufferAddress(type), buffer);
-    return vm::createString(buffer);
+    glGetActiveAttrib(program, index, 63, nullptr, (GLint *) getBufferAddress((java_nio_IntBuffer *) size), (GLenum *) getBufferAddress((java_nio_IntBuffer *) type), buffer);
+    return (jobject) stringFromNative(ctx, buffer);
 }
 
-jstring SwitchGL::M_glGetActiveUniform_R_java_lang_String(jint program, jint index, const shared_ptr<IntBuffer> &size, const shared_ptr<IntBuffer> &type) {
+jobject M_com_thelogicmaster_switchgdx_SwitchGL_glGetActiveUniform_int_int_java_nio_IntBuffer_java_nio_IntBuffer_R_java_lang_String(jcontext ctx, jobject self, jint program, jint index, jobject size, jobject type) {
     char buffer[64];
-    glGetActiveUniform(program, index, 63, nullptr, (GLint *) getBufferAddress(size), (GLenum *) getBufferAddress(type), buffer);
-    return vm::createString(buffer);
+    glGetActiveUniform(program, index, 63, nullptr, (GLint *) getBufferAddress((java_nio_IntBuffer *) size), (GLenum *) getBufferAddress((java_nio_IntBuffer *) type), buffer);
+    return (jobject) stringFromNative(ctx, buffer);
 }
 
-void SwitchGL::M_glGetAttachedShaders(jint program, jint maxcount, const shared_ptr<Buffer> &count, const shared_ptr<IntBuffer> &shaders) {
-    glGetAttachedShaders(program, maxcount, (GLsizei *) getBufferAddress(count), (GLuint *) getBufferAddress(shaders));
+void M_com_thelogicmaster_switchgdx_SwitchGL_glGetAttachedShaders_int_int_java_nio_Buffer_java_nio_IntBuffer(jcontext ctx, jobject self, jint program, jint maxcount, jobject count, jobject shaders) {
+    glGetAttachedShaders(program, maxcount, (GLsizei *) getBufferAddress(ctx, (java_nio_Buffer *) count), (GLuint *) getBufferAddress((java_nio_IntBuffer *) shaders));
 }
 
-jint SwitchGL::M_glGetAttribLocation_R_int(jint program, const jstring &name) {
-    return glGetAttribLocation(program, vm::getNativeString(name));
+jint M_com_thelogicmaster_switchgdx_SwitchGL_glGetAttribLocation_int_java_lang_String_R_int(jcontext ctx, jobject self, jint program, jobject name) {
+    return glGetAttribLocation(program, stringToNative(ctx, (jstring) name));
 }
 
-void SwitchGL::M_glGetBooleanv(jint pname, const shared_ptr<Buffer> &params) {
-    glGetBooleanv(pname, (GLboolean *) getBufferAddress(params));
+void M_com_thelogicmaster_switchgdx_SwitchGL_glGetBooleanv_int_java_nio_Buffer(jcontext ctx, jobject self, jint pname, jobject params) {
+    glGetBooleanv(pname, (GLboolean *) getBufferAddress(ctx, (java_nio_Buffer *) params));
 }
 
-void SwitchGL::M_glGetBufferParameteriv(jint target, jint pname, const shared_ptr<IntBuffer> &params) {
-    glGetBufferParameteriv(target, pname, (GLint *) getBufferAddress(params));
+void M_com_thelogicmaster_switchgdx_SwitchGL_glGetBufferParameteriv_int_int_java_nio_IntBuffer(jcontext ctx, jobject self, jint target, jint pname, jobject params) {
+    glGetBufferParameteriv(target, pname, (GLint *) getBufferAddress((java_nio_IntBuffer *) params));
 }
 
-void SwitchGL::M_glGetFloatv(jint pname, const shared_ptr<FloatBuffer> &params) {
-    glGetFloatv(pname, (GLfloat *) getBufferAddress(params));
+void M_com_thelogicmaster_switchgdx_SwitchGL_glGetFloatv_int_java_nio_FloatBuffer(jcontext ctx, jobject self, jint pname, jobject params) {
+    glGetFloatv(pname, (GLfloat *) getBufferAddress((java_nio_FloatBuffer *) params));
 }
 
-void SwitchGL::M_glGetFramebufferAttachmentParameteriv(jint target, jint attachment, jint pname, const shared_ptr<IntBuffer> &params) {
-    glGetFramebufferAttachmentParameteriv(target, attachment, pname, (GLint *) getBufferAddress(params));
+void M_com_thelogicmaster_switchgdx_SwitchGL_glGetFramebufferAttachmentParameteriv_int_int_int_java_nio_IntBuffer(jcontext ctx, jobject self, jint target, jint attachment, jint pname, jobject params) {
+    glGetFramebufferAttachmentParameteriv(target, attachment, pname, (GLint *) getBufferAddress((java_nio_IntBuffer *) params));
 }
 
-void SwitchGL::M_glGetProgramiv(jint program, jint pname, const shared_ptr<IntBuffer> &params) {
-    glGetProgramiv(program, pname, (GLint *) getBufferAddress(params));
+void M_com_thelogicmaster_switchgdx_SwitchGL_glGetProgramiv_int_int_java_nio_IntBuffer(jcontext ctx, jobject self, jint program, jint pname, jobject params) {
+    glGetProgramiv(program, pname, (GLint *) getBufferAddress((java_nio_IntBuffer *) params));
 }
 
-jstring SwitchGL::M_glGetProgramInfoLog_R_java_lang_String(jint program) {
+jobject M_com_thelogicmaster_switchgdx_SwitchGL_glGetProgramInfoLog_int_R_java_lang_String(jcontext ctx, jobject self, jint program) {
     char buffer[128];
     glGetProgramInfoLog(program, 127, nullptr, buffer);
-    return vm::createString(buffer);
+    return (jobject) stringFromNative(ctx, buffer);
 }
 
-void SwitchGL::M_glGetRenderbufferParameteriv(jint target, jint pname, const shared_ptr<IntBuffer> &params) {
-    glGetRenderbufferParameteriv(target, pname, (GLint *) getBufferAddress(params));
+void M_com_thelogicmaster_switchgdx_SwitchGL_glGetRenderbufferParameteriv_int_int_java_nio_IntBuffer(jcontext ctx, jobject self, jint target, jint pname, jobject params) {
+    glGetRenderbufferParameteriv(target, pname, (GLint *) getBufferAddress((java_nio_IntBuffer *) params));
 }
 
-void SwitchGL::M_glGetShaderiv(jint shader, jint pname, const shared_ptr<IntBuffer> &params) {
-    glGetShaderiv(shader, pname, (GLint *) getBufferAddress(params));
+void M_com_thelogicmaster_switchgdx_SwitchGL_glGetShaderiv_int_int_java_nio_IntBuffer(jcontext ctx, jobject self, jint shader, jint pname, jobject params) {
+    glGetShaderiv(shader, pname, (GLint *) getBufferAddress((java_nio_IntBuffer *) params));
 }
 
-jstring SwitchGL::M_glGetShaderInfoLog_R_java_lang_String(jint program) {
+jobject M_com_thelogicmaster_switchgdx_SwitchGL_glGetShaderInfoLog_int_R_java_lang_String(jcontext ctx, jobject self, jint program) {
     char buffer[128];
     glGetShaderInfoLog(program, 127, nullptr, buffer);
-    return vm::createString(buffer);
+    return (jobject) stringFromNative(ctx, buffer);
 }
 
-void SwitchGL::M_glGetShaderPrecisionFormat(jint shadertype, jint precisiontype, const shared_ptr<IntBuffer> &range, const shared_ptr<IntBuffer> &precision) {
-    glGetShaderPrecisionFormat(shadertype, precisiontype, (GLint *) getBufferAddress(range), (GLint *) getBufferAddress(precision));
+void M_com_thelogicmaster_switchgdx_SwitchGL_glGetShaderPrecisionFormat_int_int_java_nio_IntBuffer_java_nio_IntBuffer(jcontext ctx, jobject self, jint shadertype, jint precisiontype, jobject range, jobject precision) {
+    glGetShaderPrecisionFormat(shadertype, precisiontype, (GLint *) getBufferAddress((java_nio_IntBuffer *) range), (GLint *) getBufferAddress((java_nio_IntBuffer *) precision));
 }
 
-void SwitchGL::M_glGetTexParameterfv(jint target, jint pname, const shared_ptr<FloatBuffer> &params) {
-    glGetTexParameterfv(target, pname, (GLfloat *) getBufferAddress(params));
+void M_com_thelogicmaster_switchgdx_SwitchGL_glGetTexParameterfv_int_int_java_nio_FloatBuffer(jcontext ctx, jobject self, jint target, jint pname, jobject params) {
+    glGetTexParameterfv(target, pname, (GLfloat *) getBufferAddress((java_nio_FloatBuffer *) params));
 }
 
-void SwitchGL::M_glGetTexParameteriv(jint target, jint pname, const shared_ptr<IntBuffer> &params) {
-    glGetTexParameteriv(target, pname, (GLint *) getBufferAddress(params));
+void M_com_thelogicmaster_switchgdx_SwitchGL_glGetTexParameteriv_int_int_java_nio_IntBuffer(jcontext ctx, jobject self, jint target, jint pname, jobject params) {
+    glGetTexParameteriv(target, pname, (GLint *) getBufferAddress((java_nio_IntBuffer *) params));
 }
 
-void SwitchGL::M_glGetUniformfv(jint program, jint location, const shared_ptr<FloatBuffer> &params) {
-    glGetUniformfv(program, location, (GLfloat *) getBufferAddress(params));
+void M_com_thelogicmaster_switchgdx_SwitchGL_glGetUniformfv_int_int_java_nio_FloatBuffer(jcontext ctx, jobject self, jint program, jint location, jobject params) {
+    glGetUniformfv(program, location, (GLfloat *) getBufferAddress((java_nio_FloatBuffer *) params));
 }
 
-void SwitchGL::M_glGetUniformiv(jint program, jint location, const shared_ptr<IntBuffer> &params) {
-    glGetUniformiv(program, location, (GLint *) getBufferAddress(params));
+void M_com_thelogicmaster_switchgdx_SwitchGL_glGetUniformiv_int_int_java_nio_IntBuffer(jcontext ctx, jobject self, jint program, jint location, jobject params) {
+    glGetUniformiv(program, location, (GLint *) getBufferAddress((java_nio_IntBuffer *) params));
 }
 
-jint SwitchGL::M_glGetUniformLocation_R_int(jint program, const jstring &name) {
-    return glGetUniformLocation(program, vm::getNativeString(name));
+jint M_com_thelogicmaster_switchgdx_SwitchGL_glGetUniformLocation_int_java_lang_String_R_int(jcontext ctx, jobject self, jint program, jobject name) {
+    return glGetUniformLocation(program, stringToNative(ctx, (jstring) name));
 }
 
-void SwitchGL::M_glGetVertexAttribfv(jint index, jint pname, const shared_ptr<FloatBuffer> &params) {
-    glGetVertexAttribfv(index, pname, (GLfloat *) getBufferAddress(params));
+void M_com_thelogicmaster_switchgdx_SwitchGL_glGetVertexAttribfv_int_int_java_nio_FloatBuffer(jcontext ctx, jobject self, jint index, jint pname, jobject params) {
+    glGetVertexAttribfv(index, pname, (GLfloat *) getBufferAddress((java_nio_FloatBuffer *) params));
 }
 
-void SwitchGL::M_glGetVertexAttribiv(jint index, jint pname, const shared_ptr<IntBuffer> &params) {
-    glGetVertexAttribiv(index, pname, (GLint *) getBufferAddress(params));
+void M_com_thelogicmaster_switchgdx_SwitchGL_glGetVertexAttribiv_int_int_java_nio_IntBuffer(jcontext ctx, jobject self, jint index, jint pname, jobject params) {
+    glGetVertexAttribiv(index, pname, (GLint *) getBufferAddress((java_nio_IntBuffer *) params));
 }
 
-void SwitchGL::M_glGetVertexAttribPointerv(jint index, jint pname, const shared_ptr<Buffer> &pointer) {
-    glGetVertexAttribPointerv(index, pname, (void **) getBufferAddress(pointer));
+void M_com_thelogicmaster_switchgdx_SwitchGL_glGetVertexAttribPointerv_int_int_java_nio_Buffer(jcontext ctx, jobject self, jint index, jint pname, jobject pointer) {
+    glGetVertexAttribPointerv(index, pname, (void **) getBufferAddress(ctx, (java_nio_Buffer *) pointer));
 }
 
-jbool SwitchGL::M_glIsBuffer_R_boolean(jint buffer) {
+jbool M_com_thelogicmaster_switchgdx_SwitchGL_glIsBuffer_int_R_boolean(jcontext ctx, jobject self, jint buffer) {
     return glIsBuffer(buffer);
 }
 
-jbool SwitchGL::M_glIsEnabled_R_boolean(jint cap) {
+jbool M_com_thelogicmaster_switchgdx_SwitchGL_glIsEnabled_int_R_boolean(jcontext ctx, jobject self, jint cap) {
     return glIsEnabled(cap);
 }
 
-jbool SwitchGL::M_glIsFramebuffer_R_boolean(jint framebuffer) {
+jbool M_com_thelogicmaster_switchgdx_SwitchGL_glIsFramebuffer_int_R_boolean(jcontext ctx, jobject self, jint framebuffer) {
     return glIsFramebuffer(framebuffer);
 }
 
-jbool SwitchGL::M_glIsProgram_R_boolean(jint program) {
+jbool M_com_thelogicmaster_switchgdx_SwitchGL_glIsProgram_int_R_boolean(jcontext ctx, jobject self, jint program) {
     return glIsProgram(program);
 }
 
-jbool SwitchGL::M_glIsRenderbuffer_R_boolean(jint renderbuffer) {
+jbool M_com_thelogicmaster_switchgdx_SwitchGL_glIsRenderbuffer_int_R_boolean(jcontext ctx, jobject self, jint renderbuffer) {
     return glIsRenderbuffer(renderbuffer);
 }
 
-jbool SwitchGL::M_glIsShader_R_boolean(jint shader) {
+jbool M_com_thelogicmaster_switchgdx_SwitchGL_glIsShader_int_R_boolean(jcontext ctx, jobject self, jint shader) {
     return glIsShader(shader);
 }
 
-jbool SwitchGL::M_glIsTexture_R_boolean(jint texture) {
+jbool M_com_thelogicmaster_switchgdx_SwitchGL_glIsTexture_int_R_boolean(jcontext ctx, jobject self, jint texture) {
     return glIsTexture(texture);
 }
 
-void SwitchGL::M_glLinkProgram(jint program) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glLinkProgram_int(jcontext ctx, jobject self, jint program) {
     glLinkProgram(program);
 }
 
-void SwitchGL::M_glReleaseShaderCompiler() {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glReleaseShaderCompiler(jcontext ctx, jobject self) {
     glReleaseShaderCompiler();
 }
 
-void SwitchGL::M_glRenderbufferStorage(jint target, jint internalformat, jint width, jint height) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glRenderbufferStorage_int_int_int_int(jcontext ctx, jobject self, jint target, jint internalformat, jint width, jint height) {
     glRenderbufferStorage(target, internalformat, width, height);
 }
 
-void SwitchGL::M_glSampleCoverage(jfloat value, jbool invert) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glSampleCoverage_float_boolean(jcontext ctx, jobject self, jfloat value, jbool invert) {
     glSampleCoverage(value, invert);
 }
 
-void SwitchGL::M_glShaderBinary(jint n, const shared_ptr<IntBuffer> &shaders, jint binaryformat, const shared_ptr<Buffer> &binary, jint length) {
-    glShaderBinary(n, (GLuint *) getBufferAddress(shaders), binaryformat, (void *) getBufferAddress(binary), length);
+void M_com_thelogicmaster_switchgdx_SwitchGL_glShaderBinary_int_java_nio_IntBuffer_int_java_nio_Buffer_int(jcontext ctx, jobject self, jint n, jobject shaders, jint binaryformat, jobject binary, jint length) {
+    glShaderBinary(n, (GLuint *) getBufferAddress((java_nio_IntBuffer *) shaders), binaryformat, (void *) getBufferAddress(ctx, (java_nio_Buffer *) binary), length);
 }
 
-void SwitchGL::M_glShaderSource(jint shader, const jstring &sourceObject) {
-    auto source = vm::getNativeString(sourceObject);
+void M_com_thelogicmaster_switchgdx_SwitchGL_glShaderSource_int_java_lang_String(jcontext ctx, jobject self, jint shader, jobject sourceObject) {
+    auto source = stringToNative(ctx, (jstring) sourceObject);
     glShaderSource(shader, 1, &source, nullptr);
 }
 
-void SwitchGL::M_glStencilFuncSeparate(jint face, jint func, jint ref, jint mask) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glStencilFuncSeparate_int_int_int_int(jcontext ctx, jobject self, jint face, jint func, jint ref, jint mask) {
     glStencilFuncSeparate(face, func, ref, mask);
 }
 
-void SwitchGL::M_glStencilMaskSeparate(jint face, jint mask) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glStencilMaskSeparate_int_int(jcontext ctx, jobject self, jint face, jint mask) {
     glStencilMaskSeparate(face, mask);
 }
 
-void SwitchGL::M_glStencilOpSeparate(jint face, jint fail, jint zfail, jint zpass) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glStencilOpSeparate_int_int_int_int(jcontext ctx, jobject self, jint face, jint fail, jint zfail, jint zpass) {
     glStencilOpSeparate(face, fail, zfail, zpass);
 }
 
-void SwitchGL::M_glTexParameterfv(jint target, jint pname, const shared_ptr<FloatBuffer> &params) {
-    glTexParameterfv(target, pname, (GLfloat *) getBufferAddress(params));
+void M_com_thelogicmaster_switchgdx_SwitchGL_glTexParameterfv_int_int_java_nio_FloatBuffer(jcontext ctx, jobject self, jint target, jint pname, jobject params) {
+    glTexParameterfv(target, pname, (GLfloat *) getBufferAddress((java_nio_FloatBuffer *) params));
 }
 
-void SwitchGL::M_glTexParameteri(jint target, jint pname, jint param) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glTexParameteri_int_int_int(jcontext ctx, jobject self, jint target, jint pname, jint param) {
     glTexParameteri(target, pname, param);
 }
 
-void SwitchGL::M_glTexParameteriv(jint target, jint pname, const shared_ptr<IntBuffer> &params) {
-    glTexParameteriv(target, pname, (GLint *) getBufferAddress(params));
+void M_com_thelogicmaster_switchgdx_SwitchGL_glTexParameteriv_int_int_java_nio_IntBuffer(jcontext ctx, jobject self, jint target, jint pname, jobject params) {
+    glTexParameteriv(target, pname, (GLint *) getBufferAddress((java_nio_IntBuffer *) params));
 }
 
-void SwitchGL::M_glUniform1f(jint location, jfloat x) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glUniform1f_int_float(jcontext ctx, jobject self, jint location, jfloat x) {
     glUniform1f(location, x);
 }
 
-void SwitchGL::M_glUniform1fv(jint location, jint count, const shared_ptr<FloatBuffer> &v) {
-    glUniform1fv(location, count, (GLfloat *) getBufferAddress(v));
+void M_com_thelogicmaster_switchgdx_SwitchGL_glUniform1fv_int_int_java_nio_FloatBuffer(jcontext ctx, jobject self, jint location, jint count, jobject v) {
+    glUniform1fv(location, count, (GLfloat *) getBufferAddress((java_nio_FloatBuffer *) v));
 }
 
-void SwitchGL::M_glUniform1fv_Array1_float(jint location, jint count, const jarray &v, jint offset) {
-    glUniform1fv(location, count, (GLfloat *) v->data + offset);
+void M_com_thelogicmaster_switchgdx_SwitchGL_glUniform1fv_int_int_Array1_float_int(jcontext ctx, jobject self, jint location, jint count, jobject v, jint offset) {
+    glUniform1fv(location, count, (GLfloat *) ((jarray) v)->data + offset);
 }
 
-void SwitchGL::M_glUniform1i(jint location, jint x) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glUniform1i_int_int(jcontext ctx, jobject self, jint location, jint x) {
     glUniform1i(location, x);
 }
 
-void SwitchGL::M_glUniform1iv(jint location, jint count, const shared_ptr<IntBuffer> &v) {
-    glUniform1iv(location, count, (GLint *) getBufferAddress(v));
+void M_com_thelogicmaster_switchgdx_SwitchGL_glUniform1iv_int_int_java_nio_IntBuffer(jcontext ctx, jobject self, jint location, jint count, jobject v) {
+    glUniform1iv(location, count, (GLint *) getBufferAddress((java_nio_IntBuffer *) v));
 }
 
-void SwitchGL::M_glUniform1iv_Array1_int(jint location, jint count, const jarray &v, jint offset) {
-    glUniform1iv(location, count, (GLint *) v->data + offset);
+void M_com_thelogicmaster_switchgdx_SwitchGL_glUniform1iv_int_int_Array1_int_int(jcontext ctx, jobject self, jint location, jint count, jobject v, jint offset) {
+    glUniform1iv(location, count, (GLint *) ((jarray) v)->data + offset);
 }
 
-void SwitchGL::M_glUniform2f(jint location, jfloat x, jfloat y) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glUniform2f_int_float_float(jcontext ctx, jobject self, jint location, jfloat x, jfloat y) {
     glUniform2f(location, x, y);
 }
 
-void SwitchGL::M_glUniform2fv(jint location, jint count, const shared_ptr<FloatBuffer> &v) {
-    glUniform2fv(location, count, (GLfloat *) getBufferAddress(v));
+void M_com_thelogicmaster_switchgdx_SwitchGL_glUniform2fv_int_int_java_nio_FloatBuffer(jcontext ctx, jobject self, jint location, jint count, jobject v) {
+    glUniform2fv(location, count, (GLfloat *) getBufferAddress((java_nio_FloatBuffer *) v));
 }
 
-void SwitchGL::M_glUniform2fv_Array1_float(jint location, jint count, const jarray &v, jint offset) {
-    glUniform2fv(location, count, (GLfloat *) v->data + offset);
+void M_com_thelogicmaster_switchgdx_SwitchGL_glUniform2fv_int_int_Array1_float_int(jcontext ctx, jobject self, jint location, jint count, jobject v, jint offset) {
+    glUniform2fv(location, count, (GLfloat *) ((jarray) v)->data + offset);
 }
 
-void SwitchGL::M_glUniform2i(jint location, jint x, jint y) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glUniform2i_int_int_int(jcontext ctx, jobject self, jint location, jint x, jint y) {
     glUniform2i(location, x, y);
 }
 
-void SwitchGL::M_glUniform2iv(jint location, jint count, const shared_ptr<IntBuffer> &v) {
-    glUniform2iv(location, count, (GLint *) getBufferAddress(v));
+void M_com_thelogicmaster_switchgdx_SwitchGL_glUniform2iv_int_int_java_nio_IntBuffer(jcontext ctx, jobject self, jint location, jint count, jobject v) {
+    glUniform2iv(location, count, (GLint *) getBufferAddress((java_nio_IntBuffer *) v));
 }
 
-void SwitchGL::M_glUniform2iv_Array1_int(jint location, jint count, const jarray &v, jint offset) {
-    glUniform2iv(location, count, (GLint *) v->data + offset);
+void M_com_thelogicmaster_switchgdx_SwitchGL_glUniform2iv_int_int_Array1_int_int(jcontext ctx, jobject self, jint location, jint count, jobject v, jint offset) {
+    glUniform2iv(location, count, (GLint *) ((jarray) v)->data + offset);
 }
 
-void SwitchGL::M_glUniform3f(jint location, jfloat x, jfloat y, jfloat z) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glUniform3f_int_float_float_float(jcontext ctx, jobject self, jint location, jfloat x, jfloat y, jfloat z) {
     glUniform3f(location, x, y, z);
 }
 
-void SwitchGL::M_glUniform3fv(jint location, jint count, const shared_ptr<FloatBuffer> &v) {
-    glUniform3fv(location, count, (GLfloat *) getBufferAddress(v));
+void M_com_thelogicmaster_switchgdx_SwitchGL_glUniform3fv_int_int_java_nio_FloatBuffer(jcontext ctx, jobject self, jint location, jint count, jobject v) {
+    glUniform3fv(location, count, (GLfloat *) getBufferAddress((java_nio_FloatBuffer *) v));
 }
 
-void SwitchGL::M_glUniform3fv_Array1_float(jint location, jint count, const jarray &v, jint offset) {
-    glUniform3fv(location, count, (GLfloat *) v->data + offset);
+void M_com_thelogicmaster_switchgdx_SwitchGL_glUniform3fv_int_int_Array1_float_int(jcontext ctx, jobject self, jint location, jint count, jobject v, jint offset) {
+    glUniform3fv(location, count, (GLfloat *) ((jarray) v)->data + offset);
 }
 
-void SwitchGL::M_glUniform3i(jint location, jint x, jint y, jint z) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glUniform3i_int_int_int_int(jcontext ctx, jobject self, jint location, jint x, jint y, jint z) {
     glUniform3i(location, x, y, z);
 }
 
-void SwitchGL::M_glUniform3iv(jint location, jint count, const shared_ptr<IntBuffer> &v) {
-    glUniform3iv(location, count, (GLint *) getBufferAddress(v));
+void M_com_thelogicmaster_switchgdx_SwitchGL_glUniform3iv_int_int_java_nio_IntBuffer(jcontext ctx, jobject self, jint location, jint count, jobject v) {
+    glUniform3iv(location, count, (GLint *) getBufferAddress((java_nio_IntBuffer *) v));
 }
 
-void SwitchGL::M_glUniform3iv_Array1_int(jint location, jint count, const jarray &v, jint offset) {
-    glUniform3iv(location, count, (GLint *) v->data + offset);
+void M_com_thelogicmaster_switchgdx_SwitchGL_glUniform3iv_int_int_Array1_int_int(jcontext ctx, jobject self, jint location, jint count, jobject v, jint offset) {
+    glUniform3iv(location, count, (GLint *) ((jarray) v)->data + offset);
 }
 
-void SwitchGL::M_glUniform4f(jint location, jfloat x, jfloat y, jfloat z, jfloat w) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glUniform4f_int_float_float_float_float(jcontext ctx, jobject self, jint location, jfloat x, jfloat y, jfloat z, jfloat w) {
     glUniform4f(location, x, y, z, w);
 }
 
-void SwitchGL::M_glUniform4fv(jint location, jint count, const shared_ptr<FloatBuffer> &v) {
-    glUniform4fv(location, count, (GLfloat *) getBufferAddress(v));
+void M_com_thelogicmaster_switchgdx_SwitchGL_glUniform4fv_int_int_java_nio_FloatBuffer(jcontext ctx, jobject self, jint location, jint count, jobject v) {
+    glUniform4fv(location, count, (GLfloat *) getBufferAddress((java_nio_FloatBuffer *) v));
 }
 
-void SwitchGL::M_glUniform4fv_Array1_float(jint location, jint count, const jarray &v, jint offset) {
-    glUniform4fv(location, count, (GLfloat *) v->data + offset);
+void M_com_thelogicmaster_switchgdx_SwitchGL_glUniform4fv_int_int_Array1_float_int(jcontext ctx, jobject self, jint location, jint count, jobject v, jint offset) {
+    glUniform4fv(location, count, (GLfloat *) ((jarray) v)->data + offset);
 }
 
-void SwitchGL::M_glUniform4i(jint location, jint x, jint y, jint z, jint w) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glUniform4i_int_int_int_int_int(jcontext ctx, jobject self, jint location, jint x, jint y, jint z, jint w) {
     glUniform4i(location, x, y, z, w);
 }
 
-void SwitchGL::M_glUniform4iv(jint location, jint count, const shared_ptr<IntBuffer> &v) {
-    glUniform4iv(location, count, (GLint *) getBufferAddress(v));
+void M_com_thelogicmaster_switchgdx_SwitchGL_glUniform4iv_int_int_java_nio_IntBuffer(jcontext ctx, jobject self, jint location, jint count, jobject v) {
+    glUniform4iv(location, count, (GLint *) getBufferAddress((java_nio_IntBuffer *) v));
 }
 
-void SwitchGL::M_glUniform4iv_Array1_int(jint location, jint count, const jarray &v, jint offset) {
-    glUniform4iv(location, count, (GLint *) v->data + offset);
+void M_com_thelogicmaster_switchgdx_SwitchGL_glUniform4iv_int_int_Array1_int_int(jcontext ctx, jobject self, jint location, jint count, jobject v, jint offset) {
+    glUniform4iv(location, count, (GLint *) ((jarray) v)->data + offset);
 }
 
-void SwitchGL::M_glUniformMatrix2fv(jint location, jint count, jbool transpose, const shared_ptr<FloatBuffer> &value) {
-    glUniformMatrix2fv(location, count, transpose, (GLfloat *) getBufferAddress(value));
+void M_com_thelogicmaster_switchgdx_SwitchGL_glUniformMatrix2fv_int_int_boolean_java_nio_FloatBuffer(jcontext ctx, jobject self, jint location, jint count, jbool transpose, jobject value) {
+    glUniformMatrix2fv(location, count, transpose, (GLfloat *) getBufferAddress((java_nio_FloatBuffer *) value));
 }
 
-void SwitchGL::M_glUniformMatrix2fv_Array1_float(jint location, jint count, jbool transpose, const jarray &value, jint offset) {
-    glUniformMatrix2fv(location, count, transpose, (GLfloat *) value->data + offset);
+void M_com_thelogicmaster_switchgdx_SwitchGL_glUniformMatrix2fv_int_int_boolean_Array1_float_int(jcontext ctx, jobject self, jint location, jint count, jbool transpose, jobject value, jint offset) {
+    glUniformMatrix2fv(location, count, transpose, (GLfloat *) ((jarray) value)->data + offset);
 }
 
-void SwitchGL::M_glUniformMatrix3fv(jint location, jint count, jbool transpose, const shared_ptr<FloatBuffer> &value) {
-    glUniformMatrix3fv(location, count, transpose, (GLfloat *) getBufferAddress(value));
+void M_com_thelogicmaster_switchgdx_SwitchGL_glUniformMatrix3fv_int_int_boolean_java_nio_FloatBuffer(jcontext ctx, jobject self, jint location, jint count, jbool transpose, jobject value) {
+    glUniformMatrix3fv(location, count, transpose, (GLfloat *) getBufferAddress((java_nio_FloatBuffer *) value));
 }
 
-void SwitchGL::M_glUniformMatrix3fv_Array1_float(jint location, jint count, jbool transpose, const jarray &value, jint offset) {
-    glUniformMatrix3fv(location, count, transpose, (GLfloat *) value->data + offset);
+void M_com_thelogicmaster_switchgdx_SwitchGL_glUniformMatrix3fv_int_int_boolean_Array1_float_int(jcontext ctx, jobject self, jint location, jint count, jbool transpose, jobject value, jint offset) {
+    glUniformMatrix3fv(location, count, transpose, (GLfloat *) ((jarray) value)->data + offset);
 }
 
-void SwitchGL::M_glUniformMatrix4fv(jint location, jint count, jbool transpose, const shared_ptr<FloatBuffer> &value) {
-    glUniformMatrix4fv(location, count, transpose, (GLfloat *) getBufferAddress(value));
+void M_com_thelogicmaster_switchgdx_SwitchGL_glUniformMatrix4fv_int_int_boolean_java_nio_FloatBuffer(jcontext ctx, jobject self, jint location, jint count, jbool transpose, jobject value) {
+    glUniformMatrix4fv(location, count, transpose, (GLfloat *) getBufferAddress((java_nio_FloatBuffer *) value));
 }
 
-void SwitchGL::M_glUniformMatrix4fv_Array1_float(jint location, jint count, jbool transpose, const jarray &value, jint offset) {
-    glUniformMatrix4fv(location, count, transpose, (GLfloat *) value->data + offset);
+void M_com_thelogicmaster_switchgdx_SwitchGL_glUniformMatrix4fv_int_int_boolean_Array1_float_int(jcontext ctx, jobject self, jint location, jint count, jbool transpose, jobject value, jint offset) {
+    glUniformMatrix4fv(location, count, transpose, (GLfloat *) ((jarray) value)->data + offset);
 }
 
-void SwitchGL::M_glUseProgram(jint program) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glUseProgram_int(jcontext ctx, jobject self, jint program) {
     glUseProgram(program);
 }
 
-void SwitchGL::M_glValidateProgram(jint program) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glValidateProgram_int(jcontext ctx, jobject self, jint program) {
     glValidateProgram(program);
 }
 
-void SwitchGL::M_glVertexAttrib1f(jint indx, jfloat x) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glVertexAttrib1f_int_float(jcontext ctx, jobject self, jint indx, jfloat x) {
     glVertexAttrib1f(indx, x);
 }
 
-void SwitchGL::M_glVertexAttrib1fv(jint indx, const shared_ptr<FloatBuffer> &values) {
-    glVertexAttrib1fv(indx, (GLfloat *) getBufferAddress(values));
+void M_com_thelogicmaster_switchgdx_SwitchGL_glVertexAttrib1fv_int_java_nio_FloatBuffer(jcontext ctx, jobject self, jint indx, jobject values) {
+    glVertexAttrib1fv(indx, (GLfloat *) getBufferAddress((java_nio_FloatBuffer *) values));
 }
 
-void SwitchGL::M_glVertexAttrib2f(jint indx, jfloat x, jfloat y) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glVertexAttrib2f_int_float_float(jcontext ctx, jobject self, jint indx, jfloat x, jfloat y) {
     glVertexAttrib2f(indx, x, y);
 }
 
-void SwitchGL::M_glVertexAttrib2fv(jint indx, const shared_ptr<FloatBuffer> &values) {
-    glVertexAttrib2fv(indx, (GLfloat *) getBufferAddress(values));
+void M_com_thelogicmaster_switchgdx_SwitchGL_glVertexAttrib2fv_int_java_nio_FloatBuffer(jcontext ctx, jobject self, jint indx, jobject values) {
+    glVertexAttrib2fv(indx, (GLfloat *) getBufferAddress((java_nio_FloatBuffer *) values));
 }
 
-void SwitchGL::M_glVertexAttrib3f(jint indx, jfloat x, jfloat y, jfloat z) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glVertexAttrib3f_int_float_float_float(jcontext ctx, jobject self, jint indx, jfloat x, jfloat y, jfloat z) {
     glVertexAttrib3f(indx, x, y, z);
 }
 
-void SwitchGL::M_glVertexAttrib3fv(jint indx, const shared_ptr<FloatBuffer> &values) {
-    glVertexAttrib3fv(indx, (GLfloat *) getBufferAddress(values));
+void M_com_thelogicmaster_switchgdx_SwitchGL_glVertexAttrib3fv_int_java_nio_FloatBuffer(jcontext ctx, jobject self, jint indx, jobject values) {
+    glVertexAttrib3fv(indx, (GLfloat *) getBufferAddress((java_nio_FloatBuffer *) values));
 }
 
-void SwitchGL::M_glVertexAttrib4f(jint indx, jfloat x, jfloat y, jfloat z, jfloat w) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glVertexAttrib4f_int_float_float_float_float(jcontext ctx, jobject self, jint indx, jfloat x, jfloat y, jfloat z, jfloat w) {
     glVertexAttrib4f(indx, x, y, z, w);
 }
 
-void SwitchGL::M_glVertexAttrib4fv(jint indx, const shared_ptr<FloatBuffer> &values) {
-    glVertexAttrib4fv(indx, (GLfloat *) getBufferAddress(values));
+void M_com_thelogicmaster_switchgdx_SwitchGL_glVertexAttrib4fv_int_java_nio_FloatBuffer(jcontext ctx, jobject self, jint indx, jobject values) {
+    glVertexAttrib4fv(indx, (GLfloat *) getBufferAddress((java_nio_FloatBuffer *) values));
 }
 
-void SwitchGL::M_glVertexAttribPointer(jint index, jint size, jint type, jbool normalized, jint stride, const shared_ptr<Buffer> &ptr) {
-    glVertexAttribPointer(index, size, type, normalized, stride, getBufferAddress(ptr));
+void M_com_thelogicmaster_switchgdx_SwitchGL_glVertexAttribPointer_int_int_int_boolean_int_java_nio_Buffer(jcontext ctx, jobject self, jint index, jint size, jint type, jbool normalized, jint stride, jobject ptr) {
+    glVertexAttribPointer(index, size, type, normalized, stride, getBufferAddress(ctx, (java_nio_Buffer *) ptr));
 }
 
-void SwitchGL::M_glVertexAttribPointer(jint index, jint size, jint type, jbool normalized, jint stride, jint ptr) {
+void M_com_thelogicmaster_switchgdx_SwitchGL_glVertexAttribPointer_int_int_int_boolean_int_int(jcontext ctx, jobject self, jint index, jint size, jint type, jbool normalized, jint stride, jint ptr) {
     glVertexAttribPointer(index, size, type, normalized, stride, (void *) (jlong) ptr);
 }

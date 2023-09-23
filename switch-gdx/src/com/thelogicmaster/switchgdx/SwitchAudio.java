@@ -50,6 +50,16 @@ public class SwitchAudio implements Audio {
 		return music;
 	}
 
+	@Override
+	public boolean switchOutputDevice(String deviceIdentifier) {
+		return false;
+	}
+
+	@Override
+	public String[] getAvailableOutputDevices() {
+		return new String[0];
+	}
+
 	private static void onMusicFinished() {
 		Gdx.app.postRunnable(() -> {
 			for (SwitchMusic music: new Array.ArrayIterator<>(musics))

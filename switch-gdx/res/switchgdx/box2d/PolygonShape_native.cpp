@@ -1,18 +1,18 @@
-#include "Clearwing.hpp"
-#include "Utils.hpp"
-#include "RuntimeTypes.hpp"
-#include <com/badlogic/gdx/physics/box2d/PolygonShape.hpp>
+#include "Clearwing.h"
+#include "java/nio/Buffer.h"
+#include <com/badlogic/gdx/physics/box2d/PolygonShape.h>
+
 
      #include <Box2D/Box2D.h>
 	 
-jlong com::badlogic::gdx::physics::box2d::PolygonShape::M_newPolygonShape_R_long() {
+jlong M_com_badlogic_gdx_physics_box2d_PolygonShape_newPolygonShape_R_long(jcontext ctx, jobject self) {
 
 		b2PolygonShape* poly = new b2PolygonShape();
 		return (jlong)poly;
 }
 
-void com::badlogic::gdx::physics::box2d::PolygonShape::M_jniSet_Array1_float(jlong addr, const jarray &verts_object, jint offset, jint len) {
-	auto verts = (jfloat *)verts_object->data;
+void M_com_badlogic_gdx_physics_box2d_PolygonShape_jniSet_long_Array1_float_int_int(jcontext ctx, jobject self, jlong addr, jobject verts_object, jint offset, jint len) {
+	auto verts = (jfloat *)((Array *)verts_object)->data;
 
 		b2PolygonShape* poly = (b2PolygonShape*)addr;
 		int numVertices = len / 2;
@@ -24,26 +24,26 @@ void com::badlogic::gdx::physics::box2d::PolygonShape::M_jniSet_Array1_float(jlo
 		delete[] verticesOut;
 	 }
 
-void com::badlogic::gdx::physics::box2d::PolygonShape::M_jniSetAsBox(jlong addr, jfloat hx, jfloat hy) {
+void M_com_badlogic_gdx_physics_box2d_PolygonShape_jniSetAsBox_long_float_float(jcontext ctx, jobject self, jlong addr, jfloat hx, jfloat hy) {
 
 		b2PolygonShape* poly = (b2PolygonShape*)addr;
 		poly->SetAsBox(hx, hy);
 }
 
-void com::badlogic::gdx::physics::box2d::PolygonShape::M_jniSetAsBox(jlong addr, jfloat hx, jfloat hy, jfloat centerX, jfloat centerY, jfloat angle) {
+void M_com_badlogic_gdx_physics_box2d_PolygonShape_jniSetAsBox_long_float_float_float_float_float(jcontext ctx, jobject self, jlong addr, jfloat hx, jfloat hy, jfloat centerX, jfloat centerY, jfloat angle) {
 
 		b2PolygonShape* poly = (b2PolygonShape*)addr;
 		poly->SetAsBox( hx, hy, b2Vec2( centerX, centerY ), angle );
 }
 
-jint com::badlogic::gdx::physics::box2d::PolygonShape::M_jniGetVertexCount_R_int(jlong addr) {
+jint M_com_badlogic_gdx_physics_box2d_PolygonShape_jniGetVertexCount_long_R_int(jcontext ctx, jobject self, jlong addr) {
 
 		b2PolygonShape* poly = (b2PolygonShape*)addr;
 		return poly->GetVertexCount();
 }
 
-void com::badlogic::gdx::physics::box2d::PolygonShape::M_jniGetVertex_Array1_float(jlong addr, jint index, const jarray &verts_object) {
-	auto verts = (jfloat *)verts_object->data;
+void M_com_badlogic_gdx_physics_box2d_PolygonShape_jniGetVertex_long_int_Array1_float(jcontext ctx, jobject self, jlong addr, jint index, jobject verts_object) {
+	auto verts = (jfloat *)((Array *)verts_object)->data;
 
 		b2PolygonShape* poly = (b2PolygonShape*)addr;
 		const b2Vec2 v = poly->GetVertex( index );

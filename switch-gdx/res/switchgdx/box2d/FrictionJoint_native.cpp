@@ -1,45 +1,45 @@
-#include "Clearwing.hpp"
-#include "Utils.hpp"
-#include "RuntimeTypes.hpp"
-#include <com/badlogic/gdx/physics/box2d/joints/FrictionJoint.hpp>
+#include "Clearwing.h"
+#include "java/nio/Buffer.h"
+#include <com/badlogic/gdx/physics/box2d/joints/FrictionJoint.h>
+
 
 #include <Box2D/Box2D.h> 
 	 
-void com::badlogic::gdx::physics::box2d::joints::FrictionJoint::M_jniGetLocalAnchorA_Array1_float(jlong addr, const jarray &anchor_object) {
-	auto anchor = (jfloat *)anchor_object->data;
+void M_com_badlogic_gdx_physics_box2d_joints_FrictionJoint_jniGetLocalAnchorA_long_Array1_float(jcontext ctx, jobject self, jlong addr, jobject anchor_object) {
+	auto anchor = (jfloat *)((Array *)anchor_object)->data;
 
 		b2FrictionJoint* joint = (b2FrictionJoint*)addr;
 		anchor[0] = joint->GetLocalAnchorA().x;
 		anchor[1] = joint->GetLocalAnchorA().y;
 }
 
-void com::badlogic::gdx::physics::box2d::joints::FrictionJoint::M_jniGetLocalAnchorB_Array1_float(jlong addr, const jarray &anchor_object) {
-	auto anchor = (jfloat *)anchor_object->data;
+void M_com_badlogic_gdx_physics_box2d_joints_FrictionJoint_jniGetLocalAnchorB_long_Array1_float(jcontext ctx, jobject self, jlong addr, jobject anchor_object) {
+	auto anchor = (jfloat *)((Array *)anchor_object)->data;
 
 		b2FrictionJoint* joint = (b2FrictionJoint*)addr;
 		anchor[0] = joint->GetLocalAnchorB().x;
 		anchor[1] = joint->GetLocalAnchorB().y;
 }
 
-void com::badlogic::gdx::physics::box2d::joints::FrictionJoint::M_jniSetMaxForce(jlong addr, jfloat force) {
+void M_com_badlogic_gdx_physics_box2d_joints_FrictionJoint_jniSetMaxForce_long_float(jcontext ctx, jobject self, jlong addr, jfloat force) {
 
 		b2FrictionJoint* joint = (b2FrictionJoint*)addr;
 		joint->SetMaxForce( force );
 }
 
-jfloat com::badlogic::gdx::physics::box2d::joints::FrictionJoint::M_jniGetMaxForce_R_float(jlong addr) {
+jfloat M_com_badlogic_gdx_physics_box2d_joints_FrictionJoint_jniGetMaxForce_long_R_float(jcontext ctx, jobject self, jlong addr) {
 
 		b2FrictionJoint* joint = (b2FrictionJoint*)addr;
 		return joint->GetMaxForce();
 }
 
-void com::badlogic::gdx::physics::box2d::joints::FrictionJoint::M_jniSetMaxTorque(jlong addr, jfloat torque) {
+void M_com_badlogic_gdx_physics_box2d_joints_FrictionJoint_jniSetMaxTorque_long_float(jcontext ctx, jobject self, jlong addr, jfloat torque) {
 
 		b2FrictionJoint* joint = (b2FrictionJoint*)addr;
 		joint->SetMaxTorque( torque );
 }
 
-jfloat com::badlogic::gdx::physics::box2d::joints::FrictionJoint::M_jniGetMaxTorque_R_float(jlong addr) {
+jfloat M_com_badlogic_gdx_physics_box2d_joints_FrictionJoint_jniGetMaxTorque_long_R_float(jcontext ctx, jobject self, jlong addr) {
 
 		b2FrictionJoint* joint = (b2FrictionJoint*)addr;
 		return joint->GetMaxTorque();

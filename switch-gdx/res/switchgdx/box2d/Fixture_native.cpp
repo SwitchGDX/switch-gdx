@@ -1,11 +1,11 @@
-#include "Clearwing.hpp"
-#include "Utils.hpp"
-#include "RuntimeTypes.hpp"
-#include <com/badlogic/gdx/physics/box2d/Fixture.hpp>
+#include "Clearwing.h"
+#include "java/nio/Buffer.h"
+#include <com/badlogic/gdx/physics/box2d/Fixture.h>
+
 
 #include <Box2D/Box2D.h>
 	 
-jint com::badlogic::gdx::physics::box2d::Fixture::M_jniGetType_R_int(jlong addr) {
+jint M_com_badlogic_gdx_physics_box2d_Fixture_jniGetType_long_R_int(jcontext ctx, jobject self, jlong addr) {
 
 		b2Fixture* fixture = (b2Fixture*)addr;
 		b2Shape::Type type = fixture->GetType();
@@ -20,25 +20,25 @@ jint com::badlogic::gdx::physics::box2d::Fixture::M_jniGetType_R_int(jlong addr)
 		}
 }
 
-jlong com::badlogic::gdx::physics::box2d::Fixture::M_jniGetShape_R_long(jlong addr) {
+jlong M_com_badlogic_gdx_physics_box2d_Fixture_jniGetShape_long_R_long(jcontext ctx, jobject self, jlong addr) {
 
 		b2Fixture* fixture = (b2Fixture*)addr;
 		return (jlong)fixture->GetShape();
 }
 
-void com::badlogic::gdx::physics::box2d::Fixture::M_jniSetSensor(jlong addr, jbool sensor) {
+void M_com_badlogic_gdx_physics_box2d_Fixture_jniSetSensor_long_boolean(jcontext ctx, jobject self, jlong addr, jbool sensor) {
 
 		b2Fixture* fixture = (b2Fixture*)addr;
 		fixture->SetSensor(sensor);
 }
 
-jbool com::badlogic::gdx::physics::box2d::Fixture::M_jniIsSensor_R_boolean(jlong addr) {
+jbool M_com_badlogic_gdx_physics_box2d_Fixture_jniIsSensor_long_R_boolean(jcontext ctx, jobject self, jlong addr) {
 
 		b2Fixture* fixture = (b2Fixture*)addr;
 		return fixture->IsSensor();
 }
 
-void com::badlogic::gdx::physics::box2d::Fixture::M_jniSetFilterData(jlong addr, jshort categoryBits, jshort maskBits, jshort groupIndex) {
+void M_com_badlogic_gdx_physics_box2d_Fixture_jniSetFilterData_long_short_short_short(jcontext ctx, jobject self, jlong addr, jshort categoryBits, jshort maskBits, jshort groupIndex) {
 
 		b2Fixture* fixture = (b2Fixture*)addr;
 		b2Filter filter;
@@ -48,8 +48,8 @@ void com::badlogic::gdx::physics::box2d::Fixture::M_jniSetFilterData(jlong addr,
 		fixture->SetFilterData(filter);
 }
 
-void com::badlogic::gdx::physics::box2d::Fixture::M_jniGetFilterData_Array1_short(jlong addr, const jarray &filter_object) {
-	auto filter = (jshort *)filter_object->data;
+void M_com_badlogic_gdx_physics_box2d_Fixture_jniGetFilterData_long_Array1_short(jcontext ctx, jobject self, jlong addr, jobject filter_object) {
+	auto filter = (jshort *)((Array *)filter_object)->data;
 
 		b2Fixture* fixture = (b2Fixture*)addr;
 		unsigned short* filterOut = (unsigned short*)filter;
@@ -59,49 +59,49 @@ void com::badlogic::gdx::physics::box2d::Fixture::M_jniGetFilterData_Array1_shor
 		filterOut[2] = f.groupIndex;
 }
 
-void com::badlogic::gdx::physics::box2d::Fixture::M_jniRefilter(jlong addr) {
+void M_com_badlogic_gdx_physics_box2d_Fixture_jniRefilter_long(jcontext ctx, jobject self, jlong addr) {
 
 		b2Fixture* fixture = (b2Fixture*)addr;
 		fixture->Refilter();
 }
 
-jbool com::badlogic::gdx::physics::box2d::Fixture::M_jniTestPoint_R_boolean(jlong addr, jfloat x, jfloat y) {
+jbool M_com_badlogic_gdx_physics_box2d_Fixture_jniTestPoint_long_float_float_R_boolean(jcontext ctx, jobject self, jlong addr, jfloat x, jfloat y) {
 
 		b2Fixture* fixture = (b2Fixture*)addr;
 		return fixture->TestPoint( b2Vec2( x, y ) );
 }
 
-void com::badlogic::gdx::physics::box2d::Fixture::M_jniSetDensity(jlong addr, jfloat density) {
+void M_com_badlogic_gdx_physics_box2d_Fixture_jniSetDensity_long_float(jcontext ctx, jobject self, jlong addr, jfloat density) {
 
 		b2Fixture* fixture = (b2Fixture*)addr;
 		fixture->SetDensity(density);
 }
 
-jfloat com::badlogic::gdx::physics::box2d::Fixture::M_jniGetDensity_R_float(jlong addr) {
+jfloat M_com_badlogic_gdx_physics_box2d_Fixture_jniGetDensity_long_R_float(jcontext ctx, jobject self, jlong addr) {
 
 		b2Fixture* fixture = (b2Fixture*)addr;
 		return fixture->GetDensity();
 }
 
-jfloat com::badlogic::gdx::physics::box2d::Fixture::M_jniGetFriction_R_float(jlong addr) {
+jfloat M_com_badlogic_gdx_physics_box2d_Fixture_jniGetFriction_long_R_float(jcontext ctx, jobject self, jlong addr) {
 
 		b2Fixture* fixture = (b2Fixture*)addr;
 		return fixture->GetFriction();
 }
 
-void com::badlogic::gdx::physics::box2d::Fixture::M_jniSetFriction(jlong addr, jfloat friction) {
+void M_com_badlogic_gdx_physics_box2d_Fixture_jniSetFriction_long_float(jcontext ctx, jobject self, jlong addr, jfloat friction) {
 
 		b2Fixture* fixture = (b2Fixture*)addr;
 		fixture->SetFriction(friction);
 }
 
-jfloat com::badlogic::gdx::physics::box2d::Fixture::M_jniGetRestitution_R_float(jlong addr) {
+jfloat M_com_badlogic_gdx_physics_box2d_Fixture_jniGetRestitution_long_R_float(jcontext ctx, jobject self, jlong addr) {
 
 		b2Fixture* fixture = (b2Fixture*)addr;
 		return fixture->GetRestitution();
 }
 
-void com::badlogic::gdx::physics::box2d::Fixture::M_jniSetRestitution(jlong addr, jfloat restitution) {
+void M_com_badlogic_gdx_physics_box2d_Fixture_jniSetRestitution_long_float(jcontext ctx, jobject self, jlong addr, jfloat restitution) {
 
 		b2Fixture* fixture = (b2Fixture*)addr;
 		fixture->SetRestitution(restitution);

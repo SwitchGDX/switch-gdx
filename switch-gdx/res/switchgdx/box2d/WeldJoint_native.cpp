@@ -1,51 +1,51 @@
-#include "Clearwing.hpp"
-#include "Utils.hpp"
-#include "RuntimeTypes.hpp"
-#include <com/badlogic/gdx/physics/box2d/joints/WeldJoint.hpp>
+#include "Clearwing.h"
+#include "java/nio/Buffer.h"
+#include <com/badlogic/gdx/physics/box2d/joints/WeldJoint.h>
+
 
 		#include <Box2D/Box2D.h>
 	 
-void com::badlogic::gdx::physics::box2d::joints::WeldJoint::M_jniGetLocalAnchorA_Array1_float(jlong addr, const jarray &anchor_object) {
-	auto anchor = (jfloat *)anchor_object->data;
+void M_com_badlogic_gdx_physics_box2d_joints_WeldJoint_jniGetLocalAnchorA_long_Array1_float(jcontext ctx, jobject self, jlong addr, jobject anchor_object) {
+	auto anchor = (jfloat *)((Array *)anchor_object)->data;
 
 		b2WeldJoint* joint = (b2WeldJoint*)addr;
 		anchor[0] = joint->GetLocalAnchorA().x;
 		anchor[1] = joint->GetLocalAnchorA().y;
 }
 
-void com::badlogic::gdx::physics::box2d::joints::WeldJoint::M_jniGetLocalAnchorB_Array1_float(jlong addr, const jarray &anchor_object) {
-	auto anchor = (jfloat *)anchor_object->data;
+void M_com_badlogic_gdx_physics_box2d_joints_WeldJoint_jniGetLocalAnchorB_long_Array1_float(jcontext ctx, jobject self, jlong addr, jobject anchor_object) {
+	auto anchor = (jfloat *)((Array *)anchor_object)->data;
 
 		b2WeldJoint* joint = (b2WeldJoint*)addr;
 		anchor[0] = joint->GetLocalAnchorB().x;
 		anchor[1] = joint->GetLocalAnchorB().y;
 }
 
-jfloat com::badlogic::gdx::physics::box2d::joints::WeldJoint::M_jniGetReferenceAngle_R_float(jlong addr) {
+jfloat M_com_badlogic_gdx_physics_box2d_joints_WeldJoint_jniGetReferenceAngle_long_R_float(jcontext ctx, jobject self, jlong addr) {
 
 		b2WeldJoint* joint = (b2WeldJoint*)addr;
 		return joint->GetReferenceAngle();
 }
 
-jfloat com::badlogic::gdx::physics::box2d::joints::WeldJoint::M_jniGetFrequency_R_float(jlong addr) {
+jfloat M_com_badlogic_gdx_physics_box2d_joints_WeldJoint_jniGetFrequency_long_R_float(jcontext ctx, jobject self, jlong addr) {
 
 		b2WeldJoint* joint = (b2WeldJoint*)addr;
 		return joint->GetFrequency();
 }
 
-void com::badlogic::gdx::physics::box2d::joints::WeldJoint::M_jniSetFrequency(jlong addr, jfloat hz) {
+void M_com_badlogic_gdx_physics_box2d_joints_WeldJoint_jniSetFrequency_long_float(jcontext ctx, jobject self, jlong addr, jfloat hz) {
 
 		b2WeldJoint* joint = (b2WeldJoint*)addr;
 		joint->SetFrequency(hz);
 }
 
-jfloat com::badlogic::gdx::physics::box2d::joints::WeldJoint::M_jniGetDampingRatio_R_float(jlong addr) {
+jfloat M_com_badlogic_gdx_physics_box2d_joints_WeldJoint_jniGetDampingRatio_long_R_float(jcontext ctx, jobject self, jlong addr) {
 
 		b2WeldJoint* joint = (b2WeldJoint*)addr;
 		return joint->GetDampingRatio();
 }
 
-void com::badlogic::gdx::physics::box2d::joints::WeldJoint::M_jniSetDampingRatio(jlong addr, jfloat ratio) {
+void M_com_badlogic_gdx_physics_box2d_joints_WeldJoint_jniSetDampingRatio_long_float(jcontext ctx, jobject self, jlong addr, jfloat ratio) {
 
 		b2WeldJoint* joint = (b2WeldJoint*)addr;
 		joint->SetDampingRatio(ratio);

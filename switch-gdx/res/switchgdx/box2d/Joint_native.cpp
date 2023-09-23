@@ -1,30 +1,30 @@
-#include "Clearwing.hpp"
-#include "Utils.hpp"
-#include "RuntimeTypes.hpp"
-#include <com/badlogic/gdx/physics/box2d/Joint.hpp>
+#include "Clearwing.h"
+#include "java/nio/Buffer.h"
+#include <com/badlogic/gdx/physics/box2d/Joint.h>
+
 
 #include <Box2D/Box2D.h> 
 	 
-jint com::badlogic::gdx::physics::box2d::Joint::M_jniGetType_R_int(jlong addr) {
+jint M_com_badlogic_gdx_physics_box2d_Joint_jniGetType_long_R_int(jcontext ctx, jobject self, jlong addr) {
 
 		b2Joint* joint = (b2Joint*)addr;
 		return joint->GetType();
 }
 
-jlong com::badlogic::gdx::physics::box2d::Joint::M_jniGetBodyA_R_long(jlong addr) {
+jlong M_com_badlogic_gdx_physics_box2d_Joint_jniGetBodyA_long_R_long(jcontext ctx, jobject self, jlong addr) {
 
 		b2Joint* joint = (b2Joint*)addr;
 		return (jlong)joint->GetBodyA();
 }
 
-jlong com::badlogic::gdx::physics::box2d::Joint::M_jniGetBodyB_R_long(jlong addr) {
+jlong M_com_badlogic_gdx_physics_box2d_Joint_jniGetBodyB_long_R_long(jcontext ctx, jobject self, jlong addr) {
 
 		b2Joint* joint = (b2Joint*)addr;
 		return (jlong)joint->GetBodyB();
 }
 
-void com::badlogic::gdx::physics::box2d::Joint::M_jniGetAnchorA_Array1_float(jlong addr, const jarray &anchorA_object) {
-	auto anchorA = (jfloat *)anchorA_object->data;
+void M_com_badlogic_gdx_physics_box2d_Joint_jniGetAnchorA_long_Array1_float(jcontext ctx, jobject self, jlong addr, jobject anchorA_object) {
+	auto anchorA = (jfloat *)((Array *)anchorA_object)->data;
 
 		b2Joint* joint = (b2Joint*)addr;
 		b2Vec2 a = joint->GetAnchorA();
@@ -32,8 +32,8 @@ void com::badlogic::gdx::physics::box2d::Joint::M_jniGetAnchorA_Array1_float(jlo
 		anchorA[1] = a.y;
 }
 
-void com::badlogic::gdx::physics::box2d::Joint::M_jniGetAnchorB_Array1_float(jlong addr, const jarray &anchorB_object) {
-	auto anchorB = (jfloat *)anchorB_object->data;
+void M_com_badlogic_gdx_physics_box2d_Joint_jniGetAnchorB_long_Array1_float(jcontext ctx, jobject self, jlong addr, jobject anchorB_object) {
+	auto anchorB = (jfloat *)((Array *)anchorB_object)->data;
 
 		b2Joint* joint = (b2Joint*)addr;
 		b2Vec2 a = joint->GetAnchorB();
@@ -41,14 +41,14 @@ void com::badlogic::gdx::physics::box2d::Joint::M_jniGetAnchorB_Array1_float(jlo
 		anchorB[1] = a.y;
 }
 
-jbool com::badlogic::gdx::physics::box2d::Joint::M_jniGetCollideConnected_R_boolean(jlong addr) {
+jbool M_com_badlogic_gdx_physics_box2d_Joint_jniGetCollideConnected_long_R_boolean(jcontext ctx, jobject self, jlong addr) {
 
 		b2Joint* joint = (b2Joint*) addr;
 		return joint->GetCollideConnected();
 }
 
-void com::badlogic::gdx::physics::box2d::Joint::M_jniGetReactionForce_Array1_float(jlong addr, jfloat inv_dt, const jarray &reactionForce_object) {
-	auto reactionForce = (jfloat *)reactionForce_object->data;
+void M_com_badlogic_gdx_physics_box2d_Joint_jniGetReactionForce_long_float_Array1_float(jcontext ctx, jobject self, jlong addr, jfloat inv_dt, jobject reactionForce_object) {
+	auto reactionForce = (jfloat *)((Array *)reactionForce_object)->data;
 
 		b2Joint* joint = (b2Joint*)addr;
 		b2Vec2 f = joint->GetReactionForce(inv_dt);
@@ -56,13 +56,13 @@ void com::badlogic::gdx::physics::box2d::Joint::M_jniGetReactionForce_Array1_flo
 		reactionForce[1] = f.y;
 }
 
-jfloat com::badlogic::gdx::physics::box2d::Joint::M_jniGetReactionTorque_R_float(jlong addr, jfloat inv_dt) {
+jfloat M_com_badlogic_gdx_physics_box2d_Joint_jniGetReactionTorque_long_float_R_float(jcontext ctx, jobject self, jlong addr, jfloat inv_dt) {
 
 		b2Joint* joint = (b2Joint*)addr;
 		return joint->GetReactionTorque(inv_dt);
 }
 
-jbool com::badlogic::gdx::physics::box2d::Joint::M_jniIsActive_R_boolean(jlong addr) {
+jbool M_com_badlogic_gdx_physics_box2d_Joint_jniIsActive_long_R_boolean(jcontext ctx, jobject self, jlong addr) {
 
 		b2Joint* joint = (b2Joint*)addr;
 		return joint->IsActive();

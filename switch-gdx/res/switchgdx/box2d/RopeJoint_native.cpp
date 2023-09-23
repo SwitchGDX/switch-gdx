@@ -1,33 +1,33 @@
-#include "Clearwing.hpp"
-#include "Utils.hpp"
-#include "RuntimeTypes.hpp"
-#include <com/badlogic/gdx/physics/box2d/joints/RopeJoint.hpp>
+#include "Clearwing.h"
+#include "java/nio/Buffer.h"
+#include <com/badlogic/gdx/physics/box2d/joints/RopeJoint.h>
+
 
 #include <Box2D/Box2D.h>
 	 
-void com::badlogic::gdx::physics::box2d::joints::RopeJoint::M_jniGetLocalAnchorA_Array1_float(jlong addr, const jarray &anchor_object) {
-	auto anchor = (jfloat *)anchor_object->data;
+void M_com_badlogic_gdx_physics_box2d_joints_RopeJoint_jniGetLocalAnchorA_long_Array1_float(jcontext ctx, jobject self, jlong addr, jobject anchor_object) {
+	auto anchor = (jfloat *)((Array *)anchor_object)->data;
 
 		b2RopeJoint* joint = (b2RopeJoint*)addr;
 		anchor[0] = joint->GetLocalAnchorA().x;
 		anchor[1] = joint->GetLocalAnchorA().y;
 }
 
-void com::badlogic::gdx::physics::box2d::joints::RopeJoint::M_jniGetLocalAnchorB_Array1_float(jlong addr, const jarray &anchor_object) {
-	auto anchor = (jfloat *)anchor_object->data;
+void M_com_badlogic_gdx_physics_box2d_joints_RopeJoint_jniGetLocalAnchorB_long_Array1_float(jcontext ctx, jobject self, jlong addr, jobject anchor_object) {
+	auto anchor = (jfloat *)((Array *)anchor_object)->data;
 
 		b2RopeJoint* joint = (b2RopeJoint*)addr;
 		anchor[0] = joint->GetLocalAnchorB().x;
 		anchor[1] = joint->GetLocalAnchorB().y;
 }
 
-jfloat com::badlogic::gdx::physics::box2d::joints::RopeJoint::M_jniGetMaxLength_R_float(jlong addr) {
+jfloat M_com_badlogic_gdx_physics_box2d_joints_RopeJoint_jniGetMaxLength_long_R_float(jcontext ctx, jobject self, jlong addr) {
 
 		b2RopeJoint* rope = (b2RopeJoint*)addr;
 		return rope->GetMaxLength();
 }
 
-void com::badlogic::gdx::physics::box2d::joints::RopeJoint::M_jniSetMaxLength(jlong addr, jfloat length) {
+void M_com_badlogic_gdx_physics_box2d_joints_RopeJoint_jniSetMaxLength_long_float(jcontext ctx, jobject self, jlong addr, jfloat length) {
 
 		b2RopeJoint* rope = (b2RopeJoint*)addr;
 		rope->SetMaxLength(length);

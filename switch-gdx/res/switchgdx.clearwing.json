@@ -63,27 +63,7 @@
         "java.lang.Object"
     ],
     "intrinsics": [
-        "com.badlogic.gdx.graphics.g2d.CpuSpriteBatch.drawAdjustedUV(Lcom/badlogic/gdx/graphics/Texture;FFFFFFFFFFFFFZZ)V",
-        "com.badlogic.gdx.scenes.scene2d.Group.act(F)V",
-        "com.badlogic.gdx.math.Matrix4.mul([F[F)V",
-        "com.badlogic.gdx.math.Matrix4.mulVec([F[F)V",
-        "com.badlogic.gdx.math.Matrix4.prj([F[F)V",
-        "com.badlogic.gdx.math.Matrix4.rot([F[F)V",
-        "com.badlogic.gdx.utils.TimSort.binarySort([Ljava/lang/Object;IIILjava/util/Comparator;)V",
-        "com.badlogic.gdx.graphics.g2d.Sprite.getVertices()[F",
-        "com.badlogic.gdx.graphics.g2d.Sprite.setPosition(FF)V",
-        "com.badlogic.gdx.graphics.g2d.SpriteBatch.draw(Lcom/badlogic/gdx/graphics/Texture;FFFFFFFFFIIIIZZ)V",
-        "com.badlogic.gdx.graphics.g2d.SpriteBatch.draw(Lcom/badlogic/gdx/graphics/Texture;FFFFIIIIZZ)V",
-        "com.badlogic.gdx.graphics.g2d.SpriteBatch.draw(Lcom/badlogic/gdx/graphics/Texture;FFIIII)V",
-        "com.badlogic.gdx.graphics.g2d.SpriteBatch.draw(Lcom/badlogic/gdx/graphics/Texture;FFFFFFFF)V",
-        "com.badlogic.gdx.graphics.g2d.SpriteBatch.draw(Lcom/badlogic/gdx/graphics/Texture;FFFF)V",
-        "com.badlogic.gdx.graphics.g2d.SpriteBatch.draw(Lcom/badlogic/gdx/graphics/Texture;[FII)V",
-        "com.badlogic.gdx.graphics.g2d.SpriteBatch.draw(Lcom/badlogic/gdx/graphics/g2d/TextureRegion;FF)V",
-        "com.badlogic.gdx.graphics.g2d.SpriteBatch.draw(Lcom/badlogic/gdx/graphics/g2d/TextureRegion;FFFF)V",
-        "com.badlogic.gdx.graphics.g2d.SpriteBatch.draw(Lcom/badlogic/gdx/graphics/g2d/TextureRegion;FFFFFFFFF)V",
-        "com.badlogic.gdx.graphics.g2d.SpriteBatch.draw(Lcom/badlogic/gdx/graphics/g2d/TextureRegion;FFFFFFFFFZ)V",
-        "com.badlogic.gdx.graphics.g2d.SpriteBatch.draw(Lcom/badlogic/gdx/graphics/g2d/TextureRegion;FFLcom/badlogic/gdx/math/Affine2;)V",
-        "com.badlogic.gdx.graphics.g2d.SpriteBatch.switchTexture(Lcom/badlogic/gdx/graphics/Texture;)V"
+
     ],
     "platformOverride": true
 }

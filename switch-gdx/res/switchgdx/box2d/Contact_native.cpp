@@ -1,12 +1,12 @@
-#include "Clearwing.hpp"
-#include "Utils.hpp"
-#include "RuntimeTypes.hpp"
-#include <com/badlogic/gdx/physics/box2d/Contact.hpp>
+#include "Clearwing.h"
+#include "java/nio/Buffer.h"
+#include <com/badlogic/gdx/physics/box2d/Contact.h>
+
 
 #include <Box2D/Box2D.h>
 	 
-jint com::badlogic::gdx::physics::box2d::Contact::M_jniGetWorldManifold_Array1_float_R_int(jlong addr, const jarray &tmp_object) {
-	auto tmp = (jfloat *)tmp_object->data;
+jint M_com_badlogic_gdx_physics_box2d_Contact_jniGetWorldManifold_long_Array1_float_R_int(jcontext ctx, jobject self, jlong addr, jobject tmp_object) {
+	auto tmp = (jfloat *)((Array *)tmp_object)->data;
 
 		b2Contact* contact = (b2Contact*)addr;
 		b2WorldManifold manifold;
@@ -28,91 +28,91 @@ jint com::badlogic::gdx::physics::box2d::Contact::M_jniGetWorldManifold_Array1_f
 		return numPoints;
 }
 
-jbool com::badlogic::gdx::physics::box2d::Contact::M_jniIsTouching_R_boolean(jlong addr) {
+jbool M_com_badlogic_gdx_physics_box2d_Contact_jniIsTouching_long_R_boolean(jcontext ctx, jobject self, jlong addr) {
 
 		b2Contact* contact = (b2Contact*)addr;
 		return contact->IsTouching();
 }
 
-void com::badlogic::gdx::physics::box2d::Contact::M_jniSetEnabled(jlong addr, jbool flag) {
+void M_com_badlogic_gdx_physics_box2d_Contact_jniSetEnabled_long_boolean(jcontext ctx, jobject self, jlong addr, jbool flag) {
 
 		b2Contact* contact = (b2Contact*)addr;
 		contact->SetEnabled(flag);
 }
 
-jbool com::badlogic::gdx::physics::box2d::Contact::M_jniIsEnabled_R_boolean(jlong addr) {
+jbool M_com_badlogic_gdx_physics_box2d_Contact_jniIsEnabled_long_R_boolean(jcontext ctx, jobject self, jlong addr) {
 
 		b2Contact* contact = (b2Contact*)addr;
 		return contact->IsEnabled();
 }
 
-jlong com::badlogic::gdx::physics::box2d::Contact::M_jniGetFixtureA_R_long(jlong addr) {
+jlong M_com_badlogic_gdx_physics_box2d_Contact_jniGetFixtureA_long_R_long(jcontext ctx, jobject self, jlong addr) {
 
 		b2Contact* contact = (b2Contact*)addr;
 		return (jlong)contact->GetFixtureA();
 }
 
-jlong com::badlogic::gdx::physics::box2d::Contact::M_jniGetFixtureB_R_long(jlong addr) {
+jlong M_com_badlogic_gdx_physics_box2d_Contact_jniGetFixtureB_long_R_long(jcontext ctx, jobject self, jlong addr) {
 
 		b2Contact* contact = (b2Contact*)addr;
 		return (jlong)contact->GetFixtureB();
 }
 
-jint com::badlogic::gdx::physics::box2d::Contact::M_jniGetChildIndexA_R_int(jlong addr) {
+jint M_com_badlogic_gdx_physics_box2d_Contact_jniGetChildIndexA_long_R_int(jcontext ctx, jobject self, jlong addr) {
 
 		b2Contact* contact = (b2Contact*)addr;
 		return contact->GetChildIndexA();
 }
 
-jint com::badlogic::gdx::physics::box2d::Contact::M_jniGetChildIndexB_R_int(jlong addr) {
+jint M_com_badlogic_gdx_physics_box2d_Contact_jniGetChildIndexB_long_R_int(jcontext ctx, jobject self, jlong addr) {
 
 		b2Contact* contact = (b2Contact*)addr;
 		return contact->GetChildIndexB();
 }
 
-void com::badlogic::gdx::physics::box2d::Contact::M_jniSetFriction(jlong addr, jfloat friction) {
+void M_com_badlogic_gdx_physics_box2d_Contact_jniSetFriction_long_float(jcontext ctx, jobject self, jlong addr, jfloat friction) {
 
 		b2Contact* contact = (b2Contact*)addr;
 		contact->SetFriction(friction);
 }
 
-jfloat com::badlogic::gdx::physics::box2d::Contact::M_jniGetFriction_R_float(jlong addr) {
+jfloat M_com_badlogic_gdx_physics_box2d_Contact_jniGetFriction_long_R_float(jcontext ctx, jobject self, jlong addr) {
 
 		b2Contact* contact = (b2Contact*)addr;
 		return contact->GetFriction();
 }
 
-void com::badlogic::gdx::physics::box2d::Contact::M_jniResetFriction(jlong addr) {
+void M_com_badlogic_gdx_physics_box2d_Contact_jniResetFriction_long(jcontext ctx, jobject self, jlong addr) {
 
 	  	b2Contact* contact = (b2Contact*)addr;
 		contact->ResetFriction();
 }
 
-void com::badlogic::gdx::physics::box2d::Contact::M_jniSetRestitution(jlong addr, jfloat restitution) {
+void M_com_badlogic_gdx_physics_box2d_Contact_jniSetRestitution_long_float(jcontext ctx, jobject self, jlong addr, jfloat restitution) {
 
 	  	b2Contact* contact = (b2Contact*)addr;
 		contact->SetRestitution(restitution);
 }
 
-jfloat com::badlogic::gdx::physics::box2d::Contact::M_jniGetRestitution_R_float(jlong addr) {
+jfloat M_com_badlogic_gdx_physics_box2d_Contact_jniGetRestitution_long_R_float(jcontext ctx, jobject self, jlong addr) {
 
 	  	b2Contact* contact = (b2Contact*)addr;
 		return contact->GetRestitution();
 }
 
-void com::badlogic::gdx::physics::box2d::Contact::M_jniResetRestitution(jlong addr) {
+void M_com_badlogic_gdx_physics_box2d_Contact_jniResetRestitution_long(jcontext ctx, jobject self, jlong addr) {
 
 	  	b2Contact* contact = (b2Contact*)addr;
 		contact->ResetRestitution();
 }
 
-jfloat com::badlogic::gdx::physics::box2d::Contact::M_jniGetTangentSpeed_R_float(jlong addr) {
+jfloat M_com_badlogic_gdx_physics_box2d_Contact_jniGetTangentSpeed_long_R_float(jcontext ctx, jobject self, jlong addr) {
 
 	  	b2Contact* contact = (b2Contact*)addr;
 		return contact->GetTangentSpeed();
 }
 
-void com::badlogic::gdx::physics::box2d::Contact::M_jniSetTangentSpeed(jlong addr, jfloat speed) {
+void M_com_badlogic_gdx_physics_box2d_Contact_jniSetTangentSpeed_long_float(jcontext ctx, jobject self, jlong addr, jfloat speed) {
 
 	  	b2Contact* contact = (b2Contact*)addr;
 		contact->SetTangentSpeed(speed);

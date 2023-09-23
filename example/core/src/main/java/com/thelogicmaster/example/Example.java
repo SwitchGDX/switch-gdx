@@ -167,6 +167,8 @@ public class Example implements ApplicationListener {
 //			e.printStackTrace();
 //		}
 
+		Gdx.gl30 = null;
+
 		Preferences prefs = Gdx.app.getPreferences("Test");
 		Gdx.app.log("Pref Test", prefs.getString("value", "Value not set"));
 		prefs.putString("value", "Value set");
@@ -289,10 +291,12 @@ public class Example implements ApplicationListener {
 
 		try {
 			Field field = ClassReflection.getDeclaredField(getClass(), "reflectionValue");
+			field.setAccessible(true);
 			System.out.println("Old reflection value: " + field.get(this));
 			field.set(this, 1);
 			System.out.println("New reflection value: " + field.get(this));
 			field = ClassReflection.getDeclaredField(getClass(), "reflectionValue2");
+			field.setAccessible(true);
 			System.out.println("Old reflection value 2: " + field.get(null));
 			field.set(null, this);
 			System.out.println("New reflection value 2: " + field.get(null));

@@ -1,11 +1,11 @@
-#include "Clearwing.hpp"
-#include "Utils.hpp"
-#include "RuntimeTypes.hpp"
-#include <com/badlogic/gdx/physics/box2d/Body.hpp>
+#include "Clearwing.h"
+#include "java/nio/Buffer.h"
+#include <com/badlogic/gdx/physics/box2d/Body.h>
+
 
 #include <Box2D/Box2D.h>
 	 
-jlong com::badlogic::gdx::physics::box2d::Body::M_jniCreateFixture_R_long(jlong addr, jlong shapeAddr, jfloat friction, jfloat restitution, jfloat density, jbool isSensor, jshort filterCategoryBits, jshort filterMaskBits, jshort filterGroupIndex) {
+jlong M_com_badlogic_gdx_physics_box2d_Body_jniCreateFixture_long_long_float_float_float_boolean_short_short_short_R_long(jcontext ctx, jobject self, jlong addr, jlong shapeAddr, jfloat friction, jfloat restitution, jfloat density, jbool isSensor, jshort filterCategoryBits, jshort filterMaskBits, jshort filterGroupIndex) {
 
 	b2Body* body = (b2Body*)addr;
 	b2Shape* shape = (b2Shape*)shapeAddr;
@@ -23,21 +23,21 @@ jlong com::badlogic::gdx::physics::box2d::Body::M_jniCreateFixture_R_long(jlong 
 	return (jlong)body->CreateFixture( &fixtureDef );
 }
 
-jlong com::badlogic::gdx::physics::box2d::Body::M_jniCreateFixture_R_long(jlong addr, jlong shapeAddr, jfloat density) {
+jlong M_com_badlogic_gdx_physics_box2d_Body_jniCreateFixture_long_long_float_R_long(jcontext ctx, jobject self, jlong addr, jlong shapeAddr, jfloat density) {
 
 		b2Body* body = (b2Body*)addr;
 		b2Shape* shape = (b2Shape*)shapeAddr;
 		return (jlong)body->CreateFixture( shape, density );
 }
 
-void com::badlogic::gdx::physics::box2d::Body::M_jniSetTransform(jlong addr, jfloat positionX, jfloat positionY, jfloat angle) {
+void M_com_badlogic_gdx_physics_box2d_Body_jniSetTransform_long_float_float_float(jcontext ctx, jobject self, jlong addr, jfloat positionX, jfloat positionY, jfloat angle) {
 
 		b2Body* body = (b2Body*)addr;
 		body->SetTransform(b2Vec2(positionX, positionY), angle);
 }
 
-void com::badlogic::gdx::physics::box2d::Body::M_jniGetTransform_Array1_float(jlong addr, const jarray &vals_object) {
-	auto vals = (jfloat *)vals_object->data;
+void M_com_badlogic_gdx_physics_box2d_Body_jniGetTransform_long_Array1_float(jcontext ctx, jobject self, jlong addr, jobject vals_object) {
+	auto vals = (jfloat *)((Array *)vals_object)->data;
 
 		b2Body* body = (b2Body*)addr;
 		b2Transform t = body->GetTransform();
@@ -47,8 +47,8 @@ void com::badlogic::gdx::physics::box2d::Body::M_jniGetTransform_Array1_float(jl
 		vals[3] = t.q.s;
 }
 
-void com::badlogic::gdx::physics::box2d::Body::M_jniGetPosition_Array1_float(jlong addr, const jarray &position_object) {
-	auto position = (jfloat *)position_object->data;
+void M_com_badlogic_gdx_physics_box2d_Body_jniGetPosition_long_Array1_float(jcontext ctx, jobject self, jlong addr, jobject position_object) {
+	auto position = (jfloat *)((Array *)position_object)->data;
 
 		b2Body* body = (b2Body*)addr;
 		b2Vec2 p = body->GetPosition();
@@ -56,14 +56,14 @@ void com::badlogic::gdx::physics::box2d::Body::M_jniGetPosition_Array1_float(jlo
 		position[1] = p.y;
 }
 
-jfloat com::badlogic::gdx::physics::box2d::Body::M_jniGetAngle_R_float(jlong addr) {
+jfloat M_com_badlogic_gdx_physics_box2d_Body_jniGetAngle_long_R_float(jcontext ctx, jobject self, jlong addr) {
 
 		b2Body* body = (b2Body*)addr;
 		return body->GetAngle();
 }
 
-void com::badlogic::gdx::physics::box2d::Body::M_jniGetWorldCenter_Array1_float(jlong addr, const jarray &worldCenter_object) {
-	auto worldCenter = (jfloat *)worldCenter_object->data;
+void M_com_badlogic_gdx_physics_box2d_Body_jniGetWorldCenter_long_Array1_float(jcontext ctx, jobject self, jlong addr, jobject worldCenter_object) {
+	auto worldCenter = (jfloat *)((Array *)worldCenter_object)->data;
 
 		b2Body* body = (b2Body*)addr;
 		b2Vec2 w = body->GetWorldCenter();
@@ -71,8 +71,8 @@ void com::badlogic::gdx::physics::box2d::Body::M_jniGetWorldCenter_Array1_float(
 		worldCenter[1] = w.y;
 }
 
-void com::badlogic::gdx::physics::box2d::Body::M_jniGetLocalCenter_Array1_float(jlong addr, const jarray &localCenter_object) {
-	auto localCenter = (jfloat *)localCenter_object->data;
+void M_com_badlogic_gdx_physics_box2d_Body_jniGetLocalCenter_long_Array1_float(jcontext ctx, jobject self, jlong addr, jobject localCenter_object) {
+	auto localCenter = (jfloat *)((Array *)localCenter_object)->data;
 
 		b2Body* body = (b2Body*)addr;
 		b2Vec2 w = body->GetLocalCenter();
@@ -80,14 +80,14 @@ void com::badlogic::gdx::physics::box2d::Body::M_jniGetLocalCenter_Array1_float(
 		localCenter[1] = w.y;
 }
 
-void com::badlogic::gdx::physics::box2d::Body::M_jniSetLinearVelocity(jlong addr, jfloat x, jfloat y) {
+void M_com_badlogic_gdx_physics_box2d_Body_jniSetLinearVelocity_long_float_float(jcontext ctx, jobject self, jlong addr, jfloat x, jfloat y) {
 
 		b2Body* body = (b2Body*)addr;
 		body->SetLinearVelocity(b2Vec2(x, y));
 }
 
-void com::badlogic::gdx::physics::box2d::Body::M_jniGetLinearVelocity_Array1_float(jlong addr, const jarray &linearVelocity_object) {
-	auto linearVelocity = (jfloat *)linearVelocity_object->data;
+void M_com_badlogic_gdx_physics_box2d_Body_jniGetLinearVelocity_long_Array1_float(jcontext ctx, jobject self, jlong addr, jobject linearVelocity_object) {
+	auto linearVelocity = (jfloat *)((Array *)linearVelocity_object)->data;
 
 		b2Body* body = (b2Body*)addr;
 		b2Vec2 l = body->GetLinearVelocity();
@@ -95,62 +95,62 @@ void com::badlogic::gdx::physics::box2d::Body::M_jniGetLinearVelocity_Array1_flo
 		linearVelocity[1] = l.y;
 }
 
-void com::badlogic::gdx::physics::box2d::Body::M_jniSetAngularVelocity(jlong addr, jfloat omega) {
+void M_com_badlogic_gdx_physics_box2d_Body_jniSetAngularVelocity_long_float(jcontext ctx, jobject self, jlong addr, jfloat omega) {
 
 		b2Body* body = (b2Body*)addr;
 		body->SetAngularVelocity(omega);
 }
 
-jfloat com::badlogic::gdx::physics::box2d::Body::M_jniGetAngularVelocity_R_float(jlong addr) {
+jfloat M_com_badlogic_gdx_physics_box2d_Body_jniGetAngularVelocity_long_R_float(jcontext ctx, jobject self, jlong addr) {
 
 		b2Body* body = (b2Body*)addr;
 		return body->GetAngularVelocity();
 }
 
-void com::badlogic::gdx::physics::box2d::Body::M_jniApplyForce(jlong addr, jfloat forceX, jfloat forceY, jfloat pointX, jfloat pointY, jbool wake) {
+void M_com_badlogic_gdx_physics_box2d_Body_jniApplyForce_long_float_float_float_float_boolean(jcontext ctx, jobject self, jlong addr, jfloat forceX, jfloat forceY, jfloat pointX, jfloat pointY, jbool wake) {
 
 		b2Body* body = (b2Body*)addr;
 		body->ApplyForce(b2Vec2(forceX, forceY), b2Vec2(pointX, pointY), wake);
 }
 
-void com::badlogic::gdx::physics::box2d::Body::M_jniApplyForceToCenter(jlong addr, jfloat forceX, jfloat forceY, jbool wake) {
+void M_com_badlogic_gdx_physics_box2d_Body_jniApplyForceToCenter_long_float_float_boolean(jcontext ctx, jobject self, jlong addr, jfloat forceX, jfloat forceY, jbool wake) {
 
 		b2Body* body = (b2Body*)addr;
 		body->ApplyForceToCenter(b2Vec2(forceX, forceY), wake);
 }
 
-void com::badlogic::gdx::physics::box2d::Body::M_jniApplyTorque(jlong addr, jfloat torque, jbool wake) {
+void M_com_badlogic_gdx_physics_box2d_Body_jniApplyTorque_long_float_boolean(jcontext ctx, jobject self, jlong addr, jfloat torque, jbool wake) {
 
 		b2Body* body = (b2Body*)addr;
 		body->ApplyTorque(torque, wake);
 }
 
-void com::badlogic::gdx::physics::box2d::Body::M_jniApplyLinearImpulse(jlong addr, jfloat impulseX, jfloat impulseY, jfloat pointX, jfloat pointY, jbool wake) {
+void M_com_badlogic_gdx_physics_box2d_Body_jniApplyLinearImpulse_long_float_float_float_float_boolean(jcontext ctx, jobject self, jlong addr, jfloat impulseX, jfloat impulseY, jfloat pointX, jfloat pointY, jbool wake) {
 
 		b2Body* body = (b2Body*)addr;
 		body->ApplyLinearImpulse( b2Vec2( impulseX, impulseY ), b2Vec2( pointX, pointY ), wake);
 }
 
-void com::badlogic::gdx::physics::box2d::Body::M_jniApplyAngularImpulse(jlong addr, jfloat impulse, jbool wake) {
+void M_com_badlogic_gdx_physics_box2d_Body_jniApplyAngularImpulse_long_float_boolean(jcontext ctx, jobject self, jlong addr, jfloat impulse, jbool wake) {
 
 		b2Body* body = (b2Body*)addr;
 		body->ApplyAngularImpulse(impulse, wake);
 }
 
-jfloat com::badlogic::gdx::physics::box2d::Body::M_jniGetMass_R_float(jlong addr) {
+jfloat M_com_badlogic_gdx_physics_box2d_Body_jniGetMass_long_R_float(jcontext ctx, jobject self, jlong addr) {
 
 		b2Body* body = (b2Body*)addr;
 		return body->GetMass();
 }
 
-jfloat com::badlogic::gdx::physics::box2d::Body::M_jniGetInertia_R_float(jlong addr) {
+jfloat M_com_badlogic_gdx_physics_box2d_Body_jniGetInertia_long_R_float(jcontext ctx, jobject self, jlong addr) {
 
 		b2Body* body = (b2Body*)addr;
 		return body->GetInertia();
 }
 
-void com::badlogic::gdx::physics::box2d::Body::M_jniGetMassData_Array1_float(jlong addr, const jarray &massData_object) {
-	auto massData = (jfloat *)massData_object->data;
+void M_com_badlogic_gdx_physics_box2d_Body_jniGetMassData_long_Array1_float(jcontext ctx, jobject self, jlong addr, jobject massData_object) {
+	auto massData = (jfloat *)((Array *)massData_object)->data;
 
 		b2Body* body = (b2Body*)addr;
 		b2MassData m;
@@ -161,7 +161,7 @@ void com::badlogic::gdx::physics::box2d::Body::M_jniGetMassData_Array1_float(jlo
 		massData[3] = m.I;
 }
 
-void com::badlogic::gdx::physics::box2d::Body::M_jniSetMassData(jlong addr, jfloat mass, jfloat centerX, jfloat centerY, jfloat I) {
+void M_com_badlogic_gdx_physics_box2d_Body_jniSetMassData_long_float_float_float_float(jcontext ctx, jobject self, jlong addr, jfloat mass, jfloat centerX, jfloat centerY, jfloat I) {
 
 		b2Body* body = (b2Body*)addr;
 		b2MassData m;
@@ -172,14 +172,14 @@ void com::badlogic::gdx::physics::box2d::Body::M_jniSetMassData(jlong addr, jflo
 		body->SetMassData(&m);
 }
 
-void com::badlogic::gdx::physics::box2d::Body::M_jniResetMassData(jlong addr) {
+void M_com_badlogic_gdx_physics_box2d_Body_jniResetMassData_long(jcontext ctx, jobject self, jlong addr) {
 
 		b2Body* body = (b2Body*)addr;
 		body->ResetMassData();
 }
 
-void com::badlogic::gdx::physics::box2d::Body::M_jniGetWorldPoint_Array1_float(jlong addr, jfloat localPointX, jfloat localPointY, const jarray &worldPoint_object) {
-	auto worldPoint = (jfloat *)worldPoint_object->data;
+void M_com_badlogic_gdx_physics_box2d_Body_jniGetWorldPoint_long_float_float_Array1_float(jcontext ctx, jobject self, jlong addr, jfloat localPointX, jfloat localPointY, jobject worldPoint_object) {
+	auto worldPoint = (jfloat *)((Array *)worldPoint_object)->data;
 
 		b2Body* body = (b2Body*)addr;
 		b2Vec2 w = body->GetWorldPoint( b2Vec2( localPointX, localPointY ) );
@@ -187,8 +187,8 @@ void com::badlogic::gdx::physics::box2d::Body::M_jniGetWorldPoint_Array1_float(j
 		worldPoint[1] = w.y;
 }
 
-void com::badlogic::gdx::physics::box2d::Body::M_jniGetWorldVector_Array1_float(jlong addr, jfloat localVectorX, jfloat localVectorY, const jarray &worldVector_object) {
-	auto worldVector = (jfloat *)worldVector_object->data;
+void M_com_badlogic_gdx_physics_box2d_Body_jniGetWorldVector_long_float_float_Array1_float(jcontext ctx, jobject self, jlong addr, jfloat localVectorX, jfloat localVectorY, jobject worldVector_object) {
+	auto worldVector = (jfloat *)((Array *)worldVector_object)->data;
 
 		b2Body* body = (b2Body*)addr;
 		b2Vec2 w = body->GetWorldVector( b2Vec2( localVectorX, localVectorY ) );
@@ -196,8 +196,8 @@ void com::badlogic::gdx::physics::box2d::Body::M_jniGetWorldVector_Array1_float(
 		worldVector[1] = w.y;
 }
 
-void com::badlogic::gdx::physics::box2d::Body::M_jniGetLocalPoint_Array1_float(jlong addr, jfloat worldPointX, jfloat worldPointY, const jarray &localPoint_object) {
-	auto localPoint = (jfloat *)localPoint_object->data;
+void M_com_badlogic_gdx_physics_box2d_Body_jniGetLocalPoint_long_float_float_Array1_float(jcontext ctx, jobject self, jlong addr, jfloat worldPointX, jfloat worldPointY, jobject localPoint_object) {
+	auto localPoint = (jfloat *)((Array *)localPoint_object)->data;
 
 		b2Body* body = (b2Body*)addr;
 		b2Vec2 w = body->GetLocalPoint( b2Vec2( worldPointX, worldPointY ) );
@@ -205,8 +205,8 @@ void com::badlogic::gdx::physics::box2d::Body::M_jniGetLocalPoint_Array1_float(j
 		localPoint[1] = w.y;
 }
 
-void com::badlogic::gdx::physics::box2d::Body::M_jniGetLocalVector_Array1_float(jlong addr, jfloat worldVectorX, jfloat worldVectorY, const jarray &worldVector_object) {
-	auto worldVector = (jfloat *)worldVector_object->data;
+void M_com_badlogic_gdx_physics_box2d_Body_jniGetLocalVector_long_float_float_Array1_float(jcontext ctx, jobject self, jlong addr, jfloat worldVectorX, jfloat worldVectorY, jobject worldVector_object) {
+	auto worldVector = (jfloat *)((Array *)worldVector_object)->data;
 
 		b2Body* body = (b2Body*)addr;
 		b2Vec2 w = body->GetLocalVector( b2Vec2( worldVectorX, worldVectorY ) );
@@ -214,8 +214,8 @@ void com::badlogic::gdx::physics::box2d::Body::M_jniGetLocalVector_Array1_float(
 		worldVector[1] = w.y;
 }
 
-void com::badlogic::gdx::physics::box2d::Body::M_jniGetLinearVelocityFromWorldPoint_Array1_float(jlong addr, jfloat worldPointX, jfloat worldPointY, const jarray &linVelWorld_object) {
-	auto linVelWorld = (jfloat *)linVelWorld_object->data;
+void M_com_badlogic_gdx_physics_box2d_Body_jniGetLinearVelocityFromWorldPoint_long_float_float_Array1_float(jcontext ctx, jobject self, jlong addr, jfloat worldPointX, jfloat worldPointY, jobject linVelWorld_object) {
+	auto linVelWorld = (jfloat *)((Array *)linVelWorld_object)->data;
 
 		b2Body* body = (b2Body*)addr;
 		b2Vec2 w = body->GetLinearVelocityFromWorldPoint( b2Vec2( worldPointX, worldPointY ) );
@@ -223,8 +223,8 @@ void com::badlogic::gdx::physics::box2d::Body::M_jniGetLinearVelocityFromWorldPo
 		linVelWorld[1] = w.y;
 }
 
-void com::badlogic::gdx::physics::box2d::Body::M_jniGetLinearVelocityFromLocalPoint_Array1_float(jlong addr, jfloat localPointX, jfloat localPointY, const jarray &linVelLoc_object) {
-	auto linVelLoc = (jfloat *)linVelLoc_object->data;
+void M_com_badlogic_gdx_physics_box2d_Body_jniGetLinearVelocityFromLocalPoint_long_float_float_Array1_float(jcontext ctx, jobject self, jlong addr, jfloat localPointX, jfloat localPointY, jobject linVelLoc_object) {
+	auto linVelLoc = (jfloat *)((Array *)linVelLoc_object)->data;
 
 		b2Body* body = (b2Body*)addr;
 		b2Vec2 w = body->GetLinearVelocityFromLocalPoint( b2Vec2( localPointX, localPointY ) );
@@ -232,25 +232,25 @@ void com::badlogic::gdx::physics::box2d::Body::M_jniGetLinearVelocityFromLocalPo
 		linVelLoc[1] = w.y;
 }
 
-jfloat com::badlogic::gdx::physics::box2d::Body::M_jniGetLinearDamping_R_float(jlong addr) {
+jfloat M_com_badlogic_gdx_physics_box2d_Body_jniGetLinearDamping_long_R_float(jcontext ctx, jobject self, jlong addr) {
 
 		b2Body* body = (b2Body*)addr;
 		return body->GetLinearDamping();
 }
 
-void com::badlogic::gdx::physics::box2d::Body::M_jniSetLinearDamping(jlong addr, jfloat linearDamping) {
+void M_com_badlogic_gdx_physics_box2d_Body_jniSetLinearDamping_long_float(jcontext ctx, jobject self, jlong addr, jfloat linearDamping) {
 
 		b2Body* body = (b2Body*)addr;
 		body->SetLinearDamping(linearDamping);
 }
 
-jfloat com::badlogic::gdx::physics::box2d::Body::M_jniGetAngularDamping_R_float(jlong addr) {
+jfloat M_com_badlogic_gdx_physics_box2d_Body_jniGetAngularDamping_long_R_float(jcontext ctx, jobject self, jlong addr) {
 
 		b2Body* body = (b2Body*)addr;
 		return body->GetAngularDamping();
 }
 
-void com::badlogic::gdx::physics::box2d::Body::M_jniSetAngularDamping(jlong addr, jfloat angularDamping) {
+void M_com_badlogic_gdx_physics_box2d_Body_jniSetAngularDamping_long_float(jcontext ctx, jobject self, jlong addr, jfloat angularDamping) {
 
 		b2Body* body = (b2Body*)addr;
 		body->SetAngularDamping(angularDamping);
@@ -269,86 +269,87 @@ inline b2BodyType getBodyType( int type )
 	}
 }	 
 
-void com::badlogic::gdx::physics::box2d::Body::M_jniSetType(jlong addr, jint type) {
+void M_com_badlogic_gdx_physics_box2d_Body_jniSetType_long_int(jcontext ctx, jobject self, jlong addr, jint type) {
 
 		b2Body* body = (b2Body*)addr;
 		body->SetType(getBodyType(type));
 }
 
-jint com::badlogic::gdx::physics::box2d::Body::M_jniGetType_R_int(jlong addr) {
+jint M_com_badlogic_gdx_physics_box2d_Body_jniGetType_long_R_int(jcontext ctx, jobject self, jlong addr) {
 
 		b2Body* body = (b2Body*)addr;
 		return body->GetType();
 }
 
-void com::badlogic::gdx::physics::box2d::Body::M_jniSetBullet(jlong addr, jbool flag) {
+void M_com_badlogic_gdx_physics_box2d_Body_jniSetBullet_long_boolean(jcontext ctx, jobject self, jlong addr, jbool flag) {
 
 		b2Body* body = (b2Body*)addr;
 		body->SetBullet(flag);
 }
 
-jbool com::badlogic::gdx::physics::box2d::Body::M_jniIsBullet_R_boolean(jlong addr) {
+jbool M_com_badlogic_gdx_physics_box2d_Body_jniIsBullet_long_R_boolean(jcontext ctx, jobject self, jlong addr) {
 
 		b2Body* body = (b2Body*)addr;
 		return body->IsBullet();
 }
 
-void com::badlogic::gdx::physics::box2d::Body::M_jniSetSleepingAllowed(jlong addr, jbool flag) {
+void M_com_badlogic_gdx_physics_box2d_Body_jniSetSleepingAllowed_long_boolean(jcontext ctx, jobject self, jlong addr, jbool flag) {
 
 		b2Body* body = (b2Body*)addr;
 		body->SetSleepingAllowed(flag);
 }
 
-jbool com::badlogic::gdx::physics::box2d::Body::M_jniIsSleepingAllowed_R_boolean(jlong addr) {
+jbool M_com_badlogic_gdx_physics_box2d_Body_jniIsSleepingAllowed_long_R_boolean(jcontext ctx, jobject self, jlong addr) {
 
 		b2Body* body = (b2Body*)addr;
 		return body->IsSleepingAllowed();
 }
 
-void com::badlogic::gdx::physics::box2d::Body::M_jniSetAwake(jlong addr, jbool flag) {
+void M_com_badlogic_gdx_physics_box2d_Body_jniSetAwake_long_boolean(jcontext ctx, jobject self, jlong addr, jbool flag) {
 
 		b2Body* body = (b2Body*)addr;
 		body->SetAwake(flag);
 }
 
-jbool com::badlogic::gdx::physics::box2d::Body::M_jniIsAwake_R_boolean(jlong addr) {
+jbool M_com_badlogic_gdx_physics_box2d_Body_jniIsAwake_long_R_boolean(jcontext ctx, jobject self, jlong addr) {
 
 		b2Body* body = (b2Body*)addr;
 		return body->IsAwake();
 }
 
-void com::badlogic::gdx::physics::box2d::Body::M_jniSetActive(jlong addr, jbool flag) {
+void M_com_badlogic_gdx_physics_box2d_Body_jniSetActive_long_boolean(jcontext ctx, jobject self, jlong addr, jbool flag) {
 
 		b2Body* body = (b2Body*)addr;
 		body->SetActive(flag);
 }
 
-jbool com::badlogic::gdx::physics::box2d::Body::M_jniIsActive_R_boolean(jlong addr) {
+jbool M_com_badlogic_gdx_physics_box2d_Body_jniIsActive_long_R_boolean(jcontext ctx, jobject self, jlong addr) {
 
 		b2Body* body = (b2Body*)addr;
 		return body->IsActive();
 }
 
-void com::badlogic::gdx::physics::box2d::Body::M_jniSetFixedRotation(jlong addr, jbool flag) {
+void M_com_badlogic_gdx_physics_box2d_Body_jniSetFixedRotation_long_boolean(jcontext ctx, jobject self, jlong addr, jbool flag) {
 
 		b2Body* body = (b2Body*)addr;
 		body->SetFixedRotation(flag);
 }
 
-jbool com::badlogic::gdx::physics::box2d::Body::M_jniIsFixedRotation_R_boolean(jlong addr) {
+jbool M_com_badlogic_gdx_physics_box2d_Body_jniIsFixedRotation_long_R_boolean(jcontext ctx, jobject self, jlong addr) {
 
 		b2Body* body = (b2Body*)addr;
 		return body->IsFixedRotation();
 }
 
-jfloat com::badlogic::gdx::physics::box2d::Body::M_jniGetGravityScale_R_float(jlong addr) {
+jfloat M_com_badlogic_gdx_physics_box2d_Body_jniGetGravityScale_long_R_float(jcontext ctx, jobject self, jlong addr) {
 
 		b2Body* body = (b2Body*)addr;
 		return body->GetGravityScale();
 }
 
-void com::badlogic::gdx::physics::box2d::Body::M_jniSetGravityScale(jlong addr, jfloat scale) {
+void M_com_badlogic_gdx_physics_box2d_Body_jniSetGravityScale_long_float(jcontext ctx, jobject self, jlong addr, jfloat scale) {
 
 		b2Body* body = (b2Body*)addr;
 		body->SetGravityScale(scale);
 }
+

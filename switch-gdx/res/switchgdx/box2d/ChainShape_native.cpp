@@ -1,17 +1,17 @@
-#include "Clearwing.hpp"
-#include "Utils.hpp"
-#include "RuntimeTypes.hpp"
-#include <com/badlogic/gdx/physics/box2d/ChainShape.hpp>
+#include "Clearwing.h"
+#include "java/nio/Buffer.h"
+#include <com/badlogic/gdx/physics/box2d/ChainShape.h>
+
 
 #include <Box2D/Box2D.h>
 	 
-jlong com::badlogic::gdx::physics::box2d::ChainShape::M_newChainShape_R_long() {
+jlong M_com_badlogic_gdx_physics_box2d_ChainShape_newChainShape_R_long(jcontext ctx, jobject self) {
 
 		return (jlong)(new b2ChainShape());
 }
 
-void com::badlogic::gdx::physics::box2d::ChainShape::M_jniCreateLoop_Array1_float(jlong addr, const jarray &verts_object, jint offset, jint numVertices) {
-	auto verts = (jfloat *)verts_object->data;
+void M_com_badlogic_gdx_physics_box2d_ChainShape_jniCreateLoop_long_Array1_float_int_int(jcontext ctx, jobject self, jlong addr, jobject verts_object, jint offset, jint numVertices) {
+	auto verts = (jfloat *)((Array *)verts_object)->data;
 
 		b2ChainShape* chain = (b2ChainShape*)addr;
 		b2Vec2* verticesOut = new b2Vec2[numVertices];
@@ -21,8 +21,8 @@ void com::badlogic::gdx::physics::box2d::ChainShape::M_jniCreateLoop_Array1_floa
 		delete[] verticesOut;
 }
 
-void com::badlogic::gdx::physics::box2d::ChainShape::M_jniCreateChain_Array1_float(jlong addr, const jarray &verts_object, jint offset, jint numVertices) {
-	auto verts = (jfloat *)verts_object->data;
+void M_com_badlogic_gdx_physics_box2d_ChainShape_jniCreateChain_long_Array1_float_int_int(jcontext ctx, jobject self, jlong addr, jobject verts_object, jint offset, jint numVertices) {
+	auto verts = (jfloat *)((Array *)verts_object)->data;
 
 		b2ChainShape* chain = (b2ChainShape*)addr;
 		b2Vec2* verticesOut = new b2Vec2[numVertices];
@@ -32,26 +32,26 @@ void com::badlogic::gdx::physics::box2d::ChainShape::M_jniCreateChain_Array1_flo
 		delete[] verticesOut;
 }
 
-void com::badlogic::gdx::physics::box2d::ChainShape::M_jniSetPrevVertex(jlong addr, jfloat x, jfloat y) {
+void M_com_badlogic_gdx_physics_box2d_ChainShape_jniSetPrevVertex_long_float_float(jcontext ctx, jobject self, jlong addr, jfloat x, jfloat y) {
 
 		b2ChainShape* chain = (b2ChainShape*)addr;
 		chain->SetPrevVertex(b2Vec2(x, y));
 }
 
-void com::badlogic::gdx::physics::box2d::ChainShape::M_jniSetNextVertex(jlong addr, jfloat x, jfloat y) {
+void M_com_badlogic_gdx_physics_box2d_ChainShape_jniSetNextVertex_long_float_float(jcontext ctx, jobject self, jlong addr, jfloat x, jfloat y) {
 
 		b2ChainShape* chain = (b2ChainShape*)addr;
 		chain->SetNextVertex(b2Vec2(x, y));
 }
 
-jint com::badlogic::gdx::physics::box2d::ChainShape::M_jniGetVertexCount_R_int(jlong addr) {
+jint M_com_badlogic_gdx_physics_box2d_ChainShape_jniGetVertexCount_long_R_int(jcontext ctx, jobject self, jlong addr) {
 
 		b2ChainShape* chain = (b2ChainShape*)addr;
 		return chain->GetVertexCount();
 }
 
-void com::badlogic::gdx::physics::box2d::ChainShape::M_jniGetVertex_Array1_float(jlong addr, jint index, const jarray &verts_object) {
-	auto verts = (jfloat *)verts_object->data;
+void M_com_badlogic_gdx_physics_box2d_ChainShape_jniGetVertex_long_int_Array1_float(jcontext ctx, jobject self, jlong addr, jint index, jobject verts_object) {
+	auto verts = (jfloat *)((Array *)verts_object)->data;
 
 		b2ChainShape* chain = (b2ChainShape*)addr;
 		const b2Vec2 v = chain->GetVertex( index );
@@ -59,7 +59,8 @@ void com::badlogic::gdx::physics::box2d::ChainShape::M_jniGetVertex_Array1_float
 		verts[1] = v.y;
 }
 
-void com::badlogic::gdx::physics::box2d::ChainShape::M_jniClear(jlong addr) {
+void M_com_badlogic_gdx_physics_box2d_ChainShape_jniClear_long(jcontext ctx, jobject self, jlong addr) {
+
     b2ChainShape* chain = (b2ChainShape*)addr;
     chain->Clear();
 }
