@@ -119,7 +119,7 @@ public:
     virtual bool ReportFixture( b2Fixture* fixture )
     {
 //		return env->CallBooleanMethod(obj, reportFixtureID, (jlong)fixture );
-        M_com_badlogic_gdx_physics_box2d_World_reportFixture_long_R_boolean(ctx, obj, (jlong)fixture);
+        return M_com_badlogic_gdx_physics_box2d_World_reportFixture_long_R_boolean(ctx, obj, (jlong)fixture);
     }
 };
 

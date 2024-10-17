@@ -1,8 +1,11 @@
 package com.thelogicmaster.switchgdx;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.controllers.Controllers;
+
+import java.util.function.Consumer;
 
 public class SwitchInput implements Input {
 
@@ -247,7 +250,7 @@ public class SwitchInput implements Input {
 
 	@Override
 	public native void getTextInput (TextInputListener listener, String title, String text, String hint, OnscreenKeyboardType type);
-
+	
 	@Override
 	public void setOnscreenKeyboardVisible (boolean visible) {
 
@@ -416,6 +419,15 @@ public class SwitchInput implements Input {
 			return -1;
 		}
 	}
+
+	public void showConfirm(String title, String message, Consumer<String> handler, String ...buttons) {
+		Gdx.app.postRunnable(() -> {
+			if (handler != null)
+				handler.accept(showConfirm0(title, message, buttons));
+		});
+	}
+
+	private static native String showConfirm0(String title, String message, String[] buttons);
 
 	private static native void getTouchData(int[] touchData);
 }

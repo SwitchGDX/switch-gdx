@@ -60,14 +60,15 @@
 - FreeTypeAtlas: Works
 - FreeTypeDispose: Heap usage not yet implemented
 - FreeTypeFontLoader: Works
-- FreeTypeIncremental: Works
+- FreeTypeIncremental: Works (Unicode issues)
 - FreeTypeMetrics: Works
-- FreeType: Works
+- FreeType: Works (Unicode issues)
 - FreeTypePack: Works
 - Gdx2DTest: Works
 - GLES30: Works
 - GLProfilerError: Can't test without keyboard support
 - GWTLossyPremultipliedAlpha: Works
+- GarbageCollector: Works
 - GestureDetector: Works
 - GroupCuling: Works
 - GroupFade: Works
@@ -76,6 +77,7 @@
 - HeightMap: Works
 - HelloTriangle: Works
 - HexagonalTiledMap: Works
+- HttpRequestExample: Works
 - I18NMessage: Doesn't work
 - I18NSimpleMessage: Mostly works, Date formatting not implemented yet
 - ImageScale: Works
@@ -92,6 +94,7 @@
 - JniGen: Works
 - Json: Works
 - KTX: Works
+- KinematicBody: Works
 - LabelScale: Works
 - Label: Works
 - LifeCycle: Works
@@ -122,7 +125,7 @@
 - ParticleEmitters: Works
 - Path: Works
 - PingPongSocket: Not yet implemented
-- PixelBufferObject: Threading issue
+- PixelBufferObject: GL30 not yet implemented
 - PixelPerfect: Works
 - PixelsPerInch: Works, but not accurate for Switch yet
 - PixmapBlending: Works

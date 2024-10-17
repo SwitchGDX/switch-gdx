@@ -28,7 +28,7 @@ public class SwitchAudio implements Audio {
 
 	@Override
 	public AudioDevice newAudioDevice (int samplingRate, boolean isMono) {
-		return null;
+		return new SwitchAudioDevice(samplingRate, isMono);
 	}
 
 	@Override
@@ -39,6 +39,12 @@ public class SwitchAudio implements Audio {
 	@Override
 	public Sound newSound (FileHandle fileHandle) {
 		SwitchSound sound = new SwitchSound(fileHandle);
+		sounds.add(sound);
+		return sound;
+	}
+
+	public SwitchSound newSound (byte[] wavData) {
+		SwitchSound sound = new SwitchSound(wavData);
 		sounds.add(sound);
 		return sound;
 	}

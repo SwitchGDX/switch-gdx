@@ -34,6 +34,7 @@
 #include <csignal>
 #include <vector>
 #include <string>
+#include <mutex>
 #include "switchgdx/gdx_buffer_utils.h"
 #include "switchgdx/gdx_matrix4.h"
 #include "switchgdx/gdx2d.h"
@@ -44,6 +45,7 @@
 #include <SDL.h>
 #include "switchgdx/SDL_mixer.h"
 #include <SDL_gamecontroller.h>
+#include "SDL_messagebox.h"
 
 #if !defined(__WIN32__) && !defined(__WINRT__)
 # include <sys/socket.h>
@@ -98,6 +100,9 @@ int __stdcall wWinMain(HINSTANCE, HINSTANCE, PWSTR, int) {
 #endif
 
 static int touches[16 * 3];
+static std::mutex audioCallbackLock;
+static std::vector<int> soundFinishedEvents;
+static bool musicFinishedEvent;
 
 #ifdef __SWITCH__
 static EGLDisplay display;
@@ -127,14 +132,65 @@ extern "C" void userAppExit() {
 #endif
 
 void onMusicFinished() {
-    // Todo: TLS context storage or store event in a queue until the next update loop
-//    SM_com_thelogicmaster_switchgdx_SwitchAudio_onMusicFinished(ctx);
+    std::lock_guard lock{audioCallbackLock};
+    musicFinishedEvent = true;
 }
 
 void onSoundFinished(int channel) {
-    // Todo: TLS context storage or store event in a queue until the next update loop
-//    SM_com_thelogicmaster_switchgdx_SwitchAudio_onSoundFinished_int(ctx, channel);
+    std::lock_guard lock{audioCallbackLock};
+    soundFinishedEvents.push_back(channel);
 }
+
+void *getBufferAddress(jcontext ctx, java_nio_Buffer *buffer) {
+    if (!buffer)
+        return nullptr;
+    int typeSize = 1;
+    if (isInstance(ctx, (jobject) buffer, &class_java_nio_ByteBuffer))
+        typeSize = sizeof(jbyte);
+    else if (isInstance(ctx, (jobject) buffer, &class_java_nio_FloatBuffer))
+        typeSize = sizeof(jfloat);
+    else if (isInstance(ctx, (jobject) buffer, &class_java_nio_IntBuffer))
+        typeSize = sizeof(jint);
+    else if (isInstance(ctx, (jobject) buffer, &class_java_nio_ShortBuffer))
+        typeSize = sizeof(jshort);
+    else if (isInstance(ctx, (jobject) buffer, &class_java_nio_CharBuffer))
+        typeSize = sizeof(jchar);
+    else if (isInstance(ctx, (jobject) buffer, &class_java_nio_LongBuffer))
+        typeSize = sizeof(jlong);
+    else if (isInstance(ctx, (jobject) buffer, &class_java_nio_DoubleBuffer))
+        typeSize = sizeof(jdouble);
+    return (char*)buffer->F_address + typeSize * buffer->F_position;
+}
+
+void *getBufferAddress(java_nio_ByteBuffer *buffer) {
+    return (char*)buffer->parent.F_address + sizeof(jbyte) * buffer->parent.F_position;
+}
+
+void *getBufferAddress(java_nio_ShortBuffer *buffer) {
+    return (char*)buffer->parent.F_address + sizeof(jshort) * buffer->parent.F_position;
+}
+
+void *getBufferAddress(java_nio_CharBuffer *buffer) {
+    return (char*)buffer->parent.F_address + sizeof(jchar) * buffer->parent.F_position;
+}
+
+void *getBufferAddress(java_nio_IntBuffer *buffer) {
+    return (char*)buffer->parent.F_address + sizeof(jint) * buffer->parent.F_position;
+}
+
+void *getBufferAddress(java_nio_LongBuffer *buffer) {
+    return (char*)buffer->parent.F_address + sizeof(jlong) * buffer->parent.F_position;
+}
+
+void *getBufferAddress(java_nio_FloatBuffer *buffer) {
+    return (char*)buffer->parent.F_address + sizeof(jfloat) * buffer->parent.F_position;
+}
+
+void *getBufferAddress(java_nio_DoubleBuffer *buffer) {
+    return (char*)buffer->parent.F_address + sizeof(jdouble) * buffer->parent.F_position;
+}
+
+extern "C" {
 
 void SM_com_thelogicmaster_switchgdx_SwitchApplication_init_boolean(jcontext ctx, jbool vsync) {
     for (int i = 0; i < 16; i++)
@@ -506,6 +562,17 @@ jbool SM_com_thelogicmaster_switchgdx_SwitchApplication_update_R_boolean(jcontex
                 SDL_GameControllerClose(SDL_GameControllerFromPlayerIndex(event.cdevice.which));
                 break;
         }
+
+    {
+        std::lock_guard lock{audioCallbackLock};
+        if (musicFinishedEvent) {
+            SM_com_thelogicmaster_switchgdx_SwitchAudio_onMusicFinished(ctx);
+            musicFinishedEvent = false;
+        }
+        for (int channel : soundFinishedEvents)
+            SM_com_thelogicmaster_switchgdx_SwitchAudio_onSoundFinished_int(ctx, channel);
+        soundFinishedEvents.clear();
+    }
 
     SDL_GL_SwapWindow(window);
     return true;
@@ -955,6 +1022,15 @@ void M_com_thelogicmaster_switchgdx_SwitchSound_create_java_lang_String(jcontext
     ((com_thelogicmaster_switchgdx_SwitchSound *) self)->F_handle = (jlong)sound;
 }
 
+void M_com_thelogicmaster_switchgdx_SwitchSound_create_Array1_byte(jcontext ctx, jobject self, jobject wavData) {
+    auto data = (jarray)wavData;
+    auto buffer = SDL_RWFromMem(data->data, data->length);
+    auto sound = Mix_LoadWAV_RW(buffer, true);
+    if (!sound)
+        constructAndThrowMsg<&class_com_badlogic_gdx_utils_GdxRuntimeException, init_java_lang_RuntimeException_java_lang_String>(ctx, Mix_GetError());
+    ((com_thelogicmaster_switchgdx_SwitchSound *) self)->F_handle = (jlong)sound;
+}
+
 void M_com_thelogicmaster_switchgdx_SwitchSound_dispose0(jcontext ctx, jobject self) {
     auto &handle = ((com_thelogicmaster_switchgdx_SwitchSound *) self)->F_handle;
     if (!handle)
@@ -1003,53 +1079,16 @@ void SM_com_thelogicmaster_switchgdx_SwitchSound_setPan0_int_float(jcontext ctx,
     Mix_SetPanning(channel, left, right);
 }
 
-void *getBufferAddress(jcontext ctx, java_nio_Buffer *buffer) {
-    if (!buffer)
-        return nullptr;
-    int typeSize = 1;
-    if (isInstance(ctx, (jobject) buffer, &class_java_nio_ByteBuffer))
-        typeSize = sizeof(jbyte);
-    else if (isInstance(ctx, (jobject) buffer, &class_java_nio_FloatBuffer))
-        typeSize = sizeof(jfloat);
-    else if (isInstance(ctx, (jobject) buffer, &class_java_nio_IntBuffer))
-        typeSize = sizeof(jint);
-    else if (isInstance(ctx, (jobject) buffer, &class_java_nio_ShortBuffer))
-        typeSize = sizeof(jshort);
-    else if (isInstance(ctx, (jobject) buffer, &class_java_nio_CharBuffer))
-        typeSize = sizeof(jchar);
-    else if (isInstance(ctx, (jobject) buffer, &class_java_nio_LongBuffer))
-        typeSize = sizeof(jlong);
-    else if (isInstance(ctx, (jobject) buffer, &class_java_nio_DoubleBuffer))
-        typeSize = sizeof(jdouble);
-    return (char*)buffer->F_address + typeSize * buffer->F_position;
+jlong SM_com_thelogicmaster_switchgdx_SwitchAudioDevice_create_int_boolean_R_long(jcontext ctx, jint param0, jbool param1) {
+    return 0; // Todo
 }
 
-void *getBufferAddress(java_nio_ByteBuffer *buffer) {
-    return (char*)buffer->parent.F_address + sizeof(jbyte) * buffer->parent.F_position;
+void SM_com_thelogicmaster_switchgdx_SwitchAudioDevice_sample_Array1_float_int_int(jcontext ctx, jobject param0, jint param1, jint param2) {
+    // Todo
 }
 
-void *getBufferAddress(java_nio_ShortBuffer *buffer) {
-    return (char*)buffer->parent.F_address + sizeof(jshort) * buffer->parent.F_position;
-}
-
-void *getBufferAddress(java_nio_CharBuffer *buffer) {
-    return (char*)buffer->parent.F_address + sizeof(jchar) * buffer->parent.F_position;
-}
-
-void *getBufferAddress(java_nio_IntBuffer *buffer) {
-    return (char*)buffer->parent.F_address + sizeof(jint) * buffer->parent.F_position;
-}
-
-void *getBufferAddress(java_nio_LongBuffer *buffer) {
-    return (char*)buffer->parent.F_address + sizeof(jlong) * buffer->parent.F_position;
-}
-
-void *getBufferAddress(java_nio_FloatBuffer *buffer) {
-    return (char*)buffer->parent.F_address + sizeof(jfloat) * buffer->parent.F_position;
-}
-
-void *getBufferAddress(java_nio_DoubleBuffer *buffer) {
-    return (char*)buffer->parent.F_address + sizeof(jdouble) * buffer->parent.F_position;
+void SM_com_thelogicmaster_switchgdx_SwitchAudioDevice_dispose_long(jcontext ctx, jlong param0) {
+    // Todo
 }
 
 void SM_com_badlogic_gdx_utils_BufferUtils_freeMemory_java_nio_ByteBuffer(jcontext ctx, jobject buffer) {
@@ -1459,6 +1498,28 @@ void M_com_thelogicmaster_switchgdx_SwitchInput_getTextInput_com_badlogic_gdx_In
 #endif
     failed:
     invokeInterface<func_com_badlogic_gdx_Input$TextInputListener_canceled, &class_com_badlogic_gdx_Input$TextInputListener, INDEX_com_badlogic_gdx_Input$TextInputListener_canceled>(ctx, listener);
+}
+
+jobject SM_com_thelogicmaster_switchgdx_SwitchInput_showConfirm0_java_lang_String_java_lang_String_Array1_java_lang_String_R_java_lang_String(jcontext ctx, jobject title, jobject message, jobject buttonsObj) {
+#ifdef __SWITCH__
+    return nullptr; // Todo: Support dialogs on switch
+#else
+    auto buttons = (jarray)buttonsObj;
+    if (buttons->length == 0) return nullptr;
+    std::vector<SDL_MessageBoxButtonData> buttonData;
+    for (int i = 0; i < buttons->length; i++)
+        buttonData.emplace_back(0, i, stringToNative(ctx, ((jstring *)buttons->data)[i]));
+    int result{};
+    SDL_MessageBoxData data{
+        .window = window,
+        .title = stringToNative(ctx, (jstring)title),
+        .message = stringToNative(ctx, (jstring)message),
+        .numbuttons = buttons->length,
+        .buttons = buttonData.data()
+    };
+    if (SDL_ShowMessageBox(&data, &result) || result < 0 || result > buttons->length) return nullptr;
+    return ((jobject *)buttons->data)[result];
+#endif
 }
 
 void M_com_thelogicmaster_switchgdx_SwitchGL_glActiveTexture_int(jcontext ctx, jobject self, jint texture) {
@@ -2124,4 +2185,6 @@ void M_com_thelogicmaster_switchgdx_SwitchGL_glVertexAttribPointer_int_int_int_b
 
 void M_com_thelogicmaster_switchgdx_SwitchGL_glVertexAttribPointer_int_int_int_boolean_int_int(jcontext ctx, jobject self, jint index, jint size, jint type, jbool normalized, jint stride, jint ptr) {
     glVertexAttribPointer(index, size, type, normalized, stride, (void *) (jlong) ptr);
+}
+
 }

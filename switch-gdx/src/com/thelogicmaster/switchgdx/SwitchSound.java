@@ -6,11 +6,18 @@ import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.ReflectionPool;
 
+import java.util.ArrayList;
+
 public class SwitchSound implements Sound {
 
 	private static class SoundInstance {
 		int channel;
 		boolean looping;
+	}
+	
+	@FunctionalInterface
+	public interface Listener {
+		void soundFinished(int id);
 	}
 
 	private long handle;
@@ -19,9 +26,17 @@ public class SwitchSound implements Sound {
 	private boolean disposed;
 	private int id;
 	private final Pool<SoundInstance> soundPool = new ReflectionPool<>(SoundInstance.class, 32);
+	private final ArrayList<Listener> listeners = new ArrayList<>();
+	private final byte[] wavData;
 
 	public SwitchSound (FileHandle file) {
+		wavData = null;
 		create(file.file().getPath());
+	}
+
+	public SwitchSound (byte[] wavData) {
+		this.wavData = wavData;
+		create(wavData);
 	}
 
 	boolean update() {
@@ -38,8 +53,18 @@ public class SwitchSound implements Sound {
 		if (instanceEntry == null || instanceEntry.value.looping)
 			return;
 		soundPool.free(instanceMap.remove(instanceEntry.key));
+		for (Listener listener : listeners)
+			listener.soundFinished(channel);
 	}
 
+	public void addListener (Listener listener) {
+		listeners.add(listener);
+	}
+	
+	public void removeListener (Listener listener) {
+		listeners.remove(listener);
+	}
+	
 	private long play(float volume, float pitch, float pan, boolean looping) {
 		int channel = play0(looping);
 		setVolume0(channel, volume);
@@ -167,6 +192,8 @@ public class SwitchSound implements Sound {
 	}
 
 	private native void create(String path);
+
+	private native void create(byte[] wavData);
 
 	private native void dispose0();
 

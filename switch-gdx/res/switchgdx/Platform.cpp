@@ -34,5 +34,7 @@ const char *getSystemProperty(const char *key) {
 #endif
     if (name == "line.separator")
         return "\n";
+    if (name == "java.io.tmpdir")
+        return "temp";
     return "";
 }

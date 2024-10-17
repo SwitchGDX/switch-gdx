@@ -185,6 +185,10 @@ public class SwitchTestWrapper extends AbstractTestWrapper {
 			}
 		}, new SwitchInstancer() {
 			public GdxTest instance () {
+				return new GarbageCollectorTest();
+			}
+		}, new SwitchInstancer() {
+			public GdxTest instance () {
 				return new HeightMapTest();
 			}
 		}, new SwitchInstancer() {

@@ -24,6 +24,8 @@ public class SwitchApplication implements Application {
 	private SwitchInput input;
 	private SwitchNet net;
 	private SwitchAudio audio;
+	
+	private final ApplicationType appType;
 
 	private boolean running;
 	private ApplicationLogger applicationLogger;
@@ -45,6 +47,8 @@ public class SwitchApplication implements Application {
 		init(config.vsync);
 
 		this.listener = listener;
+		
+		appType = config.appType;
 
 		Gdx.app = this;
 
@@ -212,7 +216,7 @@ public class SwitchApplication implements Application {
 
 	@Override
 	public ApplicationType getType () {
-		return ApplicationType.Desktop;
+		return appType;
 	}
 
 	@Override
@@ -294,6 +298,8 @@ public class SwitchApplication implements Application {
 	public static class Config {
 
 		private boolean vsync = true;
+		
+		private ApplicationType appType = ApplicationType.Desktop;
 
 		public Config() {
 		}
@@ -302,12 +308,25 @@ public class SwitchApplication implements Application {
 			this.vsync = vsync;
 		}
 
+		public Config(boolean vsync, ApplicationType appType) {
+			this.vsync = vsync;
+			this.appType = appType;
+		}
+
 		public boolean getVsync() {
 			return vsync;
 		}
 
 		public void setVsync(boolean vsync) {
 			this.vsync = vsync;
+		}
+
+		public ApplicationType getAppType() {
+			return appType;
+		}
+
+		public void setAppType(ApplicationType appType) {
+			this.appType = appType;
 		}
 	}
 }
