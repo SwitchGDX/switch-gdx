@@ -1,0 +1,16 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
+  "dependencies": [
+    "angle",
+    "sdl2",
+	"sdl2-mixer",
+    "libffi",
+    "curl",
+    "freetype",
+    "zziplib",
+    "zlib",
+    "libvorbis",
+    "libogg",
+    "mpg123"
+  ]
+}

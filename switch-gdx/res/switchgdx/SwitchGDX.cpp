@@ -199,7 +199,7 @@ void SM_com_thelogicmaster_switchgdx_SwitchApplication_init_boolean(jcontext ctx
 #if defined(__WIN32__) || defined(__WINRT__)
     WSADATA wsa_data;
     if (WSAStartup(MAKEWORD(2, 2), &wsa_data))
-        vm::throwNew<java::io::IOException>();
+        throwIOException(ctx, "WSAStartup exception");
 #endif
 
 #ifdef __SWITCH__
@@ -216,7 +216,7 @@ void SM_com_thelogicmaster_switchgdx_SwitchApplication_init_boolean(jcontext ctx
 
     Result result = romfsInit();
     if (R_FAILED(result))
-        Todo: Error handling/logging
+        ;// Todo: Error handling/logging
     display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
     eglInitialize(display, NULL, NULL);
     eglBindAPI(EGL_OPENGL_API);
@@ -592,17 +592,16 @@ jbool M_com_thelogicmaster_switchgdx_SwitchNet_openURI_java_lang_String_R_boolea
 #ifdef __SWITCH__
     WebCommonConfig config;
     WebCommonReply reply;
-    return !webPageCreate(&config, vm::getNativeString(urlObj)) and !webConfigSetWhitelist(&config, "^http*") and !webConfigShow(&config, &reply);
+    return !webPageCreate(&config, stringToNative(ctx, (jstring) urlObj)) and !webConfigSetWhitelist(&config, "^http*") and !webConfigShow(&config, &reply);
 #else
     std::string url(stringToNative(ctx, (jstring) urlObj));
 # if defined(__WIN32__) || defined(__WINRT__)
-    system(("start " + url).c_str());
+    return !system(("start " + url).c_str());
 # elif __APPLE__
-    system(("open " + url).c_str());
+    return !system(("open " + url).c_str());
 # else
-    system(("xdg-open " + url).c_str());
+    return !system(("xdg-open " + url).c_str());
 # endif
-    return true;
 #endif
 }
 
@@ -1247,9 +1246,9 @@ jobject SM_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_load_Array1_long_Array1_byt
     auto pixmap = gdx2d_load((unsigned char *) ((jarray) buffer)->data + offset, len);
     if (!pixmap)
         return nullptr;
-    auto pixelBuffer = gcAllocNative(ctx, &class_java_nio_ByteBuffer);
+    auto pixelBuffer = gcAllocProtected(ctx, &class_java_nio_ByteBuffer);
     init_java_nio_ByteBuffer_long_int_boolean(ctx, pixelBuffer, (jlong) pixmap->pixels, (jint) (pixmap->width * pixmap->height * gdx2d_bytes_per_pixel(pixmap->format)), false);
-    pixelBuffer->gcMark = GC_MARK_START;
+    unprotectObject(pixelBuffer);
     auto nativeDataPtr = (jlong *) ((jarray) nativeData)->data;
     nativeDataPtr[0] = (jlong) pixmap;
     nativeDataPtr[1] = pixmap->width;
@@ -1262,9 +1261,9 @@ jobject SM_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_loadByteBuffer_Array1_long_
     auto pixmap = gdx2d_load((unsigned char *) ((java_nio_Buffer *) buffer)->F_address + offset, len);
     if (!pixmap)
         return nullptr;
-    auto pixelBuffer = gcAllocNative(ctx, &class_java_nio_ByteBuffer);
+    auto pixelBuffer = gcAllocProtected(ctx, &class_java_nio_ByteBuffer);
     init_java_nio_ByteBuffer_long_int_boolean(ctx, pixelBuffer, (jlong) pixmap->pixels, (jint) (pixmap->width * pixmap->height * gdx2d_bytes_per_pixel(pixmap->format)), false);
-    pixelBuffer->gcMark = GC_MARK_START;
+    unprotectObject(pixelBuffer);
     auto nativeDataPtr = (jlong *) ((jarray) nativeData)->data;
     nativeDataPtr[0] = (jlong) pixmap;
     nativeDataPtr[1] = pixmap->width;
@@ -1277,9 +1276,9 @@ jobject SM_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_newPixmap_Array1_long_int_i
     auto pixmap = gdx2d_new(width, height, format);
     if (!pixmap)
         return nullptr;
-    auto pixelBuffer = gcAllocNative(ctx, &class_java_nio_ByteBuffer);
+    auto pixelBuffer = gcAllocProtected(ctx, &class_java_nio_ByteBuffer);
     init_java_nio_ByteBuffer_long_int_boolean(ctx, pixelBuffer, (jlong) pixmap->pixels, (jint) (pixmap->width * pixmap->height * gdx2d_bytes_per_pixel(pixmap->format)), false);
-    pixelBuffer->gcMark = GC_MARK_START;
+    unprotectObject(pixelBuffer);
     auto nativeDataPtr = (jlong *) ((jarray) nativeData)->data;
     nativeDataPtr[0] = (jlong) pixmap;
     nativeDataPtr[1] = pixmap->width;
@@ -1372,9 +1371,9 @@ jobject SM_com_badlogic_gdx_graphics_glutils_ETC1_encodeImage_java_nio_ByteBuffe
     auto compressedSize = etc1_get_encoded_data_size(width, height);
     auto compressedData = (etc1_byte *) malloc(compressedSize);
     etc1_encode_image((etc1_byte *) ((java_nio_Buffer *) imageData)->F_address + offset, width, height, pixelSize, width * pixelSize, compressedData);
-    auto pixelBuffer = gcAllocNative(ctx, &class_java_nio_ByteBuffer);
+    auto pixelBuffer = gcAllocProtected(ctx, &class_java_nio_ByteBuffer);
     init_java_nio_ByteBuffer_long_int(ctx, pixelBuffer, (jlong) compressedData, (jint) compressedSize);
-    pixelBuffer->gcMark = GC_MARK_START;
+    unprotectObject(pixelBuffer);
     return pixelBuffer;
 }
 
@@ -1383,9 +1382,9 @@ jobject SM_com_badlogic_gdx_graphics_glutils_ETC1_encodeImagePKM_java_nio_ByteBu
     auto compressed = (etc1_byte *) malloc(compressedSize + ETC_PKM_HEADER_SIZE);
     etc1_pkm_format_header(compressed, width, height);
     etc1_encode_image((etc1_byte *) ((java_nio_Buffer *) imageData)->F_address + offset, width, height, pixelSize, width * pixelSize, compressed + ETC_PKM_HEADER_SIZE);
-    auto pixelBuffer = gcAllocNative(ctx, &class_java_nio_ByteBuffer);
+    auto pixelBuffer = gcAllocProtected(ctx, &class_java_nio_ByteBuffer);
     init_java_nio_ByteBuffer_long_int(ctx, pixelBuffer, (jlong) compressed, (jint) compressedSize);
-    pixelBuffer->gcMark = GC_MARK_START;
+    unprotectObject(pixelBuffer);
     return pixelBuffer;
 }
 
@@ -1468,34 +1467,31 @@ void M_com_thelogicmaster_switchgdx_SwitchInput_getTextInput_com_badlogic_gdx_In
 #ifdef __SWITCH__
     Result rc;
     SwkbdConfig kbd;
-    char buffer[256];
+    char result[256];
     rc = swkbdCreate(&kbd, 0);
     if (rc)
         goto failed;
     swkbdConfigMakePresetDefault(&kbd);
-    swkbdConfigSetHeaderText(&kbd, vm::getNativeString(title));
-    swkbdConfigSetGuideText(&kbd, vm::getNativeString(text));
-    swkbdConfigSetInitialText(&kbd, vm::getNativeString(hint));
-    swkbdConfigSetStringLenMax(&kbd, sizeof(buffer) - 1);
-    rc = swkbdShow(&kbd, buffer, sizeof(buffer));
+    swkbdConfigSetHeaderText(&kbd, stringToNative(ctx, (jstring)title));
+    swkbdConfigSetGuideText(&kbd, stringToNative(ctx, (jstring)text));
+    swkbdConfigSetInitialText(&kbd, stringToNative(ctx, (jstring)hint));
+    swkbdConfigSetStringLenMax(&kbd, sizeof(result) - 1);
+    rc = swkbdShow(&kbd, result, sizeof(result));
     if (rc)
         goto failed;
-    listener->M_input(vm::createString(buffer));
-    return;
 #elif defined(__WINRT__)
     goto failed;
 #else
-    auto input = tinyfd_inputBox(stringToNative(ctx, (jstring) title), stringToNative(ctx, (jstring) text), "");
-    if (!input)
+    auto result = tinyfd_inputBox(stringToNative(ctx, (jstring) title), stringToNative(ctx, (jstring) text), "");
+    if (!result)
         goto failed;
+#endif
     {
-        auto textObj = (jobject) stringFromNative(ctx, input);
-        textObj->gcMark = GC_MARK_NATIVE; // Todo: Should really just use a stack frame for parameters being passed around, this is error prone and leaky
-        invokeInterface<func_com_badlogic_gdx_Input$TextInputListener_input_java_lang_String, &class_com_badlogic_gdx_Input$TextInputListener, INDEX_com_badlogic_gdx_Input$TextInputListener_input_java_lang_String>(ctx, listener, textObj);
-        textObj->gcMark = GC_MARK_START;
+        auto resultObj = (jobject) stringFromNativeProtected(ctx, result);
+        invokeInterface<func_com_badlogic_gdx_Input$TextInputListener_input_java_lang_String, &class_com_badlogic_gdx_Input$TextInputListener, INDEX_com_badlogic_gdx_Input$TextInputListener_input_java_lang_String>(ctx, listener, resultObj);
+        unprotectObject(resultObj);
         return;
     }
-#endif
     failed:
     invokeInterface<func_com_badlogic_gdx_Input$TextInputListener_canceled, &class_com_badlogic_gdx_Input$TextInputListener, INDEX_com_badlogic_gdx_Input$TextInputListener_canceled>(ctx, listener);
 }

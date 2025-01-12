@@ -5,10 +5,11 @@ project(SwitchGDX)
 
 include_directories(src)
 file(GLOB_RECURSE SRCS src/*.cpp src/*.c)
+include_directories(src src/soloud)
 add_executable(SwitchGDX WIN32 ${SRCS})
 
-target_compile_options(SwitchGDX PRIVATE "-await")
-target_compile_definitions(SwitchGDX PRIVATE UNICODE)
+target_compile_options(SwitchGDX PRIVATE "-await" "/Zc:preprocessor")
+target_compile_definitions(SwitchGDX PRIVATE UNICODE WITH_SDL2_STATIC NOJNI ASMJIT_NO_JIT)
 
 set(CMAKE_SYSTEM_NAME "WindowsStore" CACHE INTERNAL "" FORCE )
 
@@ -23,6 +24,7 @@ include(${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake)
 
 find_package(unofficial-angle REQUIRED)
 find_package(SDL2 REQUIRED)
+find_package(SDL2_mixer REQUIRED)
 
 find_package(ZLIB REQUIRED)
 find_package(Threads REQUIRED)
@@ -43,17 +45,17 @@ if(WIN32)
   target_link_libraries(SwitchGDX PRIVATE wsock32 ws2_32)
 endif()
 
-target_link_libraries(SwitchGDX PRIVATE unofficial::angle::libEGL unofficial::angle::libGLESv2 SDL2::SDL2 ZLIB::ZLIB CURL::libcurl libffi ${VCPKG_ROOT}/installed/x64-uwp/lib/zzip.lib ${VCPKG_ROOT}/installed/x64-uwp/lib/freetype.lib ../SDL2_mixer ${VCPKG_ROOT}/installed/x64-uwp/lib/mpg123.lib)
+target_link_libraries(SwitchGDX PRIVATE unofficial::angle::libEGL unofficial::angle::libGLESv2 SDL2::SDL2 SDL2_mixer::SDL2_mixer ZLIB::ZLIB CURL::libcurl libffi ${CMAKE_BINARY_DIR}/vcpkg_installed/x64-uwp/lib/zzip.lib ${CMAKE_BINARY_DIR}/vcpkg_installed/x64-uwp/lib/freetype.lib ${CMAKE_BINARY_DIR}/vcpkg_installed/x64-uwp/lib/mpg123.lib)
 
 target_link_libraries(SwitchGDX PRIVATE WindowsApp.lib rpcrt4.lib onecoreuap.lib kernel32.lib)
 set_target_properties(SwitchGDX PROPERTIES VS_GLOBAL_MinimalCoreWin "true")
 
-FILE(GLOB DLLS ${VCPKG_ROOT}/installed/x64-uwp/bin/*.dll)
-list(APPEND DLLS 
-	${VCPKG_ROOT}/installed/x64-uwp/debug/bin/SDL2d.dll
-	${VCPKG_ROOT}/installed/x64-uwp/debug/bin/zlibd1.dll
-	${VCPKG_ROOT}/installed/x64-uwp/debug/bin/libcurl-d.dll
-	SDL2_Mixer.dll
+FILE(GLOB DLLS ${CMAKE_BINARY_DIR}/vcpkg_installed/x64-uwp/bin/*.dll)
+list(APPEND DLLS
+	${CMAKE_BINARY_DIR}/vcpkg_installed/x64-uwp/debug/bin/SDL2d.dll
+	${CMAKE_BINARY_DIR}/vcpkg_installed/x64-uwp/debug/bin/SDL2_mixerd.dll
+	${CMAKE_BINARY_DIR}/vcpkg_installed/x64-uwp/debug/bin/zlibd1.dll
+	${CMAKE_BINARY_DIR}/vcpkg_installed/x64-uwp/debug/bin/libcurl-d.dll
 )
 
 target_sources(SwitchGDX PRIVATE ${DLLS})

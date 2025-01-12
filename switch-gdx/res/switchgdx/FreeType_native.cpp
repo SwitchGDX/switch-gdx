@@ -326,9 +326,9 @@ jint SM_com_badlogic_gdx_graphics_g2d_freetype_FreeType$Bitmap_getPitch_long_R_i
 jobject SM_com_badlogic_gdx_graphics_g2d_freetype_FreeType$Bitmap_getBuffer_long_R_java_nio_ByteBuffer(jcontext ctx, jlong bitmap) {
 
     auto bmp = (FT_Bitmap*)bitmap;
-    auto buffer = gcAllocNative(ctx, &class_java_nio_ByteBuffer);
+    auto buffer = gcAllocProtected(ctx, &class_java_nio_ByteBuffer);
     init_java_nio_ByteBuffer_long_int_boolean(ctx, buffer, (jlong)bmp->buffer, (int)bmp->rows * abs(bmp->pitch), false);
-    buffer->gcMark = GC_MARK_START;
+    unprotectObject(buffer);
     return buffer;
 // 			return env->NewDirectByteBuffer((void*)bmp->buffer, bmp->rows * abs(bmp->pitch));
 }

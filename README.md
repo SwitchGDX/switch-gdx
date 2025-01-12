@@ -8,7 +8,11 @@ native bindings for LibGDX. It supports Nintendo Switch Homebrew builds using Li
 See the SwitchGDX [thread](https://discord.com/channels/348229412858101762/965372515285352468) on the LibGDX Discord 
 server for support.
 
+## Ports
+See [Ports](PORTS.md) for a list of current ports.
+
 **Pixel Wheels and Shattered Pixel Dungeon Ports**
+![Mindustry](media/Mindustry.png)
 ![Pixel Wheels](media/PixelWheels.png)
 ![Shattered Pixel Dungeon](media/ShatteredPixel.png)
 
@@ -32,22 +36,9 @@ added as needed. Java and Kotlin have been tested and work.
 
 ## Libraries
 Pure Java libraries should work without any extra work, assuming they don't use unsupported runtime library features or
-JNI. Libraries compiled with a JDK version greater than 8 could also pose an issue. If a library uses JNI, custom native
+JNI. Libraries compiled with newer Java versions could also pose an issue. If a library uses JNI, custom native
 bindings could be provided and things should just work, the shared library loading API has no effect. See
 [Libraries](LIBRARIES.md) for a list of tested libraries.
-
-## Ports
-These are some LibGDX games that have been ported using SwitchGDX.
-- [Shattered Pixel Dungeon](https://github.com/TheLogicMaster/shattered-pixel-dungeon-switchgdx)
-- [Pixel Wheels](https://github.com/TheLogicMaster/pixelwheels-switchgdx)
-- [Bomberman GDX](https://github.com/TheLogicMaster/Bomberman-SwitchGDX)
-- [Pepper and Carrot Running Game](https://github.com/TheLogicMaster/PepperAndCarrotRunningGame)
-- [TriPeaks](https://github.com/TheLogicMaster/tripeaks-switchgdx)
-- [A Square Astray](https://github.com/TheLogicMaster/A-Square-Astray-SwitchGDX)
-- [Unlucky](https://github.com/TheLogicMaster/Unlucky)
-- [Klooni 1010](https://github.com/TheLogicMaster/Klooni1010)
-- [Jewel Thief](https://github.com/TheLogicMaster/jewelthief)
-- [nO mooRe](https://github.com/TheLogicMaster/nomoore)
 
 ## Todo
 - Bullet bindings
@@ -62,16 +53,17 @@ These are some LibGDX games that have been ported using SwitchGDX.
 - VSCode project support
 - Keyboard input support
 - Mac OS support
+- Fix second launch crash on Switch (Probably cleanup issue)
 
 ## Limitations
 See the [Clearwing](https://github.com/TheLogicMaster/clearwing-vm) documentation for the limitations inherent to the "VM"
 - Only one Music instance can play at a time
 - Sound effects are limited to OGG and WAV, Music supports MP3, OGG, and WAV
-- Reflection is disabled by default, use the `reflective` `switch.json` config option to enable it for specific classes
-- Socket server only supports IPv4
+- Unused classes are optimized out, use the `reflective` `switch.json` config option to prevent it for specific classes for reflection
+- Socket server only supports IPv4 (Not supported at all at present)
 
 ## Installation
-In addition to the C++ dependencies, JDK 16 is required. Rsync is used for incremental compilation, and CMake is used
+In addition to the C++ dependencies, JDK 17 is required. Rsync is used for incremental compilation, and CMake is used
 for building the generated C++ project.
 
 ### Linux
@@ -81,17 +73,19 @@ for building the generated C++ project.
 - `dkp-pacman -S switch-zlib switch-libvorbis switch-zziplib switch-sdl2 switch-sdl2_mixer switch-freetype switch-glad switch-curl switch-bulletphysics dkp-toolchain-vars`
 
 ### Windows
+- Install MSYS2
+- Open a mingw64 shell: `C:\msys64\msys2_shell.cmd -mingw64`
+- Install dependencies: `pacman -S gcc git rsync texinfo mingw-w64-x86_64-cmake mingw-w64-x86_64-zziplib mingw-w64-x86_64-glew mingw-w64-x86_64-SDL2_mixer mingw-w64-x86_64-freetype mingw-w64-x86_64-bullet`
 - Install [devkitPro Updater](https://github.com/devkitPro/installer/releases/latest) with Switch packages selected (Leave downloaded files)
-- Open MSYS2 from the start menu
-- `pacman -Syu`
-- `pacman -S switch-zlib switch-libvorbis switch-zziplib switch-sdl2_mixer switch-freetype switch-glad switch-curl switch-bulletphysics dkp-toolchain-vars`
-- `pacman -S gcc git rsync cmake mingw-w64-x86_64-toolchain mingw-w64-x86_64-cmake texinfo mingw-w64-x86_64-glew mingw-w64-x86_64-SDL2_mixer mingw-w64-x86_64-curl-gnutls mingw-w64-x86_64-freetype mingw-w64-x86_64-zziplib mingw-w64-x86_64-zlib mingw-w64-x86_64-bullet`
+- Open DevKitPro's MSYS2: `C:\devkitPro\msys2\msys2_shell.cmd -mingw64`
+- Install dependencies: `pacman -S switch-zlib switch-zziplib switch-sdl2_mixer switch-libvorbis switch-freetype switch-glad switch-curl dkp-toolchain-vars texinfo`
+- Build LibFFI for Switch
 
 ### UWP
 - Follow `Windows` steps above
-- Install [git](https://git-scm.com/downloads) and add to path
-- Install Visual Studio Community 2019 with UWP/C++ support
-- Remove the devKitPro MinGW bin directory from `Path` in _Environment Variables_, or it will mess with vcpkg
+- Install CMake for Windows
+- Install Visual Studio 2022 and C++/UWP support (`Desktop development with C++`, `Windows application development`)
+- Run twice for DLLs to properly be copied for some reason
 
 ## Project Setup
 For reference, there's an `example` project provided with the needed Gradle config to build a SwitchGDX project. If you
@@ -107,7 +101,7 @@ jnigen style native code inlining also needs to be added to the transpiler argum
 as [libraries](LIBRARIES.md) are concerned, if they require using GDX reflection, then those classes need to be added
 to the `switch.json` `reflective` class pattern list. The list of verified libraries details the needed config 
 entries. To enable the Ryujinx emulator, download/install it then set `ryujinxPath` in the `local.properties` file 
-(Create if needed). Make sure Java Home points to Java 16 or select a Java 16 JDK as the Gradle JDK in Intellij build 
+(Create if needed). Make sure Java Home points to Java 17 or select a Java 17 JDK as the Gradle JDK in Intellij build 
 settings. Ensure that the project itself compiles with the Java 8 language level. 
 
 ## Usage
@@ -131,8 +125,7 @@ The UWP task opens Visual Studio, where the project settings need to be adjusted
 deployment options for running on an Xbox console in devkit mode. Running a debug build should be as simple as building
 the project and running it. There's a bug where the UWP project needs to be manually rebuilt to for the assets to be 
 copied over into the UWP build directory. The first time 
-the task is run will be quite slow, as it needs to install the VCPKG dependencies into `<home_dir>/.SwitchGDX`. If this
-first task gets interrupted before finishing, deleting the vcpkg directory and trying again may be necessary. Currently,
+the task is run will be quite slow, as it needs to install the VCPKG dependencies. Currently,
 for Release builds to link successfully, the debug runtime library (/MDd) needs to be used. 
 
 ## Debugging
@@ -143,16 +136,16 @@ Set the working directory in the run config to the `switch/build/<project>` proj
 can be properly loaded at runtime. To trace back a native crash, simply press the debug icon next to the run
 configuration, and it should jump right to the exception and show the native stack trace. By inspecting the
 generated code and call stack, null fields can be found and traced back to Java source code by looking at the
-`vm::setLineNumber` line numbers. Code changes may lead to additional classes being included by the transpiler, in which case
+`LINE_NUMBER` line numbers. Code changes may lead to additional classes being included by the transpiler, in which case
 the CLion CMake project needs to be reloaded using `Tools/Cmake/Reload CMake Project` or it won't compile.
-If using Windows, the devkitPro MinGW toolchain has to be selected under the project build settings. To debug a Java
+If using Windows, the MinGW toolchain has to be selected under the project build settings. To debug a Java
 Exception being thrown, setting a breakpoint at the throw statement can be quite useful. If it's a place you can't
-easily add print-lines like a library, `printf` combined with `vm::getNativeString` can also be helpful to print out a
-Java string, potentially obtained from `Object#toString`. In CLion, `vm::getNativeString` can also be evaluated while
+easily add print-lines like a library, `printf` combined with `stringToNative` can also be helpful to print out a
+Java string, potentially obtained from `Object#toString`. In CLion, `stringToNative` can also be evaluated while
 debugging, which is often extremely useful for dynamically inspecting values without recompiling.
 ### Windows
 On Windows, if you change the working directory in CLion, it doesn't seem to find the required shared libraries, so
-manually copying the DLLs from `C:\devkitPro\msys2\mingw64\bin` into the executable directory may be necessary. Adding
+manually copying the DLLs from `C:\msys64\mingw64\bin` into the executable directory may be necessary. Adding
 the directory to the `Path` doesn't seem to be sufficient.
 
 ## Test Suite
@@ -167,7 +160,5 @@ features. Building the test module requires building the tests module JAR in the
 threads must be manually stopped/joined on dispose.
 - If using SNAPSHOT Gradle dependency (Not recommended), refresh Gradle dependencies using the Intellij Gradle menu to not use cached versions and update to the latest.
 - The UWP project generation has a bug where the project has to be manually rebuilt in Visual Studio for the assets to be properly copied
-- The UWP project requires a custom build of SDL2_mixer since the VCPKG library doesn't support UWP, for some reason. 
-This requires downloading the SDL2_mixer and SDL2 source and building the UWP subproject to update it.
 - When using Joycons individually, the inputs will be rotated horizontally. Controllers must be remapped from the home menu for now. 
 - `Controllers#getCurrentController` returns a controller representing all controller input, rather than the last controller.

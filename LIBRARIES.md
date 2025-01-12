@@ -4,6 +4,14 @@ file to enable reflection metadata for needed classes (Any types used by GDX Arr
 native code must have bindings for the Clearwing VM written by hand or by inlining the native code jnigen style (See
 [Clearwing](https://github.com/TheLogicMaster/clearwing-vm) for details). 
 
+## Known Unsupported
+- Gson
+- Apache Commons
+- OkHttp
+- Jmdns
+- Logback
+- Ktor
+
 ## GDX Box2D
 Fully supported
 
@@ -20,7 +28,7 @@ Fully supported and used internally for regex
 Fully supported. Requires the following added to switch.json:
 ```json
 {
-  "reflective": [
+  "nonOptimized": [
     "com.ray3k.tenpatch.TenPatchDrawable"
   ]
 }
@@ -33,7 +41,7 @@ Fully supported
 Fully supported. Requires the following added to switch.json:
 ```json
 {
-  "reflective": [
+  "nonOptimized": [
     "com.artemis.BaseSystem",
     "com.artemis.utils.BitVector",
     "com.artemis.utils.Bag",
@@ -55,7 +63,7 @@ Fully supported. Requires the following added to switch.json:
 Fully supported. Requires the following added to switch.json in addition to the Artemis-ODB entries:
 ```json
 {
-  "reflective": [
+  "nonOptimized": [
     "games.rednblack.hyperrunner.component.*",
     "games.rednblack.hyperrunner.system.*",
     "games.rednblack.hyperrunner.script.*",
@@ -88,19 +96,22 @@ Fully supported
 Fully supported. Requires the following entry added to switch.json:
 ```json
 {
-  "reflective": [
+  "nonOptimized": [
     "com.badlogic.ashley.core.Entity"
   ]
 }
 ```
 
 ## [VisUI](https://github.com/kotcrab/vis-ui)
-Mostly supported. File chooser stuff won't work and will cause compilation errors if used. Requires
+Mostly supported. File chooser stuff won't work and will cause compilation errors if used before 1.5.4-SNAPSHOT. Requires
 the following switch.json entry:
 ```json
 {
-  "reflective": [
+  "nonOptimized": [
     "com.kotcrab.vis.ui.**Style"
   ]
 }
 ```
+
+## [KTX](https://github.com/libktx/ktx)
+Not all modules tested but the main concern, Kotlin coroutines, are working for assets-async.

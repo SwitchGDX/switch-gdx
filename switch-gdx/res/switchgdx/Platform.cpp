@@ -6,9 +6,10 @@
 
 const char *getOSLanguage() {
 #ifdef __SWITCH__
-    u64 languageCode;
-    setGetSystemLanguage(&languageCode);
-    return (char *)&languageCode;
+    return "en-US";
+//    u64 languageCode;
+//    setGetSystemLanguage(&languageCode);
+//    return (char *)&languageCode;
 #else
     return "en-US";
 #endif
@@ -36,5 +37,9 @@ const char *getSystemProperty(const char *key) {
         return "\n";
     if (name == "java.io.tmpdir")
         return "temp";
-    return "";
+    if (name == "user.home")
+        return "home";
+    if (name == "user.name")
+        return "user";
+    return nullptr;
 }
