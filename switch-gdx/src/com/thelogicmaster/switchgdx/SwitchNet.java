@@ -79,6 +79,13 @@ public class SwitchNet implements Net {
 	}
 
 	@Override
+	public boolean isHttpRequestPending(HttpRequest httpRequest) {
+		synchronized (responses) {
+			return responses.containsKey(httpRequest);
+		}
+	}
+
+	@Override
 	public ServerSocket newServerSocket (Protocol protocol, String hostname, int port, ServerSocketHints hints) {
 		return new SwitchServerSocket(port, hints);
 	}

@@ -1,7 +1,8 @@
 cmake_minimum_required(VERSION 3.10)
+project(SwitchGDX)
+
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_C_STANDARD 11)
-project(SwitchGDX)
 
 include_directories(src)
 file(GLOB_RECURSE SRCS src/*.cpp src/*.c)

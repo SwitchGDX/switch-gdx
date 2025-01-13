@@ -1480,6 +1480,7 @@ void M_com_thelogicmaster_switchgdx_SwitchInput_getTextInput_com_badlogic_gdx_In
     if (rc)
         goto failed;
 #elif defined(__WINRT__)
+    char result[1]{};
     goto failed;
 #else
     auto result = tinyfd_inputBox(stringToNative(ctx, (jstring) title), stringToNative(ctx, (jstring) text), "");

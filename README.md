@@ -73,6 +73,7 @@ for building the generated C++ project.
 - `dkp-pacman -S switch-zlib switch-libvorbis switch-zziplib switch-sdl2 switch-sdl2_mixer switch-freetype switch-glad switch-curl switch-bulletphysics dkp-toolchain-vars`
 
 ### Windows
+- Ensure the project directory is as close to the filesystem root as possible to avoid Windows path limits (In 2025...)
 - Install MSYS2
 - Open a mingw64 shell: `C:\msys64\msys2_shell.cmd -mingw64`
 - Install dependencies: `pacman -S gcc git rsync texinfo mingw-w64-x86_64-cmake mingw-w64-x86_64-zziplib mingw-w64-x86_64-glew mingw-w64-x86_64-SDL2_mixer mingw-w64-x86_64-freetype mingw-w64-x86_64-bullet`
@@ -85,7 +86,7 @@ for building the generated C++ project.
 - Follow `Windows` steps above
 - Install CMake for Windows
 - Install Visual Studio 2022 and C++/UWP support (`Desktop development with C++`, `Windows application development`)
-- Run twice for DLLs to properly be copied for some reason
+- Run twice (Rebuild) for DLLs and assets to properly be copied for some reason
 
 ## Project Setup
 For reference, there's an `example` project provided with the needed Gradle config to build a SwitchGDX project. If you

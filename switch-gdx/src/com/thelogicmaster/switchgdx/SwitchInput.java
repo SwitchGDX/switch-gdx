@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.controllers.Controllers;
+import com.badlogic.gdx.input.NativeInputConfiguration;
 
 import java.util.function.Consumer;
 
@@ -262,6 +263,21 @@ public class SwitchInput implements Input {
 	}
 
 	@Override
+	public void openTextInputField(NativeInputConfiguration nativeInputConfiguration) {
+
+	}
+
+	@Override
+	public void closeTextInputField(boolean b) {
+
+	}
+
+	@Override
+	public void setKeyboardHeightObserver(KeyboardHeightObserver keyboardHeightObserver) {
+
+	}
+
+	@Override
 	public void vibrate (int milliseconds) {
 
 	}
@@ -307,29 +323,7 @@ public class SwitchInput implements Input {
 	}
 
 	@Override
-	public void setCatchBackKey (boolean catchBack) {
-
-	}
-
-	@Override
-	public boolean isCatchBackKey () {
-		return false;
-	}
-
-	@Override
-	public void setCatchMenuKey (boolean catchMenu) {
-
-	}
-
-	@Override
-	public boolean isCatchMenuKey () {
-		return false;
-	}
-
-	@Override
-	public void setCatchKey (int keycode, boolean catchKey) {
-
-	}
+	public void setCatchKey (int keycode, boolean catchKey) { }
 
 	@Override
 	public boolean isCatchKey (int keycode) {

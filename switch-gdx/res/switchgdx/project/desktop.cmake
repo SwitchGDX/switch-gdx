@@ -6,6 +6,10 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-volatile")
 set(CMAKE_C_STANDARD 11)
 set(OpenGL_GL_PREFERENCE GLVND)
 
+SET(CMAKE_C_RESPONSE_FILE_LINK_FLAG "@")
+SET(CMAKE_CXX_RESPONSE_FILE_LINK_FLAG "@")
+SET(CMAKE_NINJA_FORCE_RESPONSE_FILE 1 CACHE INTERNAL "")
+
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 
 include(FindPkgConfig)
@@ -19,7 +23,7 @@ find_package(CURL REQUIRED)
 find_package(ZZip REQUIRED)
 find_package(FFI REQUIRED)
 
-add_definitions(-DNOJNI)
+add_definitions(-DNOJNI -DASMJIT_STATIC)
 
 file(GLOB_RECURSE SRCS src/*.cpp src/*.c)
 include_directories(src)
