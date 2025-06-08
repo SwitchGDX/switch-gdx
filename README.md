@@ -27,7 +27,7 @@ See [Ports](PORTS.md) for a list of current ports.
 The majority of LibGDX is fully supported. A few features such as GL30 and audio recording are currently unsupported.
 
 ## Extensions
-FreeType, Controllers, and Box2D are supported. Bullet may be supported in the future.
+FreeType, Controllers, Box2D, Bullet are supported.
 
 ## JVM Languages
 Since Clearwing takes Bytecode as an input, it can support any JVM language. The main limitation would be the Clearwing
@@ -41,7 +41,6 @@ bindings could be provided and things should just work, the shared library loadi
 [Libraries](LIBRARIES.md) for a list of tested libraries.
 
 ## Todo
-- Bullet bindings
 - Multithreaded AssetManager support
 - Switch-specific API (Controller remapping)
 - Controller analog trigger support, remapping API, rumble
@@ -66,9 +65,10 @@ See the [Clearwing](https://github.com/TheLogicMaster/clearwing-vm) documentatio
 In addition to the C++ dependencies, JDK 17 is required. Rsync is used for incremental compilation, and CMake is used
 for building the generated C++ project.
 
-### Linux
-- Install CMake, Ninja, Rsync, Texinfo, SDL2, SDL2_Mixer, GLEW, zlib, Freetype, curl, Bullet
+### Linux/Mac
+- Install CMake, Ninja, Rsync, Texinfo, SDL2, SDL2_Mixer, GLEW, zlib, Freetype, curl
 - With APT: `sudo apt install build-essential texinfo rsync cmake ninja-build libsdl2-mixer-dev zlib1g-dev libglew-dev libfreetype-dev libcurl4-gnutls-dev libzzip-dev`
+- With Homebrew: `brew install sdl2 sdl2_mixer libffi curl libzzip freetype cmake pkgconf`
 - Install [devkitPro pacman](https://github.com/devkitPro/pacman/releases/tag/v1.0.2)
 - `dkp-pacman -S switch-zlib switch-libvorbis switch-zziplib switch-sdl2 switch-sdl2_mixer switch-freetype switch-glad switch-curl switch-bulletphysics dkp-toolchain-vars`
 
@@ -81,6 +81,22 @@ for building the generated C++ project.
 - Open DevKitPro's MSYS2: `C:\devkitPro\msys2\msys2_shell.cmd -mingw64`
 - Install dependencies: `pacman -S switch-zlib switch-zziplib switch-sdl2_mixer switch-libvorbis switch-freetype switch-glad switch-curl dkp-toolchain-vars texinfo`
 - Build LibFFI for Switch
+
+### Libffi
+This is a library that has to be compiled and installed manually for Switch. Run this for Linux normally and on Windows under MSYS2. Ensure that the working directory doesn't contain any spaces.
+``` shell
+git clone https://github.com/libffi/libffi.git
+cd libffi
+./autogen.sh
+source $DEVKITPRO/switchvars.sh
+source $DEVKITPRO/devkita64.sh
+CFLAGS="-g -O2 -march=armv8-a -mtune=cortex-a57 -mtp=soft -fPIC -ftls-model=local-exec" CHOST=aarch64-none-elf ./configure --prefix="$DEVKITPRO/portlibs/switch" --host=aarch64-none-elf
+make
+sudo cp ./aarch64-none-elf/include/*.h $DEVKITPRO/portlibs/switch/include/
+sudo cp ./aarch64-none-elf/.libs/libffi.a $DEVKITPRO/portlibs/switch/lib
+sudo cp ./aarch64-none-elf/.libs/libffi.la $DEVKITPRO/portlibs/switch/lib
+sudo cp ./aarch64-none-elf/libffi.pc $DEVKITPRO/portlibs/switch/lib/pkgconfig/
+```
 
 ### UWP
 - Follow `Windows` steps above

@@ -9,6 +9,7 @@
         "com.badlogic.gdx.utils.*Set",
         "com.badlogic.gdx.utils.*Map"
     ],
+    "jniClasses": ["com.badlogic.gdx.physics.bullet.**JNI"],
     "useStackTraces": true,
     "useLineNumbers": true,
     "useValueChecks": true,

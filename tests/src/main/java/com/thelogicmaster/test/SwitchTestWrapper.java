@@ -983,6 +983,10 @@ public class SwitchTestWrapper extends AbstractTestWrapper {
 			public GdxTest instance () {
 				return new KinematicBodyTest();
 			}
+		}, new SwitchInstancer() {
+			public GdxTest instance () {
+				return new BulletTestCollection();
+			}
 		}
 		};
 	}

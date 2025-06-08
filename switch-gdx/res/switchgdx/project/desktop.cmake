@@ -23,10 +23,10 @@ find_package(CURL REQUIRED)
 find_package(ZZip REQUIRED)
 find_package(FFI REQUIRED)
 
-add_definitions(-DNOJNI -DASMJIT_STATIC)
+add_definitions(-DNOJNI -DASMJIT_STATIC -DBT_NO_PROFILE -DBT_USE_INVERSE_DYNAMICS_WITH_BULLET2)
 
 file(GLOB_RECURSE SRCS src/*.cpp src/*.c)
-include_directories(src)
+include_directories(src src/switchgdx/bullet/bullet src/switchgdx/bullet/custom src/switchgdx/bullet/extras/Serialize src/switchgdx/bullet/extras)
 add_executable(SwitchGDX ${SRCS})
 
 target_compile_options(SwitchGDX PRIVATE -Wno-return-type)

@@ -43,7 +43,7 @@ public class SharedLibraryLoader {
 	}
 
 	public void load (String libraryName) {
-
+		System.loadLibrary(libraryName);
 	}
 
 	public File extractFile (String sourcePath, String dirName) throws IOException {

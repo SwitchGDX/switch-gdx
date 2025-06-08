@@ -16,10 +16,10 @@ set(CMAKE_CXX_USE_RESPONSE_FILE_FOR_OBJECTS 1)
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR})
 include(SwitchTools)
 
-add_definitions(-DNOJNI -DEGL_NO_X11 -D_REENTRANT -DASMJIT_STATIC)
+add_definitions(-DNOJNI -DEGL_NO_X11 -D_REENTRANT -DASMJIT_STATIC -DBT_NO_PROFILE -DBT_USE_INVERSE_DYNAMICS_WITH_BULLET2)
 
 file(GLOB_RECURSE SRCS src/*.cpp src/*.c)
-include_directories(src)
+include_directories(src src/switchgdx/bullet/bullet src/switchgdx/bullet/custom src/switchgdx/bullet/extras/Serialize src/switchgdx/bullet/extras)
 add_executable(${PROJECT_NAME} ${SRCS})
 
 target_compile_options(${PROJECT_NAME} PRIVATE -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable -Wno-unused-label -Wno-unused-function)

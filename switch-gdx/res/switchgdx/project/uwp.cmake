@@ -4,13 +4,12 @@ project(SwitchGDX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_C_STANDARD 11)
 
-include_directories(src)
+include_directories(src src/soloud) src/switchgdx/bullet/bullet src/switchgdx/bullet/custom src/switchgdx/bullet/extras/Serialize src/switchgdx/bullet/extras)
 file(GLOB_RECURSE SRCS src/*.cpp src/*.c)
-include_directories(src src/soloud)
 add_executable(SwitchGDX WIN32 ${SRCS})
 
 target_compile_options(SwitchGDX PRIVATE "-await" "/Zc:preprocessor")
-target_compile_definitions(SwitchGDX PRIVATE UNICODE WITH_SDL2_STATIC NOJNI ASMJIT_NO_JIT)
+target_compile_definitions(SwitchGDX PRIVATE UNICODE WITH_SDL2_STATIC NOJNI ASMJIT_NO_JIT BT_NO_PROFILE BT_USE_INVERSE_DYNAMICS_WITH_BULLET2)
 
 set(CMAKE_SYSTEM_NAME "WindowsStore" CACHE INTERNAL "" FORCE )
 

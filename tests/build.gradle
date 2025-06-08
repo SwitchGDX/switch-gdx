@@ -26,11 +26,13 @@ configurations {
 
 dependencies {
     switchgdx project(':switch-gdx')
+//    transpiler "com.github.SwitchGDX.clearwing-vm:transpiler:v$clearwingVersion"
     transpiler "com.thelogicmaster.clearwing-vm:transpiler:$clearwingVersion-dev"
     implementation project(':switch-gdx')
     implementation "com.badlogicgames.gdx-controllers:gdx-controllers-core:$gdxControllersVersion"
     implementation "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
     implementation "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
+    implementation "com.badlogicgames.gdx:gdx-bullet:$gdxVersion"
     implementation files('libs/gdx-tests.jar')
 }
 
